@@ -1,0 +1,75 @@
+.carousel {
+  position: relative;
+}
+
+.viewport {
+  overflow: hidden;
+  padding: 4px 0;
+}
+
+.track {
+  display: flex;
+  gap: 18px;
+  padding: 0 var(--page-padding-x);
+  touch-action: pan-y;
+}
+
+.slide {
+  flex: 0 0 min(275px, calc(100vw - var(--page-padding-x) * 2 - 28px));
+  min-width: 0;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  padding: 0;
+  z-index: 1;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.arrow:hover:not(:disabled) {
+  background-color: transparent;
+  transform: translateY(-50%) scale(1.06);
+}
+
+.arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.arrowLeft {
+  left: 10px;
+}
+
+.arrowRight {
+  right: 10px;
+}
+
+.arrowIcon {
+  width: 50px;
+  height: 50px;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+.arrowIconFlipped {
+  transform: rotate(90deg);
+}
+
+@media (max-width: 360px) {
+  .track {
+    gap: 16px;
+  }
+}
+
+@media (min-width: 640px) {
+  .slide {
+    flex: 0 0 275px;
+  }
+
+  .track {
+    gap: 22px;
+  }
+}

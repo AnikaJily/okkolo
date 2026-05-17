@@ -1,0 +1,52 @@
+@import 'tailwindcss';
+@import './tokens.css';
+@import './reset.css';
+
+@theme {
+  --color-background: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-foreground: var(--color-text);
+  --color-foreground-inverse: var(--color-text-inverse);
+  --color-muted: var(--color-muted);
+  --color-border: var(--color-border);
+  --color-brand: var(--color-purple);
+  --color-brand-strong: var(--color-purple-dark);
+  --color-accent: var(--color-yellow);
+
+  --font-display: 'Gilroy', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Gotham', 'Inter', system-ui, -apple-system, sans-serif;
+
+  --radius-card: var(--radius-lg);
+  --radius-control: var(--radius-pill);
+  --shadow-card: var(--shadow-card);
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: var(--leading-tight);
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

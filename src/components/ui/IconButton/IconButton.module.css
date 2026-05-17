@@ -1,0 +1,32 @@
+.root {
+  display: inline-flex;
+  width: 50px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  color: inherit;
+  background-color: transparent;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.root:hover {
+  background-color: var(--color-hover-soft);
+}
+
+.root:active {
+  transform: translateY(1px);
+}
+
+.root:focus-visible {
+  outline: 2px solid var(--color-purple-dark);
+  outline-offset: 2px;
+}
+
+.root:disabled,
+.root[aria-disabled='true'] {
+  pointer-events: none;
+  opacity: 0.5;
+}

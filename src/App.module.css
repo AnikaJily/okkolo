@@ -1,0 +1,60 @@
+.viewport {
+  min-height: 100dvh;
+  background-color: var(--color-bg);
+}
+
+.page {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  background-color: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 80px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-top: 20px;
+}
+
+@media (min-width: 640px) {
+  .page {
+    padding-bottom: 100px;
+  }
+
+  .main {
+    gap: 56px;
+    padding-top: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-areas:
+      'hero about'
+      'directions directions'
+      'events events';
+    column-gap: 32px;
+    row-gap: 80px;
+    align-items: stretch;
+    padding-top: 48px;
+  }
+
+  .main > :nth-child(1) {
+    grid-area: hero;
+  }
+  .main > :nth-child(2) {
+    grid-area: about;
+  }
+  .main > :nth-child(3) {
+    grid-area: directions;
+  }
+  .main > :nth-child(4) {
+    grid-area: events;
+  }
+}
