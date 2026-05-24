@@ -1,43 +1,37 @@
 .root {
+  box-sizing: border-box;
   width: 100%;
-  padding: 0 var(--page-padding-x);
-  display: flex;
+  margin: 0;
 }
 
 .image {
+  display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 386 / 288;
   object-fit: cover;
   object-position: center;
-  border-radius: var(--radius-lg);
-  display: block;
+  border-radius: var(--radius-xl);
 }
 
 @media (min-width: 640px) {
-  .root {
-    justify-content: center;
-  }
-
   .image {
-    max-width: 720px;
     aspect-ratio: 16 / 10;
-    border-radius: 20px;
   }
 }
 
 @media (min-width: 1024px) {
   .root {
-    padding: 0 0 0 var(--page-padding-x);
+    display: flex;
     height: 100%;
+    min-height: 0;
   }
 
   .image {
     width: 100%;
-    max-width: none;
     height: 100%;
-    aspect-ratio: auto;
     min-height: 480px;
-    border-radius: 24px;
+    aspect-ratio: auto;
+    object-fit: cover;
   }
 }

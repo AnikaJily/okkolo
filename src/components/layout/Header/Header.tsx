@@ -11,6 +11,7 @@ import { NAV_ITEMS } from '@/data/site';
 import { getSupportAction } from '@/lib/support';
 import logoSrc from '@/assets/images/logo.svg';
 import menuSrc from '@/assets/images/menu.svg';
+import styles from './Header.module.css';
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -21,8 +22,8 @@ export function Header({ onMenuClick, onSupport }: HeaderProps) {
   const supportAction = getSupportAction(onSupport);
 
   return (
-    <header className="sticky top-0 z-10 w-full border-b border-[var(--color-border)] bg-[var(--color-surface)]">
-      <div className="mx-auto flex w-full max-w-[var(--container-max)] items-center justify-between gap-6 px-[var(--page-padding-x)] py-4 lg:py-5">
+    <header className={styles.header}>
+      <div className={styles.inner}>
         <a
           href="/"
           className="inline-flex shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-purple-dark)]"

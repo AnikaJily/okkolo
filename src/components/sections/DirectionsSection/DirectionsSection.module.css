@@ -1,9 +1,14 @@
 .root {
+  --direction-card-min: 280px;
+  --direction-gap: 24px;
+
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 100%;
   scroll-margin-top: var(--header-offset);
+  container-type: inline-size;
+  container-name: directions;
 }
 
 .heading {
@@ -21,9 +26,28 @@
 
 .grid {
   display: none;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px;
-  padding: 0 var(--page-padding-x);
+  grid-template-columns: repeat(4, minmax(var(--direction-card-min), 1fr));
+  gap: var(--direction-gap);
+}
+
+.grid > * {
+  min-width: var(--direction-card-min);
+}
+
+@container directions (min-width: 1192px) {
+  .carouselWrap {
+    display: none;
+  }
+
+  .grid {
+    display: grid;
+  }
+}
+
+@container directions (min-width: 1228px) {
+  .root {
+    --direction-gap: 36px;
+  }
 }
 
 @media (min-width: 640px) {
@@ -34,14 +58,6 @@
 
 @media (min-width: 1024px) {
   .root {
-    gap: 36px;
-  }
-
-  .carouselWrap {
-    display: none;
-  }
-
-  .grid {
-    display: grid;
+    gap: 40px;
   }
 }

@@ -1,22 +1,26 @@
-import { ImageActionCard } from '@/components/ui/ImageActionCard';
+import { ImageActionCard } from '@/components/ui/ImageActionCard/ImageActionCard';
 import type { OkkoloEvent } from '@/data/events';
 
 interface EventCardProps {
   event: OkkoloEvent;
+  onSignup?: (event: OkkoloEvent) => void;
+  onDetails?: (event: OkkoloEvent) => void;
 }
 
-export function EventCard({ event }: EventCardProps) {
-  const dateLabel = `${event.day} ${event.month}, ${event.time}`;
-
+export function EventCard({ event, onSignup, onDetails }: EventCardProps) {
   return (
     <ImageActionCard
       variant="preview"
       title={event.title}
       description={event.admission}
       image={event.image}
-      href={event.href}
+      href={event.signupHref}
       actionLabel="Записаться"
-      meta={dateLabel}
+      action={onSignup ? () => onSignup(event) : undefined}
+      secondaryActionLabel="Подробнее"
+      secondaryHref={event.href}
+      secondaryAction={onDetails ? () => onDetails(event) : undefined}
+      meta={event.dateLabel}
     />
   );
 }

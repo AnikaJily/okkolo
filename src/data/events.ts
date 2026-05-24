@@ -2,52 +2,51 @@ import cafeImage from '@/assets/images/direction-cafe.png';
 
 export interface OkkoloEvent {
   id: string;
-  day: string;
-  month: string;
   title: string;
-  time: string;
-  location: string;
-  tag: string;
+  date: string;
+  dateLabel: string;
   admission: string;
+  description?: string;
   href: string;
+  signupHref: string;
+  isPaid?: boolean;
+  price?: number;
+  paymentUrl?: string;
   image: string;
 }
 
 export const events: OkkoloEvent[] = [
   {
     id: 'jazz-evening',
-    day: '24',
-    month: 'мая',
     title: 'Вечер живого джаза',
-    time: '19:00',
-    location: 'Кофейня',
-    tag: 'Музыка',
-    admission: 'Вход свободный',
+    date: '2026-05-24T19:00:00.000Z',
+    dateLabel: '24 мая, 19:00',
+    admission: 'Вход бесплатный',
+    description: 'Вечер живой музыки в пространстве «Окколо». Приходите слушать джаз, знакомиться и проводить время вместе.',
     href: '/events/jazz-evening',
+    signupHref: 'mailto:hello@okkolo.ru',
     image: cafeImage,
   },
   {
     id: 'ceramics',
-    day: '28',
-    month: 'мая',
     title: 'Мастер-класс по керамике',
-    time: '14:00',
-    location: 'Мастерские',
-    tag: 'Воркшоп',
-    admission: 'Вход свободный',
+    date: '2026-05-28T14:00:00.000Z',
+    dateLabel: '28 мая, 14:00',
+    admission: 'Вход бесплатный',
+    description: 'Практический мастер-класс по керамике для гостей проекта. Подходит для начинающих и не требует специальной подготовки.',
     href: '/events/ceramics',
+    signupHref: 'mailto:hello@okkolo.ru',
     image: cafeImage,
   },
   {
     id: 'book-club',
-    day: '01',
-    month: 'июн',
     title: 'Книжный клуб: «Маленький принц»',
-    time: '18:30',
-    location: 'Кофейня',
-    tag: 'Обсуждение',
-    admission: 'Вход свободный',
+    date: '2026-06-01T18:30:00.000Z',
+    dateLabel: '01 июн, 18:30',
+    admission: 'Вход бесплатный',
+    description: 'Встреча книжного клуба с обсуждением, чаем и спокойной атмосферой для разговора о любимых текстах.',
     href: '/events/book-club',
+    signupHref: 'mailto:hello@okkolo.ru',
     image: cafeImage,
   },
 ];

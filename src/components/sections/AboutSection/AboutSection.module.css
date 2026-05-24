@@ -1,9 +1,9 @@
 .root {
-  margin: 0 var(--page-padding-x);
+  margin: 0;
   scroll-margin-top: var(--header-offset);
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   padding: 30px 20px;
   display: flex;
   flex-direction: column;
@@ -22,20 +22,25 @@
 }
 
 .highlightText {
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: var(--text-section-title);
+  font-size: var(--text-feature-title);
   text-align: center;
   line-height: var(--leading-tight);
-  text-wrap: balance;
+}
+
+.leadLine {
+  white-space: nowrap;
 }
 
 .description {
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 500;
   font-size: var(--text-body);
   text-align: center;
-  line-height: var(--leading-tight);
+  line-height: 1.5;
   max-width: 320px;
 }
 
@@ -60,7 +65,7 @@
 
   .highlight {
     padding: 24px 16px;
-    border-radius: 18px;
+    border-radius: var(--radius-lg);
   }
 
   .description {
@@ -69,45 +74,68 @@
 
   .actions {
     flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 16px;
     width: auto;
+    max-width: 100%;
   }
 
   .actions > * {
     width: auto;
+    flex: 0 1 auto;
   }
 }
 
 @media (min-width: 1024px) {
   .root {
-    margin: 0 var(--page-padding-x) 0 0;
-    max-width: none;
     width: 100%;
+    max-width: none;
+    min-width: 0;
     height: 100%;
-    padding: 48px 40px;
-    gap: 32px;
-    align-items: flex-start;
+    margin: 0;
+    padding: 32px 20px;
+    align-items: center;
     justify-content: center;
-    border-radius: 24px;
+    border-radius: var(--radius-xl);
   }
 
   .highlight {
-    padding: 28px 24px;
-    border-radius: 18px;
-  }
-
-  .highlightText {
-    text-align: left;
+    padding: 16px 8px;
   }
 
   .description {
-    text-align: left;
     max-width: none;
   }
 
   .actions {
-    flex-direction: row;
-    gap: 16px;
-    width: auto;
+    flex-direction: column;
+    width: 100%;
+    max-width: 219px;
+    gap: 15px;
+  }
+
+  .actions > * {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .root {
+    padding: 40px 28px;
+  }
+
+  .highlight {
+    padding: 18px 12px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .root {
+    padding: 40px 32px;
+  }
+
+  .highlight {
+    padding: 24px 16px;
   }
 }

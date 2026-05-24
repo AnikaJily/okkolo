@@ -13,7 +13,7 @@ export function AboutSection({ onSupport }: AboutSectionProps) {
     <section id="about" className={styles.root} aria-labelledby="about-heading">
       <div className={styles.highlight}>
         <h2 id="about-heading" className={styles.highlightText}>
-          «Окколо» — это инклюзивный
+          <span className={styles.leadLine}>«Окколо» — это инклюзивный</span>
           <br />
           социальный проект
         </h2>

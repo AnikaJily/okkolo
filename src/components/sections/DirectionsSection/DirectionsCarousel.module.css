@@ -10,12 +10,15 @@
 .track {
   display: flex;
   gap: 18px;
-  padding: 0 var(--page-padding-x);
   touch-action: pan-y;
 }
 
 .slide {
-  flex: 0 0 min(275px, calc(100vw - var(--page-padding-x) * 2 - 28px));
+  flex: 0 0
+    min(
+      var(--direction-card-min, 280px),
+      calc(100vw - var(--page-padding-x) * 2 - 28px)
+    );
   min-width: 0;
 }
 
@@ -66,10 +69,26 @@
 
 @media (min-width: 640px) {
   .slide {
-    flex: 0 0 275px;
+    flex: 0 0 var(--direction-card-min, 280px);
   }
 
   .track {
     gap: 22px;
+  }
+}
+
+@media (min-width: 768px) {
+  .slide {
+    flex: 0 0 300px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .slide {
+    flex: 0 0 320px;
+  }
+
+  .track {
+    gap: 24px;
   }
 }

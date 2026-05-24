@@ -1,9 +1,28 @@
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
-import { events } from '@/data/events';
+import { events as fallbackEvents } from '@/data/events';
+import type { OkkoloEvent } from '@/data/events';
+import { loadEvents } from '@/lib/events';
 import { EventCard } from './EventCard';
+import { EventDetailsModal } from './EventDetailsModal';
+import { EventSignupModal } from './EventSignupModal';
 import styles from './EventsSection.module.css';
 
 export function EventsSection() {
+  const [events, setEvents] = useState<OkkoloEvent[]>(fallbackEvents);
+  const [detailsEvent, setDetailsEvent] = useState<OkkoloEvent | null>(null);
+  const [signupEvent, setSignupEvent] = useState<OkkoloEvent | null>(null);
+
+  useEffect(() => {
+    loadEvents()
+      .then((items) => {
+        if (items.length > 0) setEvents(items);
+      })
+      .catch(() => {
+        // fallback на статичные данные при ошибке сети
+      });
+  }, []);
+
   return (
     <section
       id="events"
@@ -17,16 +36,33 @@ export function EventsSection() {
       <ul className={styles.list}>
         {events.map((event) => (
           <li key={event.id}>
-            <EventCard event={event} />
+            <EventCard event={event} onSignup={setSignupEvent} onDetails={setDetailsEvent} />
           </li>
         ))}
       </ul>
 
       <div className={styles.cta}>
-        <Button variant="outline" size="md" href="/events">
+        <Button variant="primary" size="md" href="/events">
           Все мероприятия
         </Button>
       </div>
+
+      <EventDetailsModal
+        event={detailsEvent}
+        open={detailsEvent !== null}
+        onOpenChange={(open) => {
+          if (!open) setDetailsEvent(null);
+        }}
+        onSignup={setSignupEvent}
+      />
+
+      <EventSignupModal
+        event={signupEvent}
+        open={signupEvent !== null}
+        onOpenChange={(open) => {
+          if (!open) setSignupEvent(null);
+        }}
+      />
     </section>
   );
 }

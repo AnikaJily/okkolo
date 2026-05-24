@@ -1,7 +1,8 @@
 export const SUPPORT_HREF = 'mailto:hello@okkolo.ru';
 
 export const NAV_ITEMS = [
-  { label: 'О проекте', href: '#about' },
-  { label: 'Направления', href: '#directions' },
-  { label: 'Мероприятия', href: '#events' },
+  { label: 'Главная', href: '/' },
+  { label: 'Мероприятия', href: '/events' },
+  { label: 'Шоурум', href: '/showroom' },
+  { label: 'Мастерские', href: '/workshops' },
 ] as const;

@@ -1,16 +1,18 @@
 .viewport {
+  display: flex;
+  flex-direction: column;
   min-height: 100dvh;
   background-color: var(--color-bg);
 }
 
 .page {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   width: 100%;
   max-width: var(--container-max);
   margin: 0 auto;
   background-color: var(--color-bg);
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 80px;
 }
 
 .main {
@@ -18,13 +20,11 @@
   flex-direction: column;
   gap: 40px;
   padding-top: 20px;
+  padding-inline: var(--page-padding-x);
+  box-sizing: border-box;
 }
 
 @media (min-width: 640px) {
-  .page {
-    padding-bottom: 100px;
-  }
-
   .main {
     gap: 56px;
     padding-top: 32px;
@@ -39,7 +39,7 @@
       'hero about'
       'directions directions'
       'events events';
-    column-gap: 32px;
+    column-gap: 24px;
     row-gap: 80px;
     align-items: stretch;
     padding-top: 48px;
@@ -48,13 +48,22 @@
   .main > :nth-child(1) {
     grid-area: hero;
   }
+
   .main > :nth-child(2) {
     grid-area: about;
   }
+
   .main > :nth-child(3) {
     grid-area: directions;
   }
+
   .main > :nth-child(4) {
     grid-area: events;
+  }
+}
+
+@media (min-width: 1280px) {
+  .main {
+    column-gap: 32px;
   }
 }
