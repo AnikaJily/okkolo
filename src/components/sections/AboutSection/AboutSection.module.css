@@ -48,7 +48,8 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: 219px;
+  width: 100%;
+  max-width: 219px;
 }
 
 .actions > * {

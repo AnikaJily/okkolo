@@ -90,19 +90,27 @@
 
 .scrollArrow {
   position: absolute;
-  right: calc(var(--page-padding-x) * -1 + 6px);
+  right: 0;
   top: 76px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 62px;
-  height: 62px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   background-color: var(--color-yellow);
   cursor: pointer;
   border: none;
+  box-shadow: var(--shadow-card);
   transition: opacity 0.2s ease;
   pointer-events: auto;
+}
+
+@media (min-width: 640px) {
+  .scrollArrow {
+    width: 62px;
+    height: 62px;
+  }
 }
 
 .scrollArrowIcon {
