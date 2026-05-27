@@ -1,4 +1,7 @@
-import productImage from '@/assets/images/showroom-product.png';
+import type { PictureSource } from '@/components/ui/Picture';
+import productPicture from '@/assets/images/showroom-product.png?w=320;640;960&format=avif;webp;jpg&as=picture';
+
+const productImage = productPicture.img.src;
 
 export type ProductCategory = 'all' | 'ceramics' | 'jewelry' | 'clothing' | 'textile';
 
@@ -8,7 +11,9 @@ export interface ShowroomProduct {
   price: number;
   category: Exclude<ProductCategory, 'all'>;
   image: string;
+  picture?: PictureSource;
   images: string[];
+  pictures?: PictureSource[];
   description: string;
   cartUrl?: string;
 }
@@ -35,14 +40,16 @@ export function formatProductPrice(price: number) {
 }
 
 function demoProduct(
-  product: Omit<ShowroomProduct, 'images' | 'description'> & {
+  product: Omit<ShowroomProduct, 'images' | 'description' | 'picture' | 'pictures'> & {
     description?: string;
     images?: string[];
   },
 ): ShowroomProduct {
   return {
     ...product,
+    picture: productPicture,
     images: product.images ?? [product.image],
+    pictures: [productPicture],
     description: product.description ?? FALLBACK_DESCRIPTION,
   };
 }

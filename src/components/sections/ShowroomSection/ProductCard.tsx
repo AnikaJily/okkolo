@@ -14,6 +14,8 @@ export function ProductCard({ product, onAddToCart, onDetails }: ProductCardProp
       title={product.title}
       description={formatProductPrice(product.price)}
       image={product.image}
+      picture={product.picture}
+      imageSizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 90vw"
       imageAlt={product.title}
       href="#"
       actionLabel="В корзину"

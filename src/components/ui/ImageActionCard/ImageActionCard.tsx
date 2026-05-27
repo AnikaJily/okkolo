@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Button } from '@/components/ui/Button';
+import { Picture, type PictureSource } from '@/components/ui/Picture';
 import { cn } from '@/lib/utils';
 import styles from './ImageActionCard.module.css';
 
@@ -10,6 +11,8 @@ interface ImageActionCardProps {
   title: string;
   description: string;
   image: string;
+  picture?: PictureSource;
+  imageSizes?: string;
   href: string;
   actionLabel: string;
   action?: () => void;
@@ -28,6 +31,8 @@ export function ImageActionCard({
   title,
   description,
   image,
+  picture,
+  imageSizes,
   href,
   actionLabel,
   action,
@@ -40,16 +45,44 @@ export function ImageActionCard({
   descriptionClassName,
   extraContent,
 }: ImageActionCardProps) {
+  const overlayMedia = picture ? (
+    <Picture
+      picture={picture}
+      alt={imageAlt}
+      className={styles.overlayImage}
+      sizes={imageSizes}
+    />
+  ) : (
+    <img
+      src={image}
+      alt={imageAlt}
+      className={styles.overlayImage}
+      loading="lazy"
+      decoding="async"
+    />
+  );
+
+  const previewMedia = picture ? (
+    <Picture
+      picture={picture}
+      alt={imageAlt}
+      className={styles.previewImage}
+      sizes={imageSizes}
+    />
+  ) : (
+    <img
+      src={image}
+      alt={imageAlt}
+      className={styles.previewImage}
+      loading="lazy"
+      decoding="async"
+    />
+  );
+
   if (variant === 'overlay') {
     return (
       <article className={cn(styles.overlayCard, className)}>
-        <img
-          src={image}
-          alt={imageAlt}
-          className={styles.overlayImage}
-          loading="lazy"
-          decoding="async"
-        />
+        {overlayMedia}
         <div className={styles.overlayGradient} aria-hidden="true" />
 
         <div className={styles.overlayContent}>
@@ -75,13 +108,7 @@ export function ImageActionCard({
   return (
     <article className={cn(styles.previewCard, className)}>
       <div className={styles.previewImageWrap}>
-        <img
-          src={image}
-          alt={imageAlt}
-          className={styles.previewImage}
-          loading="lazy"
-          decoding="async"
-        />
+        {previewMedia}
         {meta ? (
           <span className={styles.previewMeta} aria-hidden="true">
             {meta}

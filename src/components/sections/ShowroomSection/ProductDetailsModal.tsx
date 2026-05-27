@@ -2,6 +2,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import arrowSrc from '@/assets/images/arrow.svg';
 import { Button } from '@/components/ui/Button';
+import { Picture, type PictureSource } from '@/components/ui/Picture';
 import {
   formatProductPrice,
   PRODUCT_CATEGORIES,
@@ -29,6 +30,12 @@ export function ProductDetailsModal({
     const raw = product.images.length > 0 ? product.images : [product.image];
     return [...new Set(raw)];
   }, [product]);
+
+  const pictures: (PictureSource | undefined)[] = useMemo(() => {
+    if (!product) return [];
+    if (product.pictures && product.pictures.length === images.length) return product.pictures;
+    return images.map(() => product.picture);
+  }, [product, images]);
 
   const imageCount = images.length;
   const hasMultipleImages = imageCount > 1;
@@ -94,12 +101,22 @@ export function ProductDetailsModal({
                     </>
                   ) : null}
 
-                  <img
-                    src={images[activeImageIndex] ?? product.image}
-                    alt={product.title}
-                    className={styles.mainImage}
-                    decoding="async"
-                  />
+                  {pictures[activeImageIndex] ? (
+                    <Picture
+                      picture={pictures[activeImageIndex]!}
+                      alt={product.title}
+                      className={styles.mainImage}
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                    />
+                  ) : (
+                    <img
+                      src={images[activeImageIndex] ?? product.image}
+                      alt={product.title}
+                      className={styles.mainImage}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
                 </div>
               </div>
 

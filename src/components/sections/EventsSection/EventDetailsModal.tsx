@@ -1,5 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { Button } from '@/components/ui/Button';
+import { Picture } from '@/components/ui/Picture';
 import type { OkkoloEvent } from '@/data/events';
 import styles from './EventDetailsModal.module.css';
 
@@ -33,12 +34,22 @@ export function EventDetailsModal({
               </button>
 
               <div className={styles.imagePane}>
-                <img
-                  src={event.image}
-                  alt={event.title}
-                  className={styles.image}
-                  decoding="async"
-                />
+                {event.picture ? (
+                  <Picture
+                    picture={event.picture}
+                    alt={event.title}
+                    className={styles.image}
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                  />
+                ) : (
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className={styles.image}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
                 <span className={styles.meta}>{event.dateLabel}</span>
               </div>
 

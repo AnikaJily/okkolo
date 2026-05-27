@@ -1,7 +1,13 @@
-import cafeImage from '@/assets/images/direction-cafe.png';
-import heroTeam from '@/assets/images/hero-team.jpg';
-import showroomHero from '@/assets/images/showroom-hero.png';
-import showroomProduct from '@/assets/images/showroom-product.png';
+import type { PictureSource } from '@/components/ui/Picture';
+import cafePicture from '@/assets/images/direction-cafe.png?w=320;640;1024&format=avif;webp;jpg&as=picture';
+import heroTeamPicture from '@/assets/images/hero-team.jpg?w=320;640;1024&format=avif;webp;jpg&as=picture';
+import showroomHeroPicture from '@/assets/images/showroom-hero.png?w=320;640;1024&format=avif;webp;jpg&as=picture';
+import showroomProductPicture from '@/assets/images/showroom-product.png?w=320;640;1024&format=avif;webp;jpg&as=picture';
+
+const cafeImage = cafePicture.img.src;
+const heroTeam = heroTeamPicture.img.src;
+const showroomHero = showroomHeroPicture.img.src;
+const showroomProduct = showroomProductPicture.img.src;
 
 /** Расширенный блок для страницы «Мастерские» (опционально; в Strapi можно позже продублировать поля). */
 export interface WorkshopListingDetails {
@@ -24,6 +30,7 @@ export interface Direction {
   title: string;
   description: string;
   image: string;
+  picture?: PictureSource;
   href: string;
   workshop?: WorkshopListingDetails;
 }
@@ -33,7 +40,7 @@ export const directions: Direction[] = [
     id: 'cafe',
     title: 'Кофейня',
     description: 'Вкусный кофе и сладости',
-    image: cafeImage,
+    image: cafeImage, picture: cafePicture,
     href: '/directions/cafe',
   },
   {
@@ -41,7 +48,7 @@ export const directions: Direction[] = [
     title: 'Мастерские',
     description:
       'Живые студии и курсы: керамика, текстиль, ювелирка и графика — рядом с кофейней, в спокойном темпе и с наставниками.',
-    image: showroomHero,
+    image: showroomHero, picture: showroomHeroPicture,
     href: '/workshops',
   },
   {
@@ -49,7 +56,7 @@ export const directions: Direction[] = [
     title: 'Гончарная студия «На кругу»',
     description:
       'Керамика для города: спокойный круг, руки в глине и понятный путь от комка до застеклованной чашки.',
-    image: cafeImage,
+    image: cafeImage, picture: cafePicture,
     href: '/directions/studio-ceramics',
     workshop: {
       tagline: 'Понятный вход в керамику: от первого касания до готовой работы',
@@ -78,7 +85,7 @@ export const directions: Direction[] = [
     title: 'Текстильная мастерская «Узел»',
     description:
       'Ткачество на раме, батик и аккуратный шов — чтобы дом стал чуть теплее на ощупь.',
-    image: showroomProduct,
+    image: showroomProduct, picture: showroomProductPicture,
     href: '/directions/studio-textile',
     workshop: {
       tagline: 'Ткань, узор и ровная строчка — без давления «идеального Pinterest»',
@@ -107,7 +114,7 @@ export const directions: Direction[] = [
     title: 'Ювелирная лаборатория «Застёжка»',
     description:
       'Литьё из воска, пайка и аккуратная полировка — небольшие изделия с характером.',
-    image: heroTeam,
+    image: heroTeam, picture: heroTeamPicture,
     href: '/directions/studio-jewelry',
     workshop: {
       tagline: 'Малая пластика в металле: от модели до носибельного украшения',
@@ -136,7 +143,7 @@ export const directions: Direction[] = [
     title: 'Студия печати «Лист»',
     description:
       'Линогравюра и монотипия: быстрый результат, понятная техника и аккуратная типографика.',
-    image: showroomHero,
+    image: showroomHero, picture: showroomHeroPicture,
     href: '/directions/studio-print',
     workshop: {
       tagline: 'Печатный знак и плакаты — без токсичных растворителей в зале',
@@ -164,14 +171,14 @@ export const directions: Direction[] = [
     id: 'events',
     title: 'События',
     description: 'Встречи, музыка и лекции',
-    image: cafeImage,
+    image: cafeImage, picture: cafePicture,
     href: '/events',
   },
   {
     id: 'showroom',
     title: 'Шоурум',
     description: 'Изделия мастерских и сувениры',
-    image: cafeImage,
+    image: cafeImage, picture: cafePicture,
     href: '/showroom',
   },
 ];

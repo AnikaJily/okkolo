@@ -14,6 +14,8 @@ export function EventCard({ event, onSignup, onDetails }: EventCardProps) {
       title={event.title}
       description={event.admission}
       image={event.image}
+      picture={event.picture}
+      imageSizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 90vw"
       href={event.signupHref}
       actionLabel="Записаться"
       action={onSignup ? () => onSignup(event) : undefined}

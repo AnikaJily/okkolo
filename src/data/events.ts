@@ -1,4 +1,7 @@
-import cafeImage from '@/assets/images/direction-cafe.png';
+import type { PictureSource } from '@/components/ui/Picture';
+import cafePicture from '@/assets/images/direction-cafe.png?w=320;640;1024&format=avif;webp;jpg&as=picture';
+
+const cafeImage = cafePicture.img.src;
 
 export interface OkkoloEvent {
   id: string;
@@ -13,6 +16,7 @@ export interface OkkoloEvent {
   price?: number;
   paymentUrl?: string;
   image: string;
+  picture?: PictureSource;
 }
 
 export const events: OkkoloEvent[] = [
@@ -25,7 +29,7 @@ export const events: OkkoloEvent[] = [
     description: 'Вечер живой музыки в пространстве «Окколо». Приходите слушать джаз, знакомиться и проводить время вместе.',
     href: '/events/jazz-evening',
     signupHref: 'mailto:hello@okkolo.ru',
-    image: cafeImage,
+    image: cafeImage, picture: cafePicture,
   },
   {
     id: 'ceramics',
@@ -36,7 +40,7 @@ export const events: OkkoloEvent[] = [
     description: 'Практический мастер-класс по керамике для гостей проекта. Подходит для начинающих и не требует специальной подготовки.',
     href: '/events/ceramics',
     signupHref: 'mailto:hello@okkolo.ru',
-    image: cafeImage,
+    image: cafeImage, picture: cafePicture,
   },
   {
     id: 'book-club',
@@ -47,6 +51,6 @@ export const events: OkkoloEvent[] = [
     description: 'Встреча книжного клуба с обсуждением, чаем и спокойной атмосферой для разговора о любимых текстах.',
     href: '/events/book-club',
     signupHref: 'mailto:hello@okkolo.ru',
-    image: cafeImage,
+    image: cafeImage, picture: cafePicture,
   },
 ];
