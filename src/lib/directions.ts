@@ -65,6 +65,22 @@ export function isCafeDirection(direction: {
   );
 }
 
+type DirectionLike = {
+  title: string;
+  href?: string | null;
+  id?: string;
+  documentId?: string;
+};
+
+/** Карточки блока «Наши направления» на главной (без отдельных студий мастерских). */
+export function isGeneralDirectionsSectionItem(direction: DirectionLike): boolean {
+  return !isWorkshopsListingDirection(direction);
+}
+
+export function filterGeneralDirections<T extends DirectionLike>(directions: T[]): T[] {
+  return directions.filter((direction) => isGeneralDirectionsSectionItem(direction));
+}
+
 /** Направления, которые показываются на странице «Мастерские» (отдельные студии и мастерские). */
 export function isWorkshopsListingDirection(direction: {
   title: string;

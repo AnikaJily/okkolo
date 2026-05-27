@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { resolveDirectionHref } from '@/lib/directions';
+import { filterGeneralDirections, resolveDirectionHref } from '@/lib/directions';
 import { fetchDirections, getStrapiImageUrl } from '@/lib/strapi';
 import type { StrapiDirectionItem } from '@/lib/strapi';
 import type { Direction } from '@/data/directions';
@@ -23,13 +23,17 @@ function toDirection(item: StrapiDirectionItem): Direction {
 }
 
 export function DirectionsSection() {
-  const [directions, setDirections] = useState<Direction[]>(fallbackDirections);
+  const [directions, setDirections] = useState<Direction[]>(
+    () => filterGeneralDirections(fallbackDirections),
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchDirections()
       .then((items) => {
-        if (items.length > 0) setDirections(items.map(toDirection));
+        if (items.length > 0) {
+          setDirections(filterGeneralDirections(items.map(toDirection)));
+        }
       })
       .catch(() => {
         // fallback на статичные данные при ошибке сети

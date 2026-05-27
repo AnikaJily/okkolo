@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="620" viewBox="0 0 1100 620">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1a1a1a"/>
+    </marker>
+  </defs>
+
+  <rect width="1100" height="620" fill="#ffffff"/>
+
+  <text x="550" y="48" text-anchor="middle" font-family="Times New Roman, serif" font-size="22" font-weight="700" fill="#000000">
+    Архитектура информационной системы «Окколо»
+  </text>
+
+  <g id="col-web">
+    <rect x="40" y="90" width="280" height="380" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.5"/>
+    <text x="180" y="118" text-anchor="middle" font-family="Times New Roman, serif" font-size="15" font-weight="700" fill="#000000">Веб-приложение</text>
+    <line x1="40" y1="132" x2="320" y2="132" stroke="#1a1a1a" stroke-width="1"/>
+    <rect x="70" y="220" width="220" height="100" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.5"/>
+    <text x="180" y="262" text-anchor="middle" font-family="Times New Roman, serif" font-size="16" font-weight="700" fill="#000000">React SPA</text>
+    <text x="180" y="286" text-anchor="middle" font-family="Times New Roman, serif" font-size="13" fill="#000000">(клиент, Vite)</text>
+  </g>
+
+  <g id="col-app">
+    <rect x="410" y="90" width="280" height="380" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.5"/>
+    <text x="550" y="118" text-anchor="middle" font-family="Times New Roman, serif" font-size="15" font-weight="700" fill="#000000">Сервер приложений</text>
+    <line x1="410" y1="132" x2="690" y2="132" stroke="#1a1a1a" stroke-width="1"/>
+    <rect x="440" y="200" width="220" height="140" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.5"/>
+    <text x="550" y="248" text-anchor="middle" font-family="Times New Roman, serif" font-size="16" font-weight="700" fill="#000000">Strapi</text>
+    <text x="550" y="272" text-anchor="middle" font-family="Times New Roman, serif" font-size="13" fill="#000000">REST API</text>
+    <text x="550" y="296" text-anchor="middle" font-family="Times New Roman, serif" font-size="13" fill="#000000">админ-панель</text>
+  </g>
+
+  <g id="col-data">
+    <rect x="780" y="90" width="280" height="380" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.5"/>
+    <text x="920" y="118" text-anchor="middle" font-family="Times New Roman, serif" font-size="15" font-weight="700" fill="#000000">Сервер базы данных</text>
+    <line x1="780" y1="132" x2="1060" y2="132" stroke="#1a1a1a" stroke-width="1"/>
+    <rect x="810" y="220" width="220" height="100" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.5"/>
+    <text x="920" y="272" text-anchor="middle" font-family="Times New Roman, serif" font-size="16" font-weight="700" fill="#000000">PostgreSQL</text>
+  </g>
+
+  <line x1="320" y1="270" x2="410" y2="270" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="365" y="258" text-anchor="middle" font-family="Times New Roman, serif" font-size="12" fill="#000000">HTTP/HTTPS</text>
+  <text x="365" y="292" text-anchor="middle" font-family="Times New Roman, serif" font-size="12" fill="#000000">REST API</text>
+
+  <line x1="690" y1="270" x2="780" y2="270" stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="735" y="258" text-anchor="middle" font-family="Times New Roman, serif" font-size="12" fill="#000000">SQL-запросы</text>
+
+  <text x="550" y="560" text-anchor="middle" font-family="Times New Roman, serif" font-size="12" fill="#444444">
+    Рис. — Логическая архитектура программного комплекса
+  </text>
+</svg>
