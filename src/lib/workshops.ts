@@ -1,5 +1,5 @@
 import type { Direction } from '@/data/directions';
-import { directions as fallbackDirections } from '@/data/directions';
+import { workshopStudios as fallbackStudios } from '@/data/directions';
 import {
   isWorkshopsListingDirection,
   resolveDirectionHref,
@@ -19,7 +19,7 @@ function normalizeWorkshopTitle(title: string): string {
 }
 
 function mergeWorkshopsWithDemos(fromApi: Direction[]): Direction[] {
-  const localDemos = fallbackDirections.filter((d) => DEMO_STUDIO_IDS.has(d.id));
+  const localDemos = fallbackStudios.filter((d) => DEMO_STUDIO_IDS.has(d.id));
   const apiRows = fromApi.filter((d) => d.title.trim().length > 0);
   const titles = new Set(apiRows.map((d) => normalizeWorkshopTitle(d.title)));
   const extraDemos = localDemos.filter((d) => !titles.has(normalizeWorkshopTitle(d.title)));
@@ -80,8 +80,8 @@ function enrichDirections(list: Direction[], demos: Direction[]): Direction[] {
 }
 
 export async function loadWorkshopsDirections(): Promise<Direction[]> {
-  const fallback = filterWorkshopsDirections(fallbackDirections);
-  const demos = fallbackDirections.filter((d) => DEMO_STUDIO_IDS.has(d.id));
+  const fallback = filterWorkshopsDirections(fallbackStudios);
+  const demos = fallbackStudios.filter((d) => DEMO_STUDIO_IDS.has(d.id));
   try {
     const items = await fetchDirections();
     if (items.length === 0) return enrichDirections(fallback, demos);

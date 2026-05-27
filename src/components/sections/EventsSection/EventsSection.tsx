@@ -2,21 +2,25 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { events as fallbackEvents } from '@/data/events';
 import type { OkkoloEvent } from '@/data/events';
-import { loadEvents } from '@/lib/events';
+import { HOME_UPCOMING_EVENTS_LIMIT, loadEvents, selectUpcomingEvents } from '@/lib/events';
 import { EventCard } from './EventCard';
 import { EventDetailsModal } from './EventDetailsModal';
 import { EventSignupModal } from './EventSignupModal';
 import styles from './EventsSection.module.css';
 
 export function EventsSection() {
-  const [events, setEvents] = useState<OkkoloEvent[]>(fallbackEvents);
+  const [events, setEvents] = useState<OkkoloEvent[]>(() =>
+    selectUpcomingEvents(fallbackEvents, HOME_UPCOMING_EVENTS_LIMIT),
+  );
   const [detailsEvent, setDetailsEvent] = useState<OkkoloEvent | null>(null);
   const [signupEvent, setSignupEvent] = useState<OkkoloEvent | null>(null);
 
   useEffect(() => {
     loadEvents()
       .then((items) => {
-        if (items.length > 0) setEvents(items);
+        if (items.length > 0) {
+          setEvents(selectUpcomingEvents(items, HOME_UPCOMING_EVENTS_LIMIT));
+        }
       })
       .catch(() => {
         // fallback на статичные данные при ошибке сети

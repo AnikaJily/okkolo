@@ -36,6 +36,12 @@ export function isEventsDirection(direction: {
   );
 }
 
+/** Отдельная студия (не общая карточка раздела). */
+function isNamedWorkshopStudio(direction: { title: string }): boolean {
+  const title = direction.title.trim().toLowerCase();
+  return title.includes('студия') || title.includes('лаборатор');
+}
+
 /** Агрегирующая карточка раздела «Мастерские» — ведёт на страницу списка. */
 export function isWorkshopsHubDirection(direction: {
   title: string;
@@ -44,11 +50,23 @@ export function isWorkshopsHubDirection(direction: {
   documentId?: string;
 }): boolean {
   const title = direction.title.trim().toLowerCase();
+  const href = (direction.href ?? '').trim().toLowerCase().replace(/\/$/, '');
   const slug = `${direction.id ?? ''}`.toLowerCase();
   const docId = `${direction.documentId ?? ''}`.toLowerCase();
 
-  // Только общая карточка раздела, не студии со ссылкой на /workshops в Strapi
-  return title === 'мастерские' || slug === 'workshops' || docId === 'workshops';
+  if (isNamedWorkshopStudio(direction)) return false;
+  if (slug === 'workshop' || slug === 'workshops' || docId === 'workshop' || docId === 'workshops') {
+    return true;
+  }
+  if (href === WORKSHOPS_PATH) return true;
+
+  // Карточка раздела в Strapi: «Мастерская» / «Мастерские», не отдельные студии
+  if (title === 'мастерская' || title === 'мастерские' || title === 'наши мастерские') {
+    return true;
+  }
+  if (/^мастерск(ая|ие|ий)(\s|$)/.test(title) && title.length <= 40) return true;
+
+  return false;
 }
 
 export function isCafeDirection(direction: {
@@ -72,16 +90,7 @@ type DirectionLike = {
   documentId?: string;
 };
 
-/** Карточки блока «Наши направления» на главной (без отдельных студий мастерских). */
-export function isGeneralDirectionsSectionItem(direction: DirectionLike): boolean {
-  return !isWorkshopsListingDirection(direction);
-}
-
-export function filterGeneralDirections<T extends DirectionLike>(directions: T[]): T[] {
-  return directions.filter((direction) => isGeneralDirectionsSectionItem(direction));
-}
-
-/** Направления, которые показываются на странице «Мастерские» (отдельные студии и мастерские). */
+/** Направления, которые показываются на странице «Мастерские» (отдельные студии). */
 export function isWorkshopsListingDirection(direction: {
   title: string;
   href?: string | null;

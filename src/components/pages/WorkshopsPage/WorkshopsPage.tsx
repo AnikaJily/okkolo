@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Direction } from '@/data/directions';
-import { directions as fallbackDirections } from '@/data/directions';
+import { workshopStudios as fallbackStudios } from '@/data/directions';
 import { SUPPORT_HREF } from '@/data/site';
 import { filterWorkshopsDirections, loadWorkshopsDirections } from '@/lib/workshops';
 import { WorkshopListingCard } from './WorkshopListingCard';
@@ -8,7 +8,7 @@ import styles from './WorkshopsPage.module.css';
 
 export function WorkshopsPage() {
   const [directions, setDirections] = useState<Direction[]>(() =>
-    filterWorkshopsDirections(fallbackDirections),
+    filterWorkshopsDirections(fallbackStudios),
   );
 
   useEffect(() => {

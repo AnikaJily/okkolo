@@ -48,6 +48,25 @@ export function toEvent(item: StrapiEventItem, index: number): OkkoloEvent {
   };
 }
 
+export const HOME_UPCOMING_EVENTS_LIMIT = 3;
+
+/** Ближайшие предстоящие мероприятия (для блока на главной). */
+export function selectUpcomingEvents(
+  events: OkkoloEvent[],
+  limit = HOME_UPCOMING_EVENTS_LIMIT,
+): OkkoloEvent[] {
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  return [...events]
+    .filter((event) => {
+      const when = new Date(event.date);
+      return !Number.isNaN(when.getTime()) && when >= todayStart;
+    })
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .slice(0, limit);
+}
+
 export async function loadEvents() {
   const items = await fetchEvents();
   return items.map(toEvent);

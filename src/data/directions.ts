@@ -35,6 +35,7 @@ export interface Direction {
   workshop?: WorkshopListingDetails;
 }
 
+/** Карточки блока «Наши направления» на главной (как в Strapi → Направления). */
 export const directions: Direction[] = [
   {
     id: 'cafe',
@@ -44,13 +45,30 @@ export const directions: Direction[] = [
     href: '/directions/cafe',
   },
   {
-    id: 'workshops',
-    title: 'Мастерские',
-    description:
-      'Живые студии и курсы: керамика, текстиль, ювелирка и графика — рядом с кофейней, в спокойном темпе и с наставниками.',
+    id: 'workshop',
+    title: 'Мастерская',
+    description: 'Творчество и профессия',
     image: showroomHero, picture: showroomHeroPicture,
     href: '/workshops',
   },
+  {
+    id: 'events',
+    title: 'События',
+    description: 'Встречи, музыка и лекции',
+    image: cafeImage, picture: cafePicture,
+    href: '/events',
+  },
+  {
+    id: 'showroom',
+    title: 'Шоурум',
+    description: 'Изделия мастерских и сувениры',
+    image: cafeImage, picture: cafePicture,
+    href: '/showroom',
+  },
+];
+
+/** Детальные карточки студий для страницы /workshops (не блок на главной). */
+export const workshopStudios: Direction[] = [
   {
     id: 'studio-ceramics',
     title: 'Гончарная студия «На кругу»',
@@ -166,19 +184,5 @@ export const directions: Direction[] = [
       note: 'Фотосъёмка процесса — да, но вспышка рядом с чернилами просим не использовать; публикации в соцсетях — с тегом пространства, это помогает нам набирать группы.',
       host: 'Художник-печатник · выставки в региональных центрах современного искусства',
     },
-  },
-  {
-    id: 'events',
-    title: 'События',
-    description: 'Встречи, музыка и лекции',
-    image: cafeImage, picture: cafePicture,
-    href: '/events',
-  },
-  {
-    id: 'showroom',
-    title: 'Шоурум',
-    description: 'Изделия мастерских и сувениры',
-    image: cafeImage, picture: cafePicture,
-    href: '/showroom',
   },
 ];
