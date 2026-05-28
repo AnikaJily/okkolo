@@ -64,8 +64,8 @@
 
 @media (min-width: 640px) {
   .root {
-    margin: 0 auto;
-    max-width: 580px;
+    margin: 0;
+    max-width: none;
     padding: 40px 32px;
     gap: 28px;
   }
@@ -76,7 +76,7 @@
   }
 
   .description {
-    max-width: 420px;
+    max-width: 520px;
   }
 
   .actions {

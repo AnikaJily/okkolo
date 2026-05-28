@@ -47,7 +47,7 @@ export const directions: Direction[] = [
     id: 'workshops',
     title: 'Мастерские',
     description:
-      'Живые студии и курсы: керамика, текстиль, ювелирка и графика — рядом с кофейней, в спокойном темпе и с наставниками.',
+      'Живые студии и курсы.',
     image: showroomHero, picture: showroomHeroPicture,
     href: '/workshops',
   },
