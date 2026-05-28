@@ -1,0 +1,189 @@
+# CLAUDE.md
+
+Гид для Claude Code по фронту проекта «Окколо». CMS лежит отдельно — `/Users/vankrav/Projects/okkolo-cms` (там свой `CLAUDE.md`). Полный плейбук по серверу — `DEPLOY.md` в этой же репе.
+
+## Команды
+
+```bash
+npm install
+npm run dev      # vite dev-server, http://localhost:5180
+npm run build    # tsc -b && vite build (type-check — часть билда)
+npm run preview  # отдать собранный dist локально
+npx tsc -b       # быстрый type-check без сборки
+```
+
+Тестов и линтера нет. Корректность типов гарантирует `tsc -b` со `strict: true`, `noUnusedLocals`, `noUnusedParameters` — мёртвые импорты/переменные ломают билд. Любой PR должен проходить `npm run build` локально перед мержем.
+
+## Стек
+
+- React 18 + TypeScript 5 + Vite 5.
+- Tailwind 4 через `@tailwindcss/vite` (НЕ через PostCSS); в `src/styles/global.css` — `@import 'tailwindcss';` и `@theme {…}` блок, который тянет CSS-переменные из `tokens.css`.
+- `@radix-ui/react-dialog` — для модалок (`EventSignupModal`, `EventDetailsModal`, `ProductDetailsModal`) и для bottom-sheet'а корзины (`Sheet` обёртка над Dialog).
+- `embla-carousel-react` — карусели (`DirectionsCarousel`, см. `sections/DirectionsSection`).
+- `clsx` + `tailwind-merge` — `cn()` в `src/lib/utils.ts`.
+- `vite-imagetools` (build-time) + `sharp` — responsive AVIF/WebP/JPEG пайплайн (см. ниже).
+- Алиас `@/*` → `src/*` (см. `tsconfig.json` paths и `vite.config.ts` resolve.alias).
+
+Зависимостей сознательно мало: **не добавляй react-router, формы-библиотеки, state-менеджеры, axios и т.п. без явного запроса** — каждый кандидат на установку обсуждается, ручные альтернативы предпочтительнее.
+
+## Архитектура
+
+### Роутинг — ручной, без библиотек
+
+`src/App.tsx` хранит `pathname` в `useState(() => window.location.pathname)` и слушает только `popstate`. Маршрутизация — простой ladder из `?:` в JSX:
+
+| Путь | Что рендерится |
+|---|---|
+| `/` | Главная: `HeroSection` → `AboutSection` → `DirectionsSection` → `EventsSection` |
+| `/events` | `EventsPage` |
+| `/events/:id` | `EventDetailPage` (`:id` парсится regex `^/events/([^/]+)$`) |
+| `/showroom` | `ShowroomPage` |
+| `/workshops` | `WorkshopsPage` |
+
+`Header` и `Footer` рендерятся всегда. Между страницами переходим обычными `<a href>` (full page reload) — это сознательный выбор, чтобы не тащить роутер ради 4 экранов и не возиться с `pushState`. На стороне Vercel/nginx настроен SPA fallback (`vercel.json` → rewrite всего на `index.html`, у nginx — `try_files`).
+
+**Следствие:** in-memory state теряется при переходе. Единственное, что переживает релоад, — корзина (см. ниже про `localStorage`).
+
+### Слой данных — мок + Strapi с фоллбэком
+
+Двухуровневая схема, исходя из того, что MVP параллельно подключают к боевому Strapi:
+
+- `src/data/{directions,events,products,site}.ts` — статические мок-данные (типы + дефолтные значения). Это **источник истины для UI**, если CMS недоступен или вернул пустоту.
+- `src/lib/strapi.ts` — низкоуровневые fetcher'ы (`fetchDirections`, `fetchEvents`, `fetchProducts`, `fetchShowroomHeroUrl`, `createEventRegistration`, `createOrder`) + типы `StrapiDirectionItem/StrapiEventItem/StrapiProductItem` + хелперы для медиа (`getStrapiImageUrl`, `collectStrapiImageUrls` — дедуп по `documentId`/`id`/нормализованному pathname).
+- `src/lib/{events,products,workshops,directions}.ts` — высокоуровневые «адаптеры»: вызывают `fetchX`, маппят `StrapiXItem` → доменный тип из `src/data`, при ошибке/пустом ответе **молча** возвращают моки. Это by design — UI всегда что-то рисует.
+- `src/lib/{delivery,support,domId,utils}.ts` — мелкие чистые хелперы (тарифы доставки Краснодар/РФ, support-action, безопасный DOM-id, `cn()`).
+
+Базовый URL Strapi берётся из `VITE_STRAPI_URL` (по умолчанию `http://localhost:1337`). Файла `.env.local` в репе нет — он локальный, в `.gitignore`.
+
+Ключевые контракты в `src/lib/strapi.ts`:
+- `EventRegistrationInput`: `{ eventId, eventTitle, name, phone, email?, comment?, paymentStatus?: 'pending' | 'not_required' }` — `POST /api/event-registrations` в обёртке `{ data: ... }`.
+- `CreateOrderInput`: `{ customerName, phone, email?, itemsSubtotal, deliveryPrice, totalPrice, items[], orderStatus: 'pending', fulfillmentType: 'pickup'|'delivery', city?, address?, deliveryComment? }` — `POST /api/orders`.
+- `fetchShowroomHeroUrl()` пробует сначала коллекцию `/api/showrooms?populate=heroImage`, потом single type `/api/showroom?populate=hero` — кеширует Promise в модульной переменной `showroomHeroCache`.
+
+### Глобальное состояние — только корзина
+
+Единственный context — `src/context/CartContext.tsx`:
+- Хранится в `localStorage` под ключом `okkolo-cart-v1`.
+- При чтении валидируется через `isCartItem` (тип-гард: `productId/title/image: string`, `price: finite number`, `quantity: positive integer`) — битые записи отфильтровываются, не падает.
+- `addItem` инкрементит `quantity`, если товар уже в корзине, иначе пушит. `removeItem` удаляет позицию целиком (количество в UI не редактируется покнопочно — упрощённо).
+- `useCart()` бросает, если вызван вне `CartProvider`.
+- Запись в storage — через `useEffect` на изменение `items`; пустая корзина чистит ключ (а не пишет `[]`).
+
+Корзина используется в `ShowroomSection` → `ProductCard` → `addItem`, и в `CartSheet` (форма оформления заказа: pickup/delivery + Краснодар/РФ зоны через `src/lib/delivery.ts`).
+
+### Image pipeline — vite-imagetools
+
+В `vite.config.ts` подключён `imagetools()`. Импорт картинки с query-string генерирует на сборке responsive-набор:
+
+```ts
+import heroPicture from '@/assets/images/hero-team.jpg?w=480;768;1200;1600&format=avif;webp;jpg&as=picture';
+```
+
+Возвращается объект `{ sources: { 'image/avif': srcSet, 'image/webp': srcSet, 'image/jpeg': srcSet }, img: { src, w, h } }` (типы — в `src/vite-env.d.ts`, объявления `*&as=picture` и `*&as=srcset`).
+
+Рендерится через `src/components/ui/Picture/Picture.tsx` — оборачивает `<picture>` с `<source>` на каждый MIME и финальным `<img>` (fallback). По умолчанию `loading="lazy"`, `decoding="async"`; для LCP-изображений ставь `loading="eager"` и `fetchpriority="high"` (`@ts-expect-error` пока типы React отстают).
+
+Сейчас используют (см. `grep -rn "?w="`):
+- `HeroSection`: `hero-team.jpg?w=480;768;1200;1600` (LCP, `fetchpriority="high"`).
+- `ShowroomPage`: `showroom-hero.png?w=480;768;1200`.
+- `data/directions.ts`, `data/events.ts`, `data/products.ts`: `?w=320;640;1024` (карточки) или `?w=320;640;960` (товары).
+
+Поле `picture?: PictureSource` хранится в типах `Direction`, `OkkoloEvent`, `ShowroomProduct` — рядом с обычным `image: string`. Компоненты, которые умеют, рендерят через `<Picture picture={...} sizes="..." />`; legacy-места — через обычный `<img src={image}>`.
+
+**Картинки в `src/assets/images/` НЕ оптимизированы:** `hero-team.jpg` 3.5 MB, `direction-cafe.png` 2.4 MB, `showroom-product.png` 1.5 MB. На дев-сервере это не больно (imagetools кеширует), но при добавлении нового исходника заранее сожми его (sharp/squoosh), иначе раздувается репа и медленнее идёт первый build.
+
+## Структура компонентов
+
+Конвенция: **один компонент = одна папка** с `<Name>.tsx`, `<Name>.module.css` и `index.ts` (баррель). Под-компоненты — рядом, без своей папки (например, `EventCard.tsx` внутри `EventsSection/`).
+
+```
+src/components/
+├── ui/                       # переиспользуемые примитивы
+│   ├── Button/               # кнопка с вариантами (primary/secondary/ghost…)
+│   ├── IconButton/           # квадратная иконочная кнопка
+│   ├── ImageActionCard/      # карточка-плитка «картинка + заголовок + кнопка»
+│   ├── Picture/              # <picture> для vite-imagetools (см. выше)
+│   └── Sheet/                # bottom-sheet поверх Radix Dialog
+├── layout/                   # глобальная оболочка
+│   ├── Header/               # шапка + меню + плавающий бургер
+│   └── Footer/               # подвал
+├── sections/                 # секции главной (НЕ лезут друг к другу)
+│   ├── HeroSection/          # большое hero-фото команды
+│   ├── AboutSection/         # текст о проекте
+│   ├── DirectionsSection/    # карусель направлений (Embla) + DirectionCard
+│   ├── EventsSection/        # карточки ближайших ивентов
+│   │   ├── EventCard.tsx
+│   │   ├── EventDetailsModal.tsx   # «подробнее» — Radix Dialog
+│   │   └── EventSignupModal.tsx    # форма записи → createEventRegistration
+│   └── ShowroomSection/      # карточки товаров + ProductDetailsModal
+│       ├── ProductCard.tsx
+│       └── ProductDetailsModal.tsx
+├── pages/                    # экраны подстраниц
+│   ├── EventsPage/           # полный список ивентов с фильтрами
+│   ├── EventDetailPage/      # /events/:id, отдельный экран ивента
+│   ├── ShowroomPage/         # /showroom: hero + сетка товаров + категории
+│   └── WorkshopsPage/        # /workshops: список студий + WorkshopListingCard
+└── cart/
+    ├── FloatingCartButton/   # фикс-кнопка с количеством товаров
+    └── CartSheet/            # форма оформления заказа → createOrder
+```
+
+Секции и страницы владеют своим внутренним layout'ом и не пытаются позиционировать соседей.
+
+## Стили
+
+**Единственный источник стилевых констант — `src/styles/tokens.css`** (CSS custom properties): цвета (`--color-purple`, `--color-yellow`, `--color-bg`…), типографика (`--text-body`, `--text-section-title`…), spacing (4-pt шкала `--space-1…--space-10`), радиусы (`--radius-sm/md/lg/xl/pill`), тени (`--shadow-card`, `--shadow-card-hover`), gradient overlay, layout-переменные (`--container-max`, `--page-padding-x`, `--header-offset`).
+
+**Не хардкодь HEX'ы и px-радиусы в компонентах** — добавь токен в `tokens.css` или используй существующий. Шрифты: `Gilroy` (display), `Gotham` (body), `Inter` — fallback.
+
+Брейкпоинты — inline в `@media (min-width: ...)`:
+- `640px` — small tablet (увеличиваем text-size'ы, `--page-padding-x: 40px`)
+- `1024px` — desktop (`--page-padding-x: 48px`, `--container-max: 1320px`)
+- `1280px` — wide (`--page-padding-x: 72px`)
+- `1440px` — extra-wide (`--page-padding-x: 96px`, `--container-max: 1520px`)
+
+Подключение: `global.css` → `@import 'tailwindcss'; @import './tokens.css'; @import './reset.css';`. Блок `@theme { … }` маппит токены в Tailwind 4 цветовую/радиусную систему (`bg-background`, `text-foreground`, `rounded-card`).
+
+**CSS Modules** (`*.module.css`) — для именованных стилей компонента. **Tailwind утилиты** — для одноразовых композиций (gap, flex-direction, отступы по месту). Внутри module'ов можно использовать `var(--color-...)` напрямую.
+
+Дополнительно в `global.css`: `scroll-behavior: smooth`, `scroll-padding-top: 88px` (под фикс-хедер), `prefers-reduced-motion` — резко режет анимации.
+
+## Интеграция с CMS
+
+Backend — Strapi 5 (`okkolo-cms`). Content-types и эндпоинты — см. `okkolo-cms/CLAUDE.md`. Тут — что важно фронту:
+
+- **API URL** из `VITE_STRAPI_URL`. Локально — `http://localhost:1337` (Strapi на SQLite, см. `okkolo-cms/.env`). Прод — `http://158.160.128.16` (через nginx-прокси на 1337).
+- **Публичные эндпоинты сейчас** (выставлены вручную в админке или через `okkolo-cms/src/index.ts`): GET `/api/directions`, GET `/api/events`, GET `/api/products`, GET `/api/showrooms`. POST `/api/event-registrations` и POST `/api/orders` могут вернуть 403 на свежем инстансе — нужно включить `create` для роли Public в админке.
+- **Любая ошибка fetch — silent fallback на `src/data/*`.** Это удобно для разработки, но прячет реальные баги: при отладке смотри Network и `console.error` (адаптеры в `src/lib/` логируют).
+- **Несоответствия со схемой CMS, о которых стоит знать** (на ~2026-05-28):
+  - `event.Price` в Strapi с заглавной `P`, фронт читает `price` (строчная) → у платных ивентов цена молча `undefined`. Чинить переименованием атрибута в CMS.
+  - `event-registration.paymentStatus` enum содержит значение `" not_required"` с **ведущим пробелом**, фронт шлёт `'not_required'` без пробела → значение сохраняется как `null`. Чинить в админке Strapi (Content-Type Builder).
+  - `Direction.href` фронт читает (`src/lib/directions.ts::resolveDirectionHref`), но в CMS-схеме поля нет. Сейчас работает за счёт автоопределения по заголовку (`isShowroomDirection`, `isEventsDirection`, …).
+
+## Деплой
+
+Полный плейбук — `DEPLOY.md` в корне репы. Кратко:
+
+- **Прод сервер:** Ubuntu 24.04, `158.160.128.16`, пользователь `nastyasep2004`. Nginx раздаёт статику `~/apps/web` и проксирует API на `127.0.0.1:1337` (Strapi под pm2).
+- **Сборка фронта — локально:** `npm run build` → артефакты в `dist/` → rsync на сервер в `~/apps/web/`.
+- **Vercel** как альтернатива тоже поддержан: `vercel.json` делает SPA fallback (`/(.*) → /index.html`). На vercel-деплое `VITE_STRAPI_URL` нужно прописать через env.
+- Все full-reload-переходы внутри SPA опираются на этот SPA fallback (nginx `try_files $uri $uri/ /index.html;` или vercel rewrite) — иначе `/events`, `/showroom`, `/workshops` отдадут 404.
+
+## Подводные камни
+
+- **Картинки в `src/assets/images/` не оптимизированы** (3.5 MB hero, 2.4 MB direction-cafe). При добавлении нового исходника — сжимай заранее.
+- **`tsc -b` строгий**: неиспользуемая локальная переменная/параметр ломает билд. Если IDE подсветила «возможно неиспользовано» — почисти.
+- **Roуутинг ручной**: не зови `history.pushState` руками без `dispatchEvent(new PopStateEvent('popstate'))`, иначе `App.tsx` не пересоберёт state. Проще делать `<a href>` (full reload).
+- **State теряется при переходе**, корзина — нет (она в `localStorage`). Если положил данные в `useState` и хочешь их пережить — либо localStorage, либо вытаскивай в URL.
+- **Strapi fallback маскирует 4xx/5xx**: при изменениях API сначала проверь, что fetch реально проходит (Network → 200), а не молча получает пустой массив и показывает моки.
+- **CartContext.removeItem удаляет всю позицию**, инкремент/декремент по 1 шт не реализованы — если бизнес попросит, нужно расширять контекст.
+- **Шрифты Gilroy/Gotham** в репе не лежат — подключаются через CDN/хост проекта (проверь, как именно, перед изменением `font-family` правил).
+- **MVP в работе**: вёрстка готова, интеграции (Strapi, платежи) дозаливаются. Фоллбэк на моки — фича, не баг.
+
+## Что не делать без явного запроса
+
+- Не добавлять react-router/redux/zustand/axios/react-query/любые формы-либы — текущий ручной подход осознанный.
+- Не переводить CSS Modules на CSS-in-JS и наоборот.
+- Не ломать SSR-совместимость в `CartContext` (`typeof window === 'undefined'` проверка нужна, даже если сейчас рендер CSR-only).
+- Не трогать `types/generated/*` в CMS-репе и не править Strapi-схемы из этой репы — только из админки или прямой правкой `okkolo-cms/src/api/.../schema.json`.
+- Не коммитить `.env.local`.

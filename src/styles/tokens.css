@@ -2,15 +2,16 @@
   /* Brand colors */
   --color-purple: #c594e8;
   --color-purple-dark: #b078dc;
+  --color-purple-text: #5b2d8c;
   --color-yellow: #fedd5b;
   --color-bg: #f4f2f0;
   --color-surface: #ffffff;
   --color-text: #000000;
   --color-text-inverse: #ffffff;
-  --color-muted: #b5b5b5;
+  --color-muted: #6e6e6e;
   --color-border: rgba(0, 0, 0, 0.07);
-  --color-text-muted: rgba(0, 0, 0, 0.6);
-  --color-text-subtle: rgba(0, 0, 0, 0.5);
+  --color-text-muted: rgba(0, 0, 0, 0.72);
+  --color-text-subtle: rgba(0, 0, 0, 0.7);
   --color-hover-soft: rgba(0, 0, 0, 0.05);
   --color-purple-soft: rgba(197, 148, 232, 0.16);
   --color-purple-subtle: rgba(197, 148, 232, 0.12);

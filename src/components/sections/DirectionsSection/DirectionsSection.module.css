@@ -1,5 +1,5 @@
 .root {
-  --direction-card-min: 280px;
+  --direction-card-min: 260px;
   --direction-gap: 24px;
 
   display: flex;
@@ -26,15 +26,15 @@
 
 .grid {
   display: none;
-  grid-template-columns: repeat(4, minmax(var(--direction-card-min), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(var(--direction-card-min), 1fr));
   gap: var(--direction-gap);
 }
 
 .grid > * {
-  min-width: var(--direction-card-min);
+  min-width: 0;
 }
 
-@container directions (min-width: 1192px) {
+@container directions (min-width: 1120px) {
   .carouselWrap {
     display: none;
   }
@@ -44,8 +44,9 @@
   }
 }
 
-@container directions (min-width: 1228px) {
+@container directions (min-width: 1280px) {
   .root {
+    --direction-card-min: 280px;
     --direction-gap: 36px;
   }
 }

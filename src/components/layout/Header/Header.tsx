@@ -26,7 +26,7 @@ export function Header({ onMenuClick, onSupport }: HeaderProps) {
       <div className={styles.inner}>
         <a
           href="/"
-          className="inline-flex shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-purple-dark)]"
+          className="inline-flex h-11 min-w-11 shrink-0 items-center justify-center rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-purple-dark)] lg:h-12 lg:min-w-12"
           aria-label="Окколо — на главную"
         >
           <img
