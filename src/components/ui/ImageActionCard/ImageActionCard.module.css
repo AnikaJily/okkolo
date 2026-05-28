@@ -55,10 +55,12 @@
 
 .overlayText {
   display: flex;
-  max-width: 220px;
+  max-width: 100%;
+  min-width: 0;
   flex-direction: column;
   gap: 10px;
   color: #fff;
+  overflow: hidden;
 }
 
 .overlayTitle {
