@@ -76,8 +76,8 @@ export function WorkshopListingCard({ direction }: WorkshopListingCardProps) {
       </div>
 
       <div className={styles.body}>
-        <section className={styles.metaSection} aria-label="Параметры программы">
-          <dl className={styles.metaList}>
+        <div className={styles.metaSection}>
+          <dl className={styles.metaList} aria-label="Параметры программы">
             {metaItems(w).map(({ term, def, accent }) => (
               <div
                 key={term}
@@ -88,7 +88,7 @@ export function WorkshopListingCard({ direction }: WorkshopListingCardProps) {
               </div>
             ))}
           </dl>
-        </section>
+        </div>
 
         <h2 id={titleId} className={styles.title}>
           {direction.title}
@@ -97,30 +97,30 @@ export function WorkshopListingCard({ direction }: WorkshopListingCardProps) {
 
         <p className={styles.lead}>{w.lead}</p>
 
-        <section className={styles.section} aria-labelledby={`${bid}-included`}>
+        <div className={styles.section}>
           <h3 id={`${bid}-included`} className={styles.sectionTitle}>
             Что входит
           </h3>
-          <ul className={styles.list}>
+          <ul className={styles.list} aria-labelledby={`${bid}-included`}>
             {w.included.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
-        </section>
+        </div>
 
-        <section className={styles.section} aria-labelledby={`${bid}-outcome`}>
+        <div className={styles.section}>
           <h3 id={`${bid}-outcome`} className={styles.sectionTitle}>
             Результат
           </h3>
           <p className={styles.outcome}>{w.outcome}</p>
-        </section>
+        </div>
 
         {w.note ? (
-          <aside className={styles.noteAside} aria-label="Важное примечание">
+          <div className={styles.noteAside} role="note">
             <p className={styles.note}>
               <strong className={styles.noteStrong}>Важно:</strong> {w.note}
             </p>
-          </aside>
+          </div>
         ) : null}
 
         {w.host ? <p className={styles.host}>{w.host}</p> : null}

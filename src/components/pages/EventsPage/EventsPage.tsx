@@ -130,7 +130,12 @@ export function EventsPage() {
       <section className={styles.calendar} aria-label="Календарь мероприятий">
         {allDates.length > 0 ? (
           <div className={styles.scrollWrapper}>
-            <div className={styles.dateScroller} ref={scrollerRef} role="list">
+            <div
+              className={styles.dateScroller}
+              ref={scrollerRef}
+              role="group"
+              aria-label="Выберите дату мероприятия"
+            >
               {dateGroups.map((group) => (
                 <div key={group.monthKey} className={styles.monthGroup}>
                   <div className={styles.monthLabel}>
@@ -145,7 +150,6 @@ export function EventsPage() {
                         <button
                           key={dateKey}
                           type="button"
-                          role="listitem"
                           className={isSelected ? styles.dateButtonActive : styles.dateButton}
                           onClick={() => setSelectedDateKey(dateKey)}
                           aria-pressed={isSelected}

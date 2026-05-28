@@ -114,7 +114,7 @@
   font-size: var(--text-body);
   font-weight: 600;
   line-height: var(--leading-normal);
-  color: var(--color-purple-dark);
+  color: var(--color-purple-text);
 }
 
 .lead {

@@ -29,10 +29,10 @@
 }
 
 .skipLink {
-  position: absolute;
+  position: fixed;
   top: 0;
-  left: max(var(--page-padding-x), env(safe-area-inset-left));
-  z-index: 50;
+  left: 50%;
+  z-index: 100;
   padding: 12px 20px;
   border-radius: var(--radius-md);
   background-color: var(--color-text);
@@ -42,7 +42,9 @@
   font-weight: 600;
   line-height: var(--leading-tight);
   text-decoration: none;
-  transform: translateY(-120%);
+  white-space: nowrap;
+  transform: translate(-50%, -120%);
+  transition: transform 0.15s ease;
 }
 
 .skipLink:focus {
@@ -50,7 +52,7 @@
 }
 
 .skipLink:focus-visible {
-  transform: translateY(12px);
+  transform: translate(-50%, 12px);
   outline: 3px solid var(--color-purple-dark);
   outline-offset: 3px;
 }
@@ -124,7 +126,7 @@
 .ctaLink {
   border-radius: var(--radius-sm);
   font-weight: 600;
-  color: var(--color-purple-dark);
+  color: var(--color-purple-text);
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
@@ -229,7 +231,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .skipLink {
+    transition: none;
+  }
+
   .skipLink:focus-visible {
-    transform: translateY(0);
+    transform: translate(-50%, 12px);
   }
 }

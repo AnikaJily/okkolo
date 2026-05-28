@@ -12,11 +12,11 @@ export function AboutSection({ onSupport }: AboutSectionProps) {
   return (
     <section id="about" className={styles.root} aria-labelledby="about-heading">
       <div className={styles.highlight}>
-        <h2 id="about-heading" className={styles.highlightText}>
+        <h1 id="about-heading" className={styles.highlightText}>
           <span className={styles.leadLine}>«Окколо» — это инклюзивный</span>
           <br />
           социальный проект
-        </h2>
+        </h1>
       </div>
 
       <p className={styles.description}>
