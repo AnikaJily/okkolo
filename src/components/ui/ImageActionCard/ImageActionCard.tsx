@@ -24,6 +24,7 @@ interface ImageActionCardProps {
   className?: string;
   descriptionClassName?: string;
   extraContent?: ReactNode;
+  actionsLayout?: 'column' | 'row';
 }
 
 export function ImageActionCard({
@@ -44,6 +45,7 @@ export function ImageActionCard({
   className,
   descriptionClassName,
   extraContent,
+  actionsLayout = 'column',
 }: ImageActionCardProps) {
   const overlayMedia = picture ? (
     <Picture
@@ -130,7 +132,12 @@ export function ImageActionCard({
           </p>
         </div>
 
-        <div className={styles.previewActions}>
+        <div
+          className={cn(
+            styles.previewActions,
+            actionsLayout === 'row' && styles.previewActionsRow,
+          )}
+        >
           {action ? (
             <Button variant="primary" size="sm" fullWidth className="min-w-0 max-w-full" onClick={action}>
               {actionLabel}

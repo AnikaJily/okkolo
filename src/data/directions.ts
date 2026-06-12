@@ -45,16 +45,10 @@ export const directions: Direction[] = [
     href: '/directions/cafe',
   },
   {
-<<<<<<< HEAD
-    id: 'workshop',
-    title: 'Мастерская',
-    description: 'Творчество и профессия',
-=======
     id: 'workshops',
     title: 'Мастерские',
     description:
       'Живые студии и курсы.',
->>>>>>> origin/production
     image: showroomHero, picture: showroomHeroPicture,
     href: '/workshops',
   },

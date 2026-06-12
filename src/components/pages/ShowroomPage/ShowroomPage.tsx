@@ -1,6 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import showroomHeroPicture from '@/assets/images/showroom-hero.png?w=480;768;1200&format=avif;webp;jpg&as=picture';
-import { Picture } from '@/components/ui/Picture';
 import { ProductCard } from '@/components/sections/ShowroomSection/ProductCard';
 import { ProductDetailsModal } from '@/components/sections/ShowroomSection/ProductDetailsModal';
 import {
@@ -9,7 +7,7 @@ import {
   type ProductCategory,
   type ShowroomProduct,
 } from '@/data/products';
-import { loadProducts, loadShowroomHeroUrl } from '@/lib/products';
+import { loadProducts } from '@/lib/products';
 import { useCart } from '@/context/CartContext';
 import { CartSheet } from '@/components/cart/CartSheet';
 import { FloatingCartButton } from '@/components/cart/FloatingCartButton';
@@ -21,7 +19,6 @@ export function ShowroomPage() {
   const { addItem, totalCount } = useCart();
   const [cartOpen, setCartOpen] = useState(false);
   const [products, setProducts] = useState<ShowroomProduct[]>(fallbackProducts);
-  const [heroSrc, setHeroSrc] = useState<string | null>(null);
   const [category, setCategory] = useState<ProductCategory>('all');
   const [page, setPage] = useState(1);
   const [detailsProduct, setDetailsProduct] = useState<ShowroomProduct | null>(null);
@@ -33,14 +30,6 @@ export function ShowroomPage() {
       })
       .catch(() => {
         // fallback на статичные данные при ошибке сети
-      });
-
-    loadShowroomHeroUrl()
-      .then((url) => {
-        if (url) setHeroSrc(url);
-      })
-      .catch(() => {
-        // fallback на локальное изображение
       });
   }, []);
 
@@ -69,24 +58,6 @@ export function ShowroomPage() {
     <>
     <main className={styles.root}>
       <h1 className={styles.heading}>Наш шоурум</h1>
-
-      {heroSrc ? (
-        <img
-          src={heroSrc}
-          alt="Интерьер шоурума «Окколо»"
-          className={styles.hero}
-          loading="eager"
-          decoding="async"
-        />
-      ) : (
-        <Picture
-          picture={showroomHeroPicture}
-          alt="Интерьер шоурума «Окколо»"
-          className={styles.hero}
-          loading="eager"
-          sizes="(min-width: 1024px) 1200px, 100vw"
-        />
-      )}
 
       <div className={styles.filters} role="tablist" aria-label="Категории товаров">
         {PRODUCT_CATEGORIES.map((item) => {

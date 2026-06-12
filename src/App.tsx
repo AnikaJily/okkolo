@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { HeroSection } from '@/components/sections/HeroSection';
-import { AboutSection } from '@/components/sections/AboutSection';
 import { DirectionsSection } from '@/components/sections/DirectionsSection';
 import { EventsSection } from '@/components/sections/EventsSection';
 import { EventsPage } from '@/components/pages/EventsPage';
@@ -28,26 +27,25 @@ export function App() {
   return (
     <CartProvider>
       <div className={styles.viewport}>
-      <div className={styles.page}>
         <Header />
-        {eventDetailId ? (
-          <EventDetailPage eventId={eventDetailId} />
-        ) : isEventsPage ? (
-          <EventsPage />
-        ) : isShowroomPage ? (
-          <ShowroomPage />
-        ) : isWorkshopsPage ? (
-          <WorkshopsPage />
-        ) : (
-          <main className={styles.main}>
-            <HeroSection />
-            <AboutSection />
-            <DirectionsSection />
-            <EventsSection />
-          </main>
-        )}
+        <div className={styles.page}>
+          {eventDetailId ? (
+            <EventDetailPage eventId={eventDetailId} />
+          ) : isEventsPage ? (
+            <EventsPage />
+          ) : isShowroomPage ? (
+            <ShowroomPage />
+          ) : isWorkshopsPage ? (
+            <WorkshopsPage />
+          ) : (
+            <main className={styles.main}>
+              <HeroSection />
+              <DirectionsSection />
+              <EventsSection />
+            </main>
+          )}
+        </div>
         <Footer />
-      </div>
       </div>
     </CartProvider>
   );

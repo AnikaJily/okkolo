@@ -28,16 +28,11 @@
   font-size: var(--text-feature-title);
   text-align: center;
   line-height: var(--leading-tight);
+  overflow-wrap: anywhere;
 }
 
 .leadLine {
   white-space: normal;
-}
-
-@media (min-width: 375px) {
-  .leadLine {
-    white-space: nowrap;
-  }
 }
 
 .description {

@@ -22,6 +22,7 @@ export function EventCard({ event, onSignup, onDetails }: EventCardProps) {
       secondaryActionLabel="Подробнее"
       secondaryHref={event.href}
       secondaryAction={onDetails ? () => onDetails(event) : undefined}
+      actionsLayout="row"
       meta={event.dateLabel}
     />
   );

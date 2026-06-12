@@ -11,7 +11,7 @@ export function Footer() {
   const supportAction = getSupportAction();
 
   return (
-    <footer className={styles.footer}>
+    <footer id="contacts" className={styles.footer}>
       <h2 className={styles.srOnly}>Подвал сайта</h2>
 
       <div className={styles.inner}>
