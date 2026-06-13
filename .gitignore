@@ -7,3 +7,6 @@ dist
 .env
 .env.local
 .env.*.local
+
+# рабочие материалы импорта из VK (скриншоты, json) — не для репо
+.vk-import/

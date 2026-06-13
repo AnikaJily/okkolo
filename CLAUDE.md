@@ -38,7 +38,9 @@ npx tsc -b       # быстрый type-check без сборки
 | `/events` | `EventsPage` |
 | `/events/:id` | `EventDetailPage` (`:id` парсится regex `^/events/([^/]+)$`) |
 | `/showroom` | `ShowroomPage` |
-| `/workshops` | `WorkshopsPage` |
+| `/workshops` | `WorkshopsPage` — контент из `src/data/workshops.ts` (3 реальные мастерские), запись: tel-кнопка + форма имя/телефон |
+| `/cafe` | `CafePage` (фото меню + текстовая версия из `src/data/cafe.ts`) |
+| `/accessibility` | `AccessibilityPage` — доступность здания и сайта, контент из `src/data/accessibility.ts` (ресёрч — `ДОСТУПНОСТЬ-RESEARCH.md`) |
 
 `Header` и `Footer` рендерятся всегда. Между страницами переходим обычными `<a href>` (full page reload) — это сознательный выбор, чтобы не тащить роутер ради 4 экранов и не возиться с `pushState`. На стороне Vercel/nginx настроен SPA fallback (`vercel.json` → rewrite всего на `index.html`, у nginx — `try_files`).
 
@@ -99,7 +101,8 @@ import heroPicture from '@/assets/images/hero-team.jpg?w=480;768;1200;1600&forma
 ```
 src/components/
 ├── ui/                       # переиспользуемые примитивы
-│   ├── Button/               # кнопка с вариантами (primary/secondary/ghost…)
+│   ├── Button/               # кнопка с вариантами (primary/outline)
+│   ├── DetailCard/           # детальная карточка для модалок «Подробнее» (Figma 400-1389)
 │   ├── IconButton/           # квадратная иконочная кнопка
 │   ├── ImageActionCard/      # карточка-плитка «картинка + заголовок + кнопка»
 │   ├── Picture/              # <picture> для vite-imagetools (см. выше)
@@ -122,7 +125,9 @@ src/components/
 │   ├── EventsPage/           # полный список ивентов с фильтрами
 │   ├── EventDetailPage/      # /events/:id, отдельный экран ивента
 │   ├── ShowroomPage/         # /showroom: hero + сетка товаров + категории
-│   └── WorkshopsPage/        # /workshops: список студий + WorkshopListingCard
+│   ├── WorkshopsPage/        # /workshops: 3 мастерские + a11y-форма «перезвоним» (см. гочи)
+│   ├── CafePage/             # /cafe: интро + фото меню с текстовым дублем + галерея-заглушки
+│   └── AccessibilityPage/    # /accessibility: факты о здании + контакты + accessibility statement
 └── cart/
     ├── FloatingCartButton/   # фикс-кнопка с количеством товаров
     └── CartSheet/            # форма оформления заказа → createOrder
@@ -134,7 +139,35 @@ src/components/
 
 **Единственный источник стилевых констант — `src/styles/tokens.css`** (CSS custom properties): цвета (`--color-purple`, `--color-yellow`, `--color-bg`…), типографика (`--text-body`, `--text-section-title`…), spacing (4-pt шкала `--space-1…--space-10`), радиусы (`--radius-sm/md/lg/xl/pill`), тени (`--shadow-card`, `--shadow-card-hover`), gradient overlay, layout-переменные (`--container-max`, `--page-padding-x`, `--header-offset`).
 
-**Не хардкодь HEX'ы и px-радиусы в компонентах** — добавь токен в `tokens.css` или используй существующий. Шрифты: `Gilroy` (display), `Gotham` (body), `Inter` — fallback.
+**Не хардкодь HEX'ы и px-радиусы в компонентах** — добавь токен в `tokens.css` или используй существующий. Шрифт: `Onest` (Google Fonts, подключён в `index.html`, веса 500/600), `Inter` — fallback.
+
+## Дизайн-макет (Figma)
+
+Файл: `Av6c3mhsjGquWu1Hwbv71q` (Okkolo). Ключевые ноды:
+- `357-1830` — главная Desktop (hero, направления, мероприятия; **футера в макете нет** — он сделан «по аналогии»);
+- `176-805` — компонент кнопок (Default = заливка, Variant2 = обводка 3px);
+- `351-1217` — компонент карточки «Product» (фото 245px → жёлтый тег → заголовок → описание → кнопки);
+- `408-1961` — детальная карточка (модалка «Подробнее», актуальная ревизия): фото слева 450px; справа тег →20→ заголовок (header-2) →30→ описание (body, серый); внизу крупная строка «Цена: …» / «Вход свободный» (header-2) →30→ кнопки «…»/«Закрыть». Реализована как `src/components/ui/DetailCard` — общий для `ProductDetailsModal` и `EventDetailsModal` (модалки оставляют себе только Dialog-оболочку и галерею).
+
+Типографика — 5 стилей Onest (значения — десктоп; в `tokens.css` замаплены на роли с mobile-first шкалой):
+
+| Стиль | Параметры | Токен |
+|---|---|---|
+| header-1 | SemiBold 40 / 1.3 | `--text-section-title` (алиас `--text-header-1`) |
+| header-2 | SemiBold 32 / 1.3 (подтверждён: заголовок детальной карточки `400-1389`) | `--text-header-2` |
+| header-3 | SemiBold 25 / 1.3 | `--text-card-title` (алиас `--text-header-3`) |
+| body | Medium 21 / normal | `--text-body`, `--text-button` |
+| tag | Medium 18 / normal | `--text-caption` (алиас `--text-tag`) |
+
+Палитра и форма:
+- Заливка кнопок `#d5a7f6` → `--color-purple-light`; обводка и hover `#c594e8` → `--color-purple`; фон страницы `#f9f9f9` → `--color-bg`; жёлтый тег `#fedd5b` → `--color-yellow` (тег **без скругления**, padding 8×12); вторичный текст `#666666` (единый серый по просьбе заказчицы, вместо макетного `rgba(0,0,0,.5)`) → `--color-text-secondary` (= `--color-text-subtle`, `--color-text-muted`, `--color-muted`); навигация `#292929` → `--color-text-nav`.
+- Радиусы: отдельные кнопки 40 (`--radius-pill`), кнопки в карточках 30 (`--radius-pill-card`), карточки 25 (`--radius-xl`), фото 20 (`--radius-lg`).
+- Тени без смещения: карточка `0 0 4px` (`--shadow-card`), hover `0 0 10.9px 1px`, hero-фото `0 0 6px` (`--shadow-hero`), хедер/футер `0 0 2px` (`--shadow-header`).
+- У `Button` рамка 3px у всех вариантов (у primary — в цвет заливки), поэтому CSS-padding = Figma-значение минус 3 (Figma 22/30 → `lg` на 1024+ = 19/27).
+- «Доступность» в навигации ведёт на `/accessibility` (как в макете). Неподтверждённые заказчицей телефоны на странице скрыты — см. комментарий в `src/data/accessibility.ts` (та же конвенция, что `CONTACT_PHONE` в `site.ts`).
+- Фоновые «пятна» главной (Figma 357:1978/357:1979) — чистый CSS в `App.module.css` (`.main::before` — фиолетовый эллипс rotate 30.47°, `.main::after` — жёлтый круг; blur = stdDeviation из Figma: 153/142 на десктопе). Никаких картинок для них не нужно.
+- Карточки (`ImageActionCard` preview): в ряду все **одной высоты по самой высокой** (grid `align-items: stretch` + `height: 100%`), лишняя высота уходит строго между описанием и кнопками (`margin-top: auto` у `.previewActions`) — так попросила заказчица. Внутренний ритм: фото →20→ тег →20→ заголовок →15→ описание →24→ кнопки →16→ низ. Все тексты карточек и DetailCard используют `text-box: trim-both cap alphabetic` (точно как text-box-trim в Figma): гэпы меряются от cap-высоты/базовой линии, хвосты «р/у/д» висят за боксом. **Поэтому на таких текстах нельзя `overflow: hidden` / line-clamp** — обрежет хвосты (заголовкам карточек clamp убран сознательно).
+- «Ближайшие мероприятия»: `selectUpcomingEvents` показывает будущие, а если их нет — последние прошедшие (секция не должна пустеть, в макете всегда 3 карточки). Не добавляй повторный фильтр по дате в `EventsSection` — выборка целиком в `src/lib/events.ts`.
 
 Брейкпоинты — inline в `@media (min-width: ...)`:
 - `640px` — small tablet (увеличиваем text-size'ы, `--page-padding-x: 40px`)
@@ -177,7 +210,9 @@ Backend — Strapi 5 (`okkolo-cms`). Content-types и эндпоинты — с�
 - **State теряется при переходе**, корзина — нет (она в `localStorage`). Если положил данные в `useState` и хочешь их пережить — либо localStorage, либо вытаскивай в URL.
 - **Strapi fallback маскирует 4xx/5xx**: при изменениях API сначала проверь, что fetch реально проходит (Network → 200), а не молча получает пустой массив и показывает моки.
 - **CartContext.removeItem удаляет всю позицию**, инкремент/декремент по 1 шт не реализованы — если бизнес попросит, нужно расширять контекст.
-- **Шрифты Gilroy/Gotham** в репе не лежат — подключаются через CDN/хост проекта (проверь, как именно, перед изменением `font-family` правил).
+- **Шрифт Onest** грузится с Google Fonts (`index.html`), весов только 500 и 600 — если в макете появится другой вес, добавь его в `<link>`, иначе браузер синтезирует фейковый.
+- **Меню кофейни двухслойное**: фото (`menu_photo_1/2.jpg`) + текстовая расшифровка в `src/data/cafe.ts` (доступность для скринридеров). При замене фото меню ОБЯЗАТЕЛЬНО обнови текстовую версию — иначе цены разъедутся.
+- **Страница «Мастерские» переделана по CJM/a11y-аудиту (2026-06)**: контент — только подтверждённые факты в `src/data/workshops.ts` (швейная, кофейное дело, звукорежиссура); НЕ добавляй цены/расписания/имена без подтверждения заказчицы. Форма «перезвоним» шлёт заявку через `createEventRegistration` (eventId `workshops-callback`) — отдельного content-type в CMS пока нет. Кнопка «Позвонить» появляется, когда заполнен `CONTACT_PHONE` в `src/data/site.ts` (E.164 + display-вариант). A11y-паттерны формы (не ломать): видимые label со словом «(обязательно)», `autocomplete`/`inputMode`, ошибки через `aria-describedby`+`aria-invalid`+фокус на поле, контейнеры `role="status"`/`role="alert"` смонтированы заранее, submit с `aria-disabled` (не `disabled`), рамки инпутов `#949494` (контраст 3:1).
 - **MVP в работе**: вёрстка готова, интеграции (Strapi, платежи) дозаливаются. Фоллбэк на моки — фича, не баг.
 
 ## Что не делать без явного запроса
