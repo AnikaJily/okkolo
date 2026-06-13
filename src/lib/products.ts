@@ -44,11 +44,23 @@ export function toProduct(item: StrapiProductItem, index: number): ShowroomProdu
   };
 }
 
-export async function loadProducts() {
-  const items = await fetchProducts();
-  return items
-    .map((item, index) => toProduct(item, index))
-    .filter((product): product is ShowroomProduct => product !== null);
+export interface LoadProductsResult {
+  products: ShowroomProduct[];
+  /** true — каталог из моков (CMS недоступна или пуста): реальный заказ оформлять нельзя */
+  isFallback: boolean;
+}
+
+export async function loadProducts(): Promise<LoadProductsResult> {
+  try {
+    const items = await fetchProducts();
+    const products = items
+      .map((item, index) => toProduct(item, index))
+      .filter((product): product is ShowroomProduct => product !== null);
+    if (products.length > 0) return { products, isFallback: false };
+  } catch (error) {
+    console.error('loadProducts: fallback на статичные данные', error);
+  }
+  return { products: fallbackProducts, isFallback: true };
 }
 
 export async function loadShowroomHeroUrl(): Promise<string | null> {

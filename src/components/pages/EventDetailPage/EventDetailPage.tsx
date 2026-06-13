@@ -13,23 +13,36 @@ function findFallbackEvent(eventId: string) {
   return fallbackEvents.find((event) => event.id === eventId || event.href.endsWith(`/${eventId}`));
 }
 
+type LoadState = 'loading' | 'ready' | 'error';
+
 export function EventDetailPage({ eventId }: EventDetailPageProps) {
   const [event, setEvent] = useState<OkkoloEvent | undefined>(() => findFallbackEvent(eventId));
+  // «Не найдено» можно показывать только после завершения fetch — иначе
+  // CMS-события мелькают ложным 404 (initial state ищет только в моках)
+  const [loadState, setLoadState] = useState<LoadState>('loading');
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
     setEvent(findFallbackEvent(eventId));
+    setLoadState('loading');
 
+    let cancelled = false;
     loadEventById(eventId)
       .then((item) => {
+        if (cancelled) return;
         if (item) setEvent(item);
+        setLoadState('ready');
       })
       .catch(() => {
-        // fallback на статичные данные при ошибке сети
+        if (!cancelled) setLoadState('error');
       });
-  }, [eventId]);
+    return () => {
+      cancelled = true;
+    };
+  }, [eventId, retryKey]);
 
   return (
-    <main className={styles.root}>
+    <main id="main" className={styles.root}>
       <a href="/events" className={styles.backLink}>
         <span aria-hidden="true">←</span>
         Мероприятия
@@ -64,6 +77,25 @@ export function EventDetailPage({ eventId }: EventDetailPageProps) {
             </div>
           </article>
         </section>
+      ) : loadState === 'loading' ? (
+        <p className={styles.empty} role="status">
+          Загружаем мероприятие…
+        </p>
+      ) : loadState === 'error' ? (
+        <div className={styles.errorState}>
+          <p className={styles.empty} role="alert">
+            Не получилось загрузить мероприятие. Проверьте соединение и
+            попробуйте ещё раз.
+          </p>
+          <Button
+            variant="outline"
+            size="md"
+            type="button"
+            onClick={() => setRetryKey((key) => key + 1)}
+          >
+            Повторить
+          </Button>
+        </div>
       ) : (
         <p className={styles.empty}>Мероприятие не найдено.</p>
       )}

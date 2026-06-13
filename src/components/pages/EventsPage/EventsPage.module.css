@@ -5,12 +5,16 @@
   padding: 30px var(--page-padding-x) 80px;
 }
 
+/* header-1 (выравнивание по центру — модификатор страницы) */
 .heading {
+  margin: 0;
   font-family: var(--font-display);
   font-size: var(--text-section-title);
   font-weight: 600;
   line-height: var(--leading-tight);
+  color: var(--color-text);
   text-align: center;
+  text-box: trim-both cap alphabetic;
 }
 
 .calendar {
@@ -27,17 +31,18 @@
   gap: 16px;
 }
 
+/* header-2 */
 .monthLabel {
   display: flex;
   align-items: center;
   width: 100%;
-  border-bottom: 6px solid var(--color-purple);
+  border-bottom: 6px solid var(--color-text);
   padding-bottom: 3px;
   font-family: var(--font-display);
-  font-size: var(--text-section-title);
+  font-size: var(--text-header-2);
   font-weight: 600;
   line-height: var(--leading-tight);
-  color: var(--color-purple-text);
+  color: var(--color-text);
 }
 
 .calendarIcon {
@@ -195,10 +200,12 @@
   font-weight: 600;
 }
 
+/* body */
 .dateWeekday {
   min-width: 100%;
-  font-size: 16px;
+  font-size: var(--text-body);
   font-weight: 500;
+  line-height: normal;
 }
 
 .events {

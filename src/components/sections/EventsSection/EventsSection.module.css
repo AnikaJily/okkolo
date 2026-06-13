@@ -20,6 +20,7 @@
   padding: 0;
   display: grid;
   grid-template-columns: 1fr;
+  /* stretch: в ряду все карточки одной высоты, по самой высокой */
   align-items: stretch;
   gap: 16px;
 }
@@ -31,7 +32,6 @@
 
 .list > li > * {
   width: 100%;
-  min-height: 100%;
 }
 
 .cta {

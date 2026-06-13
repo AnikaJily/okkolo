@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { events as fallbackEvents } from '@/data/events';
 import type { OkkoloEvent } from '@/data/events';
@@ -7,8 +7,6 @@ import { EventCard } from './EventCard';
 import { EventDetailsModal } from './EventDetailsModal';
 import { EventSignupModal } from './EventSignupModal';
 import styles from './EventsSection.module.css';
-
-const UPCOMING_LIMIT = 3;
 
 export function EventsSection() {
   const [events, setEvents] = useState<OkkoloEvent[]>(() =>
@@ -29,14 +27,6 @@ export function EventsSection() {
       });
   }, []);
 
-  const upcomingEvents = useMemo(() => {
-    const now = Date.now();
-    return [...events]
-      .filter((event) => new Date(event.date).getTime() >= now)
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-      .slice(0, UPCOMING_LIMIT);
-  }, [events]);
-
   return (
     <section
       id="events"
@@ -48,7 +38,7 @@ export function EventsSection() {
       </h2>
 
       <ul className={styles.list}>
-        {upcomingEvents.map((event) => (
+        {events.map((event) => (
           <li key={event.id}>
             <EventCard event={event} onSignup={setSignupEvent} onDetails={setDetailsEvent} />
           </li>
@@ -57,7 +47,7 @@ export function EventsSection() {
 
       <div className={styles.cta}>
         <Button variant="primary" size="md" href="/events">
-          Все мероприятия
+          Посмотреть все мероприятия
         </Button>
       </div>
 

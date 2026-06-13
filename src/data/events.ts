@@ -23,8 +23,8 @@ export const events: OkkoloEvent[] = [
   {
     id: 'jazz-evening',
     title: 'Вечер живого джаза',
-    date: '2026-05-24T19:00:00.000Z',
-    dateLabel: '24 мая, 19:00',
+    date: '2026-06-20T19:00:00.000Z',
+    dateLabel: '20 июн, 19:00',
     admission: 'Вход бесплатный',
     description: 'Вечер живой музыки в пространстве «Окколо». Приходите слушать джаз, знакомиться и проводить время вместе.',
     href: '/events/jazz-evening',
@@ -34,8 +34,8 @@ export const events: OkkoloEvent[] = [
   {
     id: 'ceramics',
     title: 'Мастер-класс по керамике',
-    date: '2026-05-28T14:00:00.000Z',
-    dateLabel: '28 мая, 14:00',
+    date: '2026-06-27T14:00:00.000Z',
+    dateLabel: '27 июн, 14:00',
     admission: 'Вход бесплатный',
     description: 'Практический мастер-класс по керамике для гостей проекта. Подходит для начинающих и не требует специальной подготовки.',
     href: '/events/ceramics',
@@ -45,8 +45,8 @@ export const events: OkkoloEvent[] = [
   {
     id: 'book-club',
     title: 'Книжный клуб: «Маленький принц»',
-    date: '2026-06-01T18:30:00.000Z',
-    dateLabel: '01 июн, 18:30',
+    date: '2026-07-04T18:30:00.000Z',
+    dateLabel: '04 июл, 18:30',
     admission: 'Вход бесплатный',
     description: 'Встреча книжного клуба с обсуждением, чаем и спокойной атмосферой для разговора о любимых текстах.',
     href: '/events/book-club',

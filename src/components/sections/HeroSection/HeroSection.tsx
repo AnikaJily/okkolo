@@ -37,18 +37,10 @@ export function HeroSection({ onSupport }: HeroSectionProps) {
         </p>
 
         <div className={styles.actions}>
-          <Button
-            variant="primary"
-            className={styles.primaryButton}
-            {...supportAction}
-          >
+          <Button variant="primary" size="lg" {...supportAction}>
             Поддержать проект
           </Button>
-          <Button
-            variant="outline"
-            className={styles.outlineButton}
-            href="#directions"
-          >
+          <Button variant="outline" size="lg" href="#directions">
             Узнать о проекте
           </Button>
         </div>

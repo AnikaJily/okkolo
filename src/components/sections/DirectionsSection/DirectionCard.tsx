@@ -11,6 +11,7 @@ export function DirectionCard({ direction, variant = 'overlay' }: DirectionCardP
   return (
     <ImageActionCard
       variant={variant}
+      actionVariant="outline"
       title={direction.title}
       description={direction.description}
       image={direction.image}

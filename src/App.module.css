@@ -5,6 +5,28 @@
   background-color: var(--color-bg);
 }
 
+/* Скрыта за верхней кромкой, появляется только по клавиатурному фокусу */
+.skipLink {
+  position: fixed;
+  top: -100px;
+  left: var(--page-padding-x);
+  z-index: 100;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card-hover);
+  font-family: var(--font-display);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.skipLink:focus-visible {
+  top: 12px;
+  outline: 2px solid var(--color-purple-dark);
+  outline-offset: 2px;
+}
+
 .page {
   display: flex;
   flex: 1;
@@ -25,33 +47,43 @@
   padding-bottom: 40px;
   padding-inline: var(--page-padding-x);
   box-sizing: border-box;
+  /* Фоновые «пятна» (::before/::after) шире вьюпорта на мобиле —
+     без clip страница получает горизонтальный скролл/zoom-out */
+  overflow-x: clip;
 }
 
+/*
+  Фоновые «пятна» из макета (Figma 357:1978 / 357:1979):
+  фиолетовый эллипс под углом слева сверху + жёлтый круг справа.
+  Размеры/позиции — из Desktop-фрейма, blur = stdDeviation из Figma.
+*/
 .main::before,
 .main::after {
   content: '';
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  border-radius: 999px;
-  filter: blur(48px);
-  opacity: 0.8;
 }
 
 .main::before {
-  width: 190px;
-  height: 190px;
-  left: -110px;
-  top: 210px;
-  background: radial-gradient(circle, rgba(254, 221, 91, 0.8) 0%, rgba(254, 221, 91, 0) 72%);
+  width: 360px;
+  height: 100px;
+  left: -40px;
+  top: 30px;
+  border-radius: 50%;
+  background-color: var(--color-purple);
+  transform: rotate(30.47deg);
+  filter: blur(100px);
 }
 
 .main::after {
-  width: 200px;
-  height: 200px;
-  right: -110px;
-  top: 520px;
-  background: radial-gradient(circle, rgba(197, 148, 232, 0.58) 0%, rgba(197, 148, 232, 0) 72%);
+  width: 210px;
+  height: 208px;
+  left: calc(75% - 23px);
+  top: -84px;
+  border-radius: 50%;
+  background-color: var(--color-yellow);
+  filter: blur(94px);
 }
 
 .main > * {
@@ -89,17 +121,19 @@
   }
 
   .main::before {
-    width: 240px;
-    height: 240px;
-    left: -140px;
-    top: 280px;
+    width: 556px;
+    height: 154px;
+    left: -13px;
+    top: 3px;
+    filter: blur(153px);
   }
 
   .main::after {
-    width: 260px;
-    height: 260px;
-    right: -140px;
-    top: 620px;
+    width: 318px;
+    height: 315px;
+    left: calc(75% - 35px);
+    top: -127px;
+    filter: blur(142px);
   }
 
   .main > :nth-child(1) {

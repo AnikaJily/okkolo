@@ -1,24 +1,32 @@
 :root {
-  /* Brand colors */
+  /* Brand colors (Figma: Purple #c594e8 — обводка, заливка кнопок #d5a7f6) */
   --color-purple: #c594e8;
+  --color-purple-light: #d5a7f6;
   --color-purple-dark: #b078dc;
   --color-purple-text: #5b2d8c;
   --color-yellow: #fedd5b;
-  --color-bg: #f4f2f0;
+  --color-bg: #f9f9f9;
   --color-surface: #ffffff;
   --color-text: #000000;
   --color-text-inverse: #ffffff;
-  --color-muted: #6e6e6e;
+  --color-text-nav: #292929;
+  /* Единый серый для второстепенного текста */
+  --color-muted: #666666;
   --color-border: rgba(0, 0, 0, 0.07);
-  --color-text-muted: rgba(0, 0, 0, 0.72);
-  --color-text-subtle: rgba(0, 0, 0, 0.7);
+  /* Рамки контролов (поля форм): ≥3:1 и к --color-bg, и к --color-surface (SC 1.4.11) */
+  --color-border-strong: #8a8a8a;
+  /* Подложка модалок и шторок — единственное место, где задаётся скрим */
+  --color-scrim: rgba(0, 0, 0, 0.36);
+  --color-text-muted: #666666;
+  --color-text-subtle: #666666;
+  --color-text-secondary: #666666;
   --color-hover-soft: rgba(0, 0, 0, 0.05);
   --color-purple-soft: rgba(197, 148, 232, 0.16);
   --color-purple-subtle: rgba(197, 148, 232, 0.12);
 
-  /* Typography */
-  --font-display: 'Gilroy', 'Inter', system-ui, -apple-system, sans-serif;
-  --font-body: 'Gotham', 'Inter', system-ui, -apple-system, sans-serif;
+  /* Typography — Onest (Figma), 5 стилей: header-1/2/3, body, tag */
+  --font-display: 'Onest', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Onest', 'Inter', system-ui, -apple-system, sans-serif;
 
   --font-size-xs: 0.75rem;    /* 12 */
   --font-size-sm: 0.875rem;   /* 14 */
@@ -26,14 +34,27 @@
   --font-size-lg: 1.125rem;   /* 18 */
   --font-size-xl: 1.5rem;     /* 24 */
 
-  /* Type roles (mobile-first, based on Figma mobile screens) */
+  /*
+    Figma text styles (значения — десктоп 1024+, мобильные ниже):
+      header-1: Onest SemiBold 40 / 1.3
+      header-2: Onest SemiBold 32 / 1.3 (заголовок детальной карточки, Figma 400:1389)
+      header-3: Onest SemiBold 25 / 1.3
+      body:     Onest Medium 21 / normal
+      tag:      Onest Medium 18 / normal
+  */
+  --text-header-1: var(--text-section-title);
+  --text-header-2: 1.375rem;     /* 22 → 32 на десктопе */
+  --text-header-3: var(--text-card-title);
+  --text-tag: var(--text-caption);
+
+  /* Type roles (mobile-first; на 1024+ совпадают со стилями Figma) */
   --text-label: 0.6875rem;       /* 11 */
-  --text-caption: 0.875rem;      /* 14 */
-  --text-body: 1rem;             /* 16 */
-  --text-button: 1rem;           /* 16 */
-  --text-card-title: 1rem;       /* 16 */
+  --text-caption: 0.875rem;      /* 14 → 18 (tag) */
+  --text-body: 1rem;             /* 16 → 21 (body) */
+  --text-button: 1rem;           /* 16 → 21 (body) */
+  --text-card-title: 1.125rem;   /* 18 → 25 (header-3) */
   --text-feature-title: 1.5rem;  /* 24 */
-  --text-section-title: 1.5rem;  /* 24 */
+  --text-section-title: 1.5rem;  /* 24 → 40 (header-1) */
 
   --leading-tight: 1.3;
   --leading-none: 1;
@@ -48,16 +69,19 @@
   --space-8: 2rem;
   --space-10: 2.5rem;
 
-  /* Radii — единая «органичная» шкала */
-  --radius-sm: 10px;   /* чипы, фильтры, мелкие контролы */
-  --radius-md: 14px;   /* поля, бейджи, пункты меню */
-  --radius-lg: 18px;   /* карточки, панели, фото в блоках */
-  --radius-xl: 24px;   /* hero, модалки, крупные image-карточки */
-  --radius-pill: 40px; /* кнопки */
+  /* Radii — шкала из макета Figma */
+  --radius-sm: 10px;        /* чипы, фильтры, мелкие контролы */
+  --radius-md: 14px;        /* поля, бейджи, пункты меню */
+  --radius-lg: 20px;        /* фото (hero-photo) */
+  --radius-xl: 25px;        /* карточки (Product) */
+  --radius-pill: 40px;      /* отдельно стоящие кнопки */
+  --radius-pill-card: 30px; /* кнопки внутри карточек */
 
-  /* Elevation */
-  --shadow-card: 0 4px 8px rgba(41, 41, 41, 0.08);
-  --shadow-card-hover: 0 12px 24px rgba(41, 41, 41, 0.12);
+  /* Elevation (Figma: тени без смещения) */
+  --shadow-card: 0 0 4px rgba(0, 0, 0, 0.25);
+  --shadow-card-hover: 0 0 10.9px 1px rgba(0, 0, 0, 0.25);
+  --shadow-hero: 0 0 6px rgba(0, 0, 0, 0.25);
+  --shadow-header: 0 0 2px rgba(0, 0, 0, 0.25);
   --gradient-image-overlay: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0) 0%,
@@ -84,11 +108,13 @@
     --font-size-md: 1.0625rem;     /* 17 */
     --font-size-lg: 1.25rem;       /* 20 */
     --font-size-xl: 1.75rem;       /* 28 */
-    --text-caption: 0.9375rem;     /* 15 */
+    --text-caption: 1rem;          /* 16 */
     --text-body: 1.0625rem;        /* 17 */
-    --text-card-title: 1.0625rem;  /* 17 */
+    --text-button: 1.0625rem;      /* 17 */
+    --text-card-title: 1.25rem;    /* 20 */
     --text-feature-title: 1.625rem;/* 26 */
     --text-section-title: 1.75rem; /* 28 */
+    --text-header-2: 1.625rem;     /* 26 */
   }
 }
 
@@ -98,11 +124,13 @@
     --page-padding-x: 48px;
     --font-size-lg: 1.375rem;      /* 22 */
     --font-size-xl: 2.25rem;       /* 36 */
-    --text-caption: 1rem;          /* 16 */
-    --text-body: 1.125rem;         /* 18 */
-    --text-card-title: 1.125rem;   /* 18 */
+    --text-caption: 1.125rem;      /* 18 — tag */
+    --text-body: 1.3125rem;        /* 21 — body */
+    --text-button: 1.3125rem;      /* 21 — body */
+    --text-card-title: 1.5625rem;  /* 25 — header-3 */
     --text-feature-title: 1.75rem; /* 28 */
-    --text-section-title: 2.25rem; /* 36 */
+    --text-section-title: 2.5rem;  /* 40 — header-1 */
+    --text-header-2: 2rem;         /* 32 — header-2 */
   }
 }
 

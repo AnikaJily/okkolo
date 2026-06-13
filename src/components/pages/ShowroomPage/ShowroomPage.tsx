@@ -13,24 +13,40 @@ import { CartSheet } from '@/components/cart/CartSheet';
 import { FloatingCartButton } from '@/components/cart/FloatingCartButton';
 import styles from './ShowroomPage.module.css';
 
-const PAGE_SIZE = 6;
+// максимум 3 ряда товаров на страницу; колонок 2 (mobile) или 3 (от 640px) — см. .products в module.css
+const ROWS_PER_PAGE = 3;
+const COLUMNS_MEDIA_QUERY = '(min-width: 640px)';
+
+function useGridColumns() {
+  const [columns, setColumns] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia(COLUMNS_MEDIA_QUERY).matches ? 3 : 2,
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(COLUMNS_MEDIA_QUERY);
+    const handleChange = (event: MediaQueryListEvent) => setColumns(event.matches ? 3 : 2);
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  return columns;
+}
 
 export function ShowroomPage() {
   const { addItem, totalCount } = useCart();
   const [cartOpen, setCartOpen] = useState(false);
   const [products, setProducts] = useState<ShowroomProduct[]>(fallbackProducts);
+  const [isFallback, setIsFallback] = useState(true);
   const [category, setCategory] = useState<ProductCategory>('all');
   const [page, setPage] = useState(1);
   const [detailsProduct, setDetailsProduct] = useState<ShowroomProduct | null>(null);
+  const pageSize = useGridColumns() * ROWS_PER_PAGE;
 
   useEffect(() => {
-    loadProducts()
-      .then((items) => {
-        if (items.length > 0) setProducts(items);
-      })
-      .catch(() => {
-        // fallback на статичные данные при ошибке сети
-      });
+    loadProducts().then((result) => {
+      setProducts(result.products);
+      setIsFallback(result.isFallback);
+    });
   }, []);
 
   const filteredProducts = useMemo(() => {
@@ -38,12 +54,14 @@ export function ShowroomPage() {
     return products.filter((product) => product.category === category);
   }, [category, products]);
 
-  const pageCount = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
+  const pageCount = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
+  // page может выйти за пределы при смене категории/ширины экрана — зажимаем без эффекта
+  const currentPage = Math.min(page, pageCount);
 
   const paginatedProducts = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE;
-    return filteredProducts.slice(start, start + PAGE_SIZE);
-  }, [filteredProducts, page]);
+    const start = (currentPage - 1) * pageSize;
+    return filteredProducts.slice(start, start + pageSize);
+  }, [filteredProducts, currentPage, pageSize]);
 
   const handleCategoryChange = (nextCategory: ProductCategory) => {
     setCategory(nextCategory);
@@ -56,18 +74,25 @@ export function ShowroomPage() {
 
   return (
     <>
-    <main className={styles.root}>
+    <main id="main" className={styles.root}>
       <h1 className={styles.heading}>Наш шоурум</h1>
 
-      <div className={styles.filters} role="tablist" aria-label="Категории товаров">
+      {isFallback ? (
+        <p className={styles.fallbackNotice} role="status">
+          Каталог временно недоступен — показываем примеры товаров. Оформление
+          заказа отключено, напишите нам, если что-то приглянулось.
+        </p>
+      ) : null}
+
+      {/* Не ARIA-табы: переключатели-фильтры с aria-pressed, как даты в EventsPage */}
+      <div className={styles.filters} role="group" aria-label="Категории товаров">
         {PRODUCT_CATEGORIES.map((item) => {
           const isActive = category === item.id;
           return (
             <button
               key={item.id}
               type="button"
-              role="tab"
-              aria-selected={isActive}
+              aria-pressed={isActive}
               className={isActive ? styles.filterButtonActive : styles.filterButton}
               onClick={() => handleCategoryChange(item.id)}
             >
@@ -97,7 +122,7 @@ export function ShowroomPage() {
         <nav className={styles.pagination} aria-label="Страницы каталога">
           {Array.from({ length: pageCount }, (_, index) => {
             const pageNumber = index + 1;
-            const isActive = pageNumber === page;
+            const isActive = pageNumber === currentPage;
             return (
               <button
                 key={pageNumber}
@@ -124,11 +149,11 @@ export function ShowroomPage() {
     />
 
     {totalCount > 0 ? (
-      <>
-        <FloatingCartButton count={totalCount} onClick={() => setCartOpen(true)} />
-        <CartSheet open={cartOpen} onOpenChange={setCartOpen} />
-      </>
+      <FloatingCartButton count={totalCount} onClick={() => setCartOpen(true)} />
     ) : null}
+    {/* CartSheet монтируется всегда: иначе clearCart() при success размонтирует
+        шторку до показа экрана «Заказ оформлен», а cartOpen зависает в true */}
+    <CartSheet open={cartOpen} onOpenChange={setCartOpen} orderingDisabled={isFallback} />
     </>
   );
 }

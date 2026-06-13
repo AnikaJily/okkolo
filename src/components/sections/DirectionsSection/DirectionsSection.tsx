@@ -57,7 +57,7 @@ export function DirectionsSection() {
 
           <div className={styles.grid}>
             {directions.map((item) => (
-              <DirectionCard key={item.id} direction={item} />
+              <DirectionCard key={item.id} direction={item} variant="preview" />
             ))}
           </div>
         </>

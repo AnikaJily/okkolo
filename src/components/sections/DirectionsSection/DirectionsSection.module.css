@@ -27,6 +27,7 @@
 .grid {
   display: none;
   grid-template-columns: repeat(auto-fit, minmax(var(--direction-card-min), 1fr));
+  align-items: stretch;
   gap: var(--direction-gap);
 }
 

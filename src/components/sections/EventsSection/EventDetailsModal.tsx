@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Button } from '@/components/ui/Button';
+import { DetailCard } from '@/components/ui/DetailCard';
 import { Picture } from '@/components/ui/Picture';
 import type { OkkoloEvent } from '@/data/events';
 import styles from './EventDetailsModal.module.css';
@@ -23,23 +23,14 @@ export function EventDetailsModal({
         <Dialog.Overlay className={styles.overlay} />
         <Dialog.Content className={styles.content}>
           {event ? (
-            <article className={styles.card}>
-              <button
-                type="button"
-                className={styles.close}
-                onClick={() => onOpenChange(false)}
-                aria-label="Закрыть"
-              >
-                ×
-              </button>
-
-              <div className={styles.imagePane}>
-                {event.picture ? (
+            <DetailCard
+              media={
+                event.picture ? (
                   <Picture
                     picture={event.picture}
                     alt={event.title}
                     className={styles.image}
-                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    sizes="(min-width: 1024px) 450px, 100vw"
                   />
                 ) : (
                   <img
@@ -49,36 +40,19 @@ export function EventDetailsModal({
                     loading="lazy"
                     decoding="async"
                   />
-                )}
-                <span className={styles.meta}>{event.dateLabel}</span>
-              </div>
-
-              <div className={styles.detailsPane}>
-                <div className={styles.summary}>
-                  <Dialog.Title className={styles.heading}>{event.title}</Dialog.Title>
-                  <Dialog.Description className={styles.admission}>
-                    {event.admission}
-                  </Dialog.Description>
-                </div>
-
-                <Button
-                  variant="primary"
-                  size="sm"
-                  fullWidth
-                  onClick={() => {
-                    if (!event) return;
-                    onOpenChange(false);
-                    onSignup?.(event);
-                  }}
-                >
-                  Записаться
-                </Button>
-
-                {event.description ? (
-                  <p className={styles.description}>{event.description}</p>
-                ) : null}
-              </div>
-            </article>
+                )
+              }
+              tag={event.dateLabel}
+              title={<Dialog.Title>{event.title}</Dialog.Title>}
+              bottomLabel={<Dialog.Description>{event.admission}</Dialog.Description>}
+              description={event.description}
+              primaryActionLabel="Записаться"
+              onPrimaryAction={() => {
+                onOpenChange(false);
+                onSignup?.(event);
+              }}
+              onClose={() => onOpenChange(false)}
+            />
           ) : null}
         </Dialog.Content>
       </Dialog.Portal>

@@ -8,6 +8,8 @@ type ImageActionCardVariant = 'overlay' | 'preview';
 
 interface ImageActionCardProps {
   variant: ImageActionCardVariant;
+  /** Вариант основной кнопки: primary (заливка) или outline (обводка) */
+  actionVariant?: 'primary' | 'outline';
   title: string;
   description: string;
   image: string;
@@ -29,6 +31,7 @@ interface ImageActionCardProps {
 
 export function ImageActionCard({
   variant,
+  actionVariant = 'primary',
   title,
   description,
   image,
@@ -109,23 +112,18 @@ export function ImageActionCard({
 
   return (
     <article className={cn(styles.previewCard, className)}>
-      <div className={styles.previewImageWrap}>
-        {previewMedia}
-        {meta ? (
-          <span className={styles.previewMeta} aria-hidden="true">
-            {meta}
-          </span>
-        ) : null}
-      </div>
+      <div className={styles.previewImageWrap}>{previewMedia}</div>
 
       <div className={styles.previewBody}>
+        {meta ? <span className={styles.previewMeta}>{meta}</span> : null}
+
         <div className={styles.previewText}>
           <h3 className={styles.previewTitle}>{title}</h3>
           <p
             className={cn(
-              'font-medium text-[var(--color-text-subtle)]',
+              'font-medium text-[var(--color-text-secondary)]',
               descriptionClassName ??
-                'text-[length:var(--text-caption)] leading-[var(--leading-tight)]',
+                'text-[length:var(--text-body)] leading-normal',
             )}
           >
             {description}
@@ -139,11 +137,11 @@ export function ImageActionCard({
           )}
         >
           {action ? (
-            <Button variant="primary" size="sm" fullWidth className="min-w-0 max-w-full" onClick={action}>
+            <Button variant={actionVariant} size="md" fullWidth className="min-w-0 max-w-full" onClick={action}>
               {actionLabel}
             </Button>
           ) : (
-            <Button variant="primary" size="sm" fullWidth className="min-w-0 max-w-full" href={href}>
+            <Button variant={actionVariant} size="md" fullWidth className="min-w-0 max-w-full" href={href}>
               {actionLabel}
             </Button>
           )}
@@ -151,7 +149,7 @@ export function ImageActionCard({
             secondaryAction ? (
               <Button
                 variant="outline"
-                size="sm"
+                size="md"
                 fullWidth
                 className="min-w-0 max-w-full"
                 onClick={secondaryAction}
@@ -161,7 +159,7 @@ export function ImageActionCard({
             ) : (
               <Button
                 variant="outline"
-                size="sm"
+                size="md"
                 fullWidth
                 className="min-w-0 max-w-full"
                 href={secondaryHref ?? href}

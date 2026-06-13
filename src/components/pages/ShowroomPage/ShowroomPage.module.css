@@ -5,13 +5,29 @@
   padding: 30px var(--page-padding-x) 80px;
 }
 
+/* header-1 (выравнивание по центру — модификатор страницы) */
 .heading {
   margin: 0;
   font-family: var(--font-display);
   font-size: var(--text-section-title);
   font-weight: 600;
   line-height: var(--leading-tight);
+  color: var(--color-text);
   text-align: center;
+  text-box: trim-both cap alphabetic;
+}
+
+/* Каталог на моках: предупреждение перед фильтрами */
+.fallbackNotice {
+  margin: 0;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-yellow);
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text);
 }
 
 .hero {
@@ -163,7 +179,7 @@
   }
 
   .products {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
   }
 }

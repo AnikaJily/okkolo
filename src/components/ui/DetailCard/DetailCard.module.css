@@ -1,0 +1,177 @@
+/* Figma 408:1961 «Product» (детальная карточка): фото слева на всю высоту,
+   справа тег → заголовок → описание, внизу крупная строка и кнопки */
+.card {
+  position: relative;
+  display: flex;
+  max-height: inherit;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Просто крестик, без кружка-подложки. На мобильных он поверх фото —
+   лёгкое белое свечение оставляет его читаемым на любом снимке */
+.close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 4px;
+  background: none;
+  color: var(--color-text);
+  cursor: pointer;
+  font-family: var(--font-display);
+  /* Визуальная высота ≈ жёлтой плашки (34–36px) */
+  font-size: 48px;
+  font-weight: 500;
+  line-height: 1;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.9));
+}
+
+.close:hover {
+  color: var(--color-purple-dark);
+}
+
+.close:focus-visible {
+  outline: 2px solid var(--color-purple-dark);
+  outline-offset: 2px;
+}
+
+.media {
+  position: relative;
+  flex-shrink: 0;
+  min-height: 240px;
+  aspect-ratio: 4 / 3;
+  background: var(--color-bg);
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+/* Жёлтая плашка — как «Progress Tags» в Figma: без скругления */
+.tag {
+  display: inline-flex;
+  align-items: flex-end;
+  background-color: var(--color-yellow);
+  padding: 8px 12px;
+  font-family: var(--font-display);
+  font-size: var(--text-tag);
+  font-weight: 500;
+  line-height: normal;
+  color: var(--color-text);
+  text-box: trim-both cap alphabetic;
+}
+
+/* header-2 */
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-header-2);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  text-box: trim-both cap alphabetic;
+}
+
+/* body */
+.description {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: normal;
+  color: var(--color-text-secondary);
+  text-box: trim-both cap alphabetic;
+}
+
+/* Нижний блок: «Цена: …» + кнопки, прижат к низу */
+.footer {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: auto;
+}
+
+/* header-3, серый */
+.bottomLabel {
+  font-family: var(--font-display);
+  font-size: var(--text-card-title);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text-secondary);
+  text-box: trim-both cap alphabetic;
+}
+
+/* Dialog.Title/Description рендерят h2/p со своими UA-стилями */
+.title > *,
+.bottomLabel > * {
+  margin: 0;
+  font: inherit;
+  color: inherit;
+}
+
+.actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 10px;
+}
+
+.actions > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Кнопки внутри карточки — радиус 30, как в Figma */
+.actions :is(a, button) {
+  border-radius: var(--radius-pill-card);
+}
+
+@media (min-width: 1024px) {
+  .card {
+    flex-direction: row;
+    gap: 25px;
+    overflow: hidden;
+  }
+
+  .media {
+    width: 450px;
+    min-height: 520px;
+    aspect-ratio: auto;
+  }
+
+  .body {
+    gap: 30px;
+    padding: 20px 25px 20px 0;
+  }
+
+  .info {
+    gap: 30px;
+  }
+
+  .footer {
+    gap: 30px;
+  }
+}

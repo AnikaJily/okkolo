@@ -11,12 +11,14 @@ import styles from './CartSheet.module.css';
 interface CartSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Каталог на моках — оформление реального заказа запрещено */
+  orderingDisabled?: boolean;
 }
 
 type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
 
-export function CartSheet({ open, onOpenChange }: CartSheetProps) {
-  const { items, totalCount, totalPrice, removeItem, clearCart } = useCart();
+export function CartSheet({ open, onOpenChange, orderingDisabled = false }: CartSheetProps) {
+  const { items, totalPrice, removeItem, clearCart } = useCart();
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -49,7 +51,7 @@ export function CartSheet({ open, onOpenChange }: CartSheetProps) {
 
   const handleSubmit = async (formEvent: FormEvent<HTMLFormElement>) => {
     formEvent.preventDefault();
-    if (items.length === 0 || submitStatus === 'submitting') return;
+    if (items.length === 0 || submitStatus === 'submitting' || orderingDisabled) return;
 
     setSubmitStatus('submitting');
 
@@ -122,9 +124,11 @@ export function CartSheet({ open, onOpenChange }: CartSheetProps) {
                   <button
                     type="button"
                     className={styles.remove}
+                    aria-label={`Удалить «${item.title}» из корзины`}
                     onClick={() => {
                       removeItem(item.productId);
-                      if (totalCount <= 1) onOpenChange(false);
+                      // items.length, не totalCount: сумма штук ≠ число позиций
+                      if (items.length <= 1) onOpenChange(false);
                     }}
                   >
                     Удалить
@@ -172,11 +176,11 @@ export function CartSheet({ open, onOpenChange }: CartSheetProps) {
               </label>
 
               <p className={styles.formHeading}>Способ получения</p>
-              <div className={styles.fulfillmentToggle} role="radiogroup" aria-label="Способ получения">
+              {/* Не полу-ARIA radio: кнопки-переключатели с aria-pressed (паттерн дат EventsPage) */}
+              <div className={styles.fulfillmentToggle} role="group" aria-label="Способ получения">
                 <button
                   type="button"
-                  role="radio"
-                  aria-checked={fulfillmentType === 'pickup'}
+                  aria-pressed={fulfillmentType === 'pickup'}
                   className={
                     fulfillmentType === 'pickup'
                       ? styles.fulfillmentOptionActive
@@ -188,8 +192,7 @@ export function CartSheet({ open, onOpenChange }: CartSheetProps) {
                 </button>
                 <button
                   type="button"
-                  role="radio"
-                  aria-checked={fulfillmentType === 'delivery'}
+                  aria-pressed={fulfillmentType === 'delivery'}
                   className={
                     fulfillmentType === 'delivery'
                       ? styles.fulfillmentOptionActive
@@ -266,12 +269,20 @@ export function CartSheet({ open, onOpenChange }: CartSheetProps) {
                     Не удалось отправить заказ. Попробуйте ещё раз.
                   </p>
                 ) : null}
+                {orderingDisabled ? (
+                  <p className={styles.error} role="status">
+                    Каталог временно недоступен, заказ оформить нельзя. Напишите
+                    нам — поможем с покупкой.
+                  </p>
+                ) : null}
                 <Button
                   variant="primary"
                   size="lg"
                   fullWidth
                   type="submit"
-                  disabled={submitStatus === 'submitting' || items.length === 0}
+                  disabled={
+                    submitStatus === 'submitting' || items.length === 0 || orderingDisabled
+                  }
                 >
                   {submitStatus === 'submitting' ? 'Отправляем…' : 'Оформить заказ'}
                 </Button>

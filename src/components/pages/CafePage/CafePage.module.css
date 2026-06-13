@@ -1,0 +1,253 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 24px var(--page-padding-x) 40px;
+  box-sizing: border-box;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* header-1 */
+.heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-section-title);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  text-box: trim-both cap alphabetic;
+}
+
+/* body */
+.lead {
+  display: flex;
+  max-width: 720px;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.lead p {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.menus {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+.menuFigure {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 0;
+}
+
+.menuImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+}
+
+/* header-3 */
+.menuCaption {
+  font-family: var(--font-display);
+  font-size: var(--text-card-title);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  text-box: trim-both cap alphabetic;
+}
+
+/* Текстовая версия меню — для скринридеров и тех, кому неудобно читать с фото */
+.menuText {
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  padding: 16px 20px;
+}
+
+.menuTextSummary {
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: var(--text-tag);
+  font-weight: 500;
+  line-height: normal;
+  color: var(--color-text);
+  user-select: none;
+  /* Хит-зона ≥24px (SC 2.5.8) без сдвига визуального ритма */
+  padding-block: 6px;
+  margin-block: -6px;
+}
+
+.menuTextSummary:focus-visible {
+  outline: 2px solid var(--color-purple-dark);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.menuTextSummary:hover {
+  color: var(--color-purple-dark);
+}
+
+.menuText[open] .menuTextSummary {
+  margin-bottom: 20px;
+}
+
+.menuSection {
+  margin-bottom: 24px;
+}
+
+.menuSection:last-of-type {
+  margin-bottom: 0;
+}
+
+/* tag */
+.menuSectionTitle {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-size: var(--text-tag);
+  font-weight: 600;
+  line-height: normal;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.menuList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menuItem {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: var(--text-tag);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.menuItemName {
+  flex-shrink: 1;
+}
+
+.menuItemVolume {
+  color: var(--color-text-secondary);
+}
+
+.menuItemNote {
+  color: var(--color-text-secondary);
+}
+
+.menuItemDots {
+  flex: 1;
+  min-width: 16px;
+  border-bottom: 1px dotted var(--color-text-secondary);
+  transform: translateY(-4px);
+}
+
+.menuItemPrice {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.menuFootnote {
+  margin: 20px 0 0;
+  font-family: var(--font-body);
+  font-size: var(--text-tag);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+}
+
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* header-2 */
+.galleryHeading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-header-2);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  text-box: trim-both cap alphabetic;
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+/* Заглушка до появления настоящих фотографий */
+.galleryPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-purple-subtle);
+}
+
+.galleryPlaceholderLabel {
+  font-family: var(--font-display);
+  font-size: var(--text-tag);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+@media (min-width: 640px) {
+  .root {
+    gap: 56px;
+    padding-top: 32px;
+    padding-bottom: 56px;
+  }
+
+  .menus {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .galleryGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .root {
+    gap: 80px;
+    padding-top: 56px;
+    padding-bottom: 80px;
+  }
+
+  .menus {
+    gap: 30px;
+  }
+
+  .galleryGrid {
+    gap: 20px;
+  }
+}

@@ -50,7 +50,11 @@ export function toEvent(item: StrapiEventItem, index: number): OkkoloEvent {
 
 export const HOME_UPCOMING_EVENTS_LIMIT = 3;
 
-/** Ближайшие предстоящие мероприятия (для блока на главной). */
+/**
+ * Ближайшие предстоящие мероприятия (для блока на главной).
+ * Если предстоящих нет — показываем последние прошедшие, чтобы секция
+ * с карточками не оставалась пустой (как в макете всегда 3 карточки).
+ */
 export function selectUpcomingEvents(
   events: OkkoloEvent[],
   limit = HOME_UPCOMING_EVENTS_LIMIT,
@@ -58,12 +62,19 @@ export function selectUpcomingEvents(
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
 
-  return [...events]
-    .filter((event) => {
-      const when = new Date(event.date);
-      return !Number.isNaN(when.getTime()) && when >= todayStart;
-    })
+  const valid = events.filter(
+    (event) => !Number.isNaN(new Date(event.date).getTime()),
+  );
+
+  const upcoming = valid
+    .filter((event) => new Date(event.date) >= todayStart)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .slice(0, limit);
+
+  if (upcoming.length > 0) return upcoming;
+
+  return valid
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, limit);
 }
 

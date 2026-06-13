@@ -28,12 +28,15 @@
   outline-offset: 4px;
 }
 
+/* header-2 — роль заголовка детальной карточки (Figma 408-1961), как в DetailCard */
 .heading {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--text-card-title);
-  font-weight: 500;
+  font-size: var(--text-header-2);
+  font-weight: 600;
   line-height: var(--leading-tight);
+  color: var(--color-text);
+  text-box: trim-both cap alphabetic;
 }
 
 .content {
@@ -124,6 +127,14 @@
   text-align: center;
 }
 
+/* Ошибка загрузки: сообщение + кнопка «Повторить» */
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
 @media (min-width: 640px) {
   .root {
     gap: 28px;
@@ -138,10 +149,6 @@
     padding: 22px;
   }
 
-  .heading {
-    font-size: var(--text-feature-title);
-    font-weight: 600;
-  }
 }
 
 @media (min-width: 1024px) {

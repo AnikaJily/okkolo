@@ -37,12 +37,12 @@ export function Header({ onMenuClick, onSupport }: HeaderProps) {
         </a>
 
         <nav className="hidden flex-1 lg:block" aria-label="Основная навигация">
-          <ul className="m-0 flex list-none items-center justify-center gap-8 p-0">
+          <ul className="m-0 flex list-none items-center justify-center gap-[30px] p-0">
             {NAV_ITEMS.map((item) => (
               <li key={item.href}>
                 <a
                   href={item.href}
-                  className="relative rounded-sm px-1 py-2 font-display font-medium transition-colors duration-150 after:absolute after:inset-x-1 after:bottom-0.5 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-sm after:bg-[var(--color-purple)] after:transition-transform after:duration-200 hover:text-[var(--color-purple-dark)] hover:after:scale-x-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-purple-dark)]"
+                  className="relative rounded-sm px-1 py-2 font-display text-[length:var(--text-tag)] font-medium text-[var(--color-text-nav)] transition-colors duration-150 after:absolute after:inset-x-1 after:bottom-0.5 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-sm after:bg-[var(--color-purple)] after:transition-transform after:duration-200 hover:text-[var(--color-purple-dark)] hover:after:scale-x-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-purple-dark)]"
                 >
                   {item.label}
                 </a>
@@ -53,7 +53,7 @@ export function Header({ onMenuClick, onSupport }: HeaderProps) {
 
         <div className="hidden shrink-0 lg:inline-flex">
           <Button variant="primary" size="md" {...supportAction}>
-            Поддержать
+            Поддержать проект
           </Button>
         </div>
 

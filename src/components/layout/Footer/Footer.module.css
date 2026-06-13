@@ -3,8 +3,8 @@
   width: 100%;
   margin: 0;
   padding: 28px var(--page-padding-x);
-  border: 1px solid var(--color-border);
   background-color: var(--color-surface);
+  box-shadow: var(--shadow-header);
 }
 
 .inner {
@@ -89,6 +89,9 @@
   color: var(--color-text);
   text-decoration: none;
   transition: color 0.15s ease;
+  /* Хит-зона ≥24px (SC 2.5.8) без сдвига визуального ритма */
+  padding-block: 6px;
+  margin-block: -6px;
 }
 
 .navLink:hover {
@@ -119,6 +122,9 @@
   line-height: var(--leading-tight);
   color: var(--color-purple-text);
   text-decoration: none;
+  /* Хит-зона ≥24px (SC 2.5.8) без сдвига визуального ритма */
+  padding-block: 6px;
+  margin-block: -6px;
 }
 
 .contactLink:hover {

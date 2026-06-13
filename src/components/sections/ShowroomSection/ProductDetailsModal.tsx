@@ -1,7 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import arrowSrc from '@/assets/images/arrow.svg';
-import { Button } from '@/components/ui/Button';
+import { DetailCard } from '@/components/ui/DetailCard';
 import { Picture, type PictureSource } from '@/components/ui/Picture';
 import {
   formatProductPrice,
@@ -60,18 +60,9 @@ export function ProductDetailsModal({
         <Dialog.Overlay className={styles.overlay} />
         <Dialog.Content className={styles.content}>
           {product ? (
-            <article className={styles.card}>
-              <div className={styles.galleryPane}>
-                <div className={styles.mainImageWrap}>
-                  <button
-                    type="button"
-                    className={styles.close}
-                    onClick={() => onOpenChange(false)}
-                    aria-label="Закрыть"
-                  >
-                    ×
-                  </button>
-
+            <DetailCard
+              media={
+                <div className={styles.gallery}>
                   {hasMultipleImages ? (
                     <>
                       <button
@@ -105,50 +96,35 @@ export function ProductDetailsModal({
                     <Picture
                       picture={pictures[activeImageIndex]!}
                       alt={product.title}
-                      className={styles.mainImage}
-                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      className={styles.image}
+                      sizes="(min-width: 1024px) 450px, 100vw"
                     />
                   ) : (
                     <img
                       src={images[activeImageIndex] ?? product.image}
                       alt={product.title}
-                      className={styles.mainImage}
+                      className={styles.image}
                       loading="lazy"
                       decoding="async"
                     />
                   )}
                 </div>
-              </div>
-
-              <div className={styles.detailsPane}>
-                <div className={styles.summary}>
-                  {categoryLabel ? <p className={styles.category}>{categoryLabel}</p> : null}
-                  <Dialog.Title className={styles.heading}>{product.title}</Dialog.Title>
-                  <Dialog.Description className={styles.price}>
-                    {formatProductPrice(product.price)}
-                  </Dialog.Description>
-                </div>
-
-                {product.description ? (
-                  <p className={styles.description}>{product.description}</p>
-                ) : null}
-
-                <div className={styles.actions}>
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      onAddToCart?.(product);
-                      onOpenChange(false);
-                    }}
-                  >
-                    В корзину
-                  </Button>
-                  <Button variant="outline" onClick={() => onOpenChange(false)}>
-                    Закрыть
-                  </Button>
-                </div>
-              </div>
-            </article>
+              }
+              tag={categoryLabel}
+              title={<Dialog.Title>{product.title}</Dialog.Title>}
+              bottomLabel={
+                <Dialog.Description>
+                  Цена: {formatProductPrice(product.price)}
+                </Dialog.Description>
+              }
+              description={product.description}
+              primaryActionLabel="В корзину"
+              onPrimaryAction={() => {
+                onAddToCart?.(product);
+                onOpenChange(false);
+              }}
+              onClose={() => onOpenChange(false)}
+            />
           ) : null}
         </Dialog.Content>
       </Dialog.Portal>

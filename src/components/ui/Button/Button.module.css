@@ -3,13 +3,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid transparent;
+  border: 3px solid transparent;
   border-radius: var(--radius-pill);
   font-family: var(--font-body);
   font-size: var(--text-button);
   font-weight: 500;
-  line-height: 1;
-  letter-spacing: -0.05em;
+  line-height: normal;
+  letter-spacing: 0;
   text-decoration: none;
   white-space: nowrap;
   user-select: none;
@@ -36,42 +36,53 @@
 }
 
 .primary {
+  background-color: var(--color-purple-light);
+  border-color: var(--color-purple-light);
+  color: var(--color-text);
+}
+
+.primary:hover {
   background-color: var(--color-purple);
   border-color: var(--color-purple);
   color: var(--color-text);
 }
 
-.primary:hover {
-  background-color: var(--color-purple-dark);
-  border-color: var(--color-purple-dark);
-  color: var(--color-text);
-}
-
 .outline {
   background-color: transparent;
-  border-color: var(--color-text);
+  border-color: var(--color-purple);
   color: var(--color-text);
 }
 
 .outline:hover {
-  background-color: var(--color-hover-soft);
-  border-color: var(--color-text);
+  background-color: var(--color-purple-subtle);
+  border-color: var(--color-purple);
   color: var(--color-text);
 }
 
 .sm {
   min-height: 35px;
-  padding: 8px 16px;
+  padding: 7px 17px;
 }
 
 .md {
   min-height: 44px;
-  padding: 12px 24px;
+  padding: 9px 21px;
 }
 
 .lg {
   min-height: 48px;
-  padding: 14px 28px;
+  padding: 13px 27px;
+}
+
+/* Figma: отдельно стоящие кнопки на десктопе — padding 22/30 (учитывая 3px border) */
+@media (min-width: 1024px) {
+  .md {
+    padding: 13px 27px;
+  }
+
+  .lg {
+    padding: 19px 27px;
+  }
 }
 
 .fullWidth {

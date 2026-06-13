@@ -16,7 +16,7 @@ export const SheetOverlay = forwardRef<
   <Dialog.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px] data-[state=closed]:animate-none',
+      'fixed inset-0 z-40 bg-[var(--color-scrim)] backdrop-blur-[2px] data-[state=closed]:animate-none',
       className,
     )}
     {...props}

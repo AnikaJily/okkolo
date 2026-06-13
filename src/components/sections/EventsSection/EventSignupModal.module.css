@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: 40;
-  background: rgba(0, 0, 0, 0.36);
+  background: var(--color-scrim);
   backdrop-filter: blur(2px);
 }
 
@@ -11,34 +11,35 @@
   left: 50%;
   top: 50%;
   z-index: 50;
-  width: min(calc(100vw - var(--page-padding-x) * 2), 480px);
-  max-height: min(86dvh, 680px);
+  width: min(calc(100vw - var(--page-padding-x) * 2), 520px);
+  max-height: min(86dvh, 720px);
   transform: translate(-50%, -50%);
   overflow-y: auto;
   overscroll-behavior: contain;
   border-radius: var(--radius-xl);
   background-color: var(--color-surface);
-  padding: 22px 14px 14px;
+  padding: 25px 20px 20px;
   box-shadow: var(--shadow-card-hover);
   outline: none;
 }
 
+/* Просто крестик, без кружка-подложки */
 .close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 14px;
+  right: 16px;
   display: inline-flex;
-  width: 38px;
-  height: 38px;
   align-items: center;
   justify-content: center;
   border: none;
-  border-radius: 50%;
-  background-color: var(--color-bg);
+  padding: 4px;
+  background: none;
   color: var(--color-text);
   cursor: pointer;
   font-family: var(--font-display);
-  font-size: 26px;
+  /* Визуальная высота ≈ жёлтой плашки (34–36px) */
+  font-size: 48px;
+  font-weight: 500;
   line-height: 1;
 }
 
@@ -54,81 +55,101 @@
 .summary {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 20px;
   padding-right: 48px;
 }
 
+/* Жёлтая плашка с датой — как «Progress Tags» в Figma */
+.tag {
+  display: inline-flex;
+  align-items: flex-end;
+  background-color: var(--color-yellow);
+  padding: 8px 12px;
+  font-family: var(--font-display);
+  font-size: var(--text-tag);
+  font-weight: 500;
+  line-height: normal;
+  color: var(--color-text);
+  text-box: trim-both cap alphabetic;
+}
+
+/* header-2 */
 .heading {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--text-feature-title);
+  font-size: var(--text-header-2);
   font-weight: 600;
   line-height: var(--leading-tight);
+  color: var(--color-text);
+  text-box: trim-both cap alphabetic;
 }
 
+/* body */
 .eventTitle {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--text-caption);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
   font-weight: 500;
-  line-height: var(--leading-tight);
-  color: var(--color-text-subtle);
+  line-height: normal;
+  color: var(--color-text-secondary);
+  text-box: trim-both cap alphabetic;
 }
 
+/* header-3, серый */
 .price {
   margin: 0;
   font-family: var(--font-display);
   font-size: var(--text-card-title);
   font-weight: 600;
   line-height: var(--leading-tight);
-  color: var(--color-purple-dark);
+  color: var(--color-text-secondary);
+  text-box: trim-both cap alphabetic;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 22px;
+  gap: 15px;
+  margin-top: 24px;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   font-family: var(--font-display);
 }
 
+/* tag */
 .label {
-  font-size: var(--text-caption);
+  font-size: var(--text-tag);
   font-weight: 500;
-  line-height: var(--leading-tight);
-  color: var(--color-text-subtle);
+  line-height: normal;
+  color: var(--color-text-secondary);
 }
 
 .input {
   width: 100%;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-md);
   background-color: var(--color-bg);
-  padding: 11px 12px;
+  padding: 12px 14px;
   font: inherit;
-  font-size: var(--text-caption);
+  font-size: var(--text-tag);
   font-weight: 500;
   line-height: var(--leading-tight);
   color: var(--color-text);
 }
 
-.input:focus {
-  outline: none;
-}
-
+/* Единый видимый фокус проекта (purple-subtle 12% был ~1.1:1 — невидим) */
 .input:focus-visible {
-  border-color: var(--color-purple-dark);
-  outline: 2px solid var(--color-purple-subtle);
+  outline: 2px solid var(--color-purple-dark);
+  outline-offset: 1px;
 }
 
 .textarea {
-  min-height: 86px;
+  min-height: 96px;
   resize: vertical;
 }
 
@@ -141,14 +162,14 @@
 .success,
 .error {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--text-caption);
+  font-family: var(--font-body);
+  font-size: var(--text-tag);
   font-weight: 500;
   line-height: var(--leading-tight);
 }
 
 .success {
-  color: var(--color-purple-dark);
+  color: var(--color-purple-text);
 }
 
 .error {
@@ -157,6 +178,6 @@
 
 @media (min-width: 640px) {
   .content {
-    padding: 28px;
+    padding: 30px 25px 25px;
   }
 }

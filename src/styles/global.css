@@ -13,8 +13,8 @@
   --color-brand-strong: var(--color-purple-dark);
   --color-accent: var(--color-yellow);
 
-  --font-display: 'Gilroy', 'Inter', system-ui, -apple-system, sans-serif;
-  --font-body: 'Gotham', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Onest', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Onest', 'Inter', system-ui, -apple-system, sans-serif;
 
   --radius-card: var(--radius-lg);
   --radius-control: var(--radius-pill);

@@ -124,7 +124,7 @@ export function EventsPage() {
   };
 
   return (
-    <main className={styles.root}>
+    <main id="main" className={styles.root}>
       <h1 className={styles.heading}>Мероприятия</h1>
 
       <section className={styles.calendar} aria-label="Календарь мероприятий">

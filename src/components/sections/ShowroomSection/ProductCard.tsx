@@ -20,9 +20,9 @@ export function ProductCard({ product, onAddToCart, onDetails }: ProductCardProp
       href="#"
       actionLabel="В корзину"
       action={onAddToCart ? () => onAddToCart(product) : undefined}
-      descriptionClassName="text-[length:var(--text-card-title)] leading-[var(--leading-tight)]"
       secondaryActionLabel="Подробнее"
       secondaryAction={onDetails ? () => onDetails(product) : undefined}
+      actionsLayout="row"
     />
   );
 }

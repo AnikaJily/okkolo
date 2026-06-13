@@ -84,12 +84,15 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
               </button>
 
               <div className={styles.summary}>
+                <span className={styles.tag}>{event.dateLabel}</span>
                 <Dialog.Title className={styles.heading}>Записаться</Dialog.Title>
                 <Dialog.Description className={styles.eventTitle}>
-                  {event.title}, {event.dateLabel}
+                  {event.title}
                 </Dialog.Description>
                 {event.isPaid && event.price ? (
-                  <p className={styles.price}>{priceFormatter.format(event.price)}</p>
+                  <p className={styles.price}>
+                    Цена: {priceFormatter.format(event.price)}
+                  </p>
                 ) : null}
               </div>
 
@@ -140,54 +143,61 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
 
                 <Button
                   variant="primary"
-                  size="sm"
+                  size="md"
                   fullWidth
                   type="submit"
-                  disabled={submitStatus === 'submitting'}
+                  disabled={submitStatus === 'submitting' || submitStatus === 'success'}
                 >
-                  {submitStatus === 'submitting' ? 'Отправляем...' : 'Отправить заявку'}
+                  {submitStatus === 'submitting'
+                    ? 'Отправляем...'
+                    : submitStatus === 'success'
+                    ? 'Заявка отправлена'
+                    : 'Отправить заявку'}
                 </Button>
 
-                {submitStatus === 'success' ? (
-                  <div className={styles.successBlock}>
-                    <p className={styles.success}>
-                      {demoPaymentComplete
-                        ? 'Демо-оплата прошла. В реальной версии здесь заявка подтвердится после оплаты.'
-                        : isPaidEvent
-                        ? 'Спасибо, мы получили вашу заявку. Она будет подтверждена после оплаты.'
-                        : 'Спасибо, мы получили вашу заявку.'}
-                    </p>
-                    {isPaidEvent && event.paymentUrl ? (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        fullWidth
-                        href={event.paymentUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Перейти к оплате
-                      </Button>
-                    ) : null}
-                    {isPaidEvent && !event.paymentUrl && !demoPaymentComplete ? (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        fullWidth
-                        type="button"
-                        onClick={() => setDemoPaymentComplete(true)}
-                      >
-                        Демо-оплата 0 ₽
-                      </Button>
-                    ) : null}
-                  </div>
-                ) : null}
+                {/* Контейнеры статусов существуют в DOM заранее (SC 4.1.3) — паттерн WorkshopsPage */}
+                <div className={styles.successBlock} role="status">
+                  {submitStatus === 'success' ? (
+                    <>
+                      <p className={styles.success}>
+                        {demoPaymentComplete
+                          ? 'Демо-оплата прошла. В реальной версии здесь заявка подтвердится после оплаты.'
+                          : isPaidEvent
+                          ? 'Спасибо, мы получили вашу заявку. Она будет подтверждена после оплаты.'
+                          : 'Спасибо, мы получили вашу заявку.'}
+                      </p>
+                      {isPaidEvent && event.paymentUrl ? (
+                        <Button
+                          variant="outline"
+                          size="md"
+                          fullWidth
+                          href={event.paymentUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Перейти к оплате
+                        </Button>
+                      ) : null}
+                      {isPaidEvent && !event.paymentUrl && !demoPaymentComplete ? (
+                        <Button
+                          variant="outline"
+                          size="md"
+                          fullWidth
+                          type="button"
+                          onClick={() => setDemoPaymentComplete(true)}
+                        >
+                          Демо-оплата 0 ₽
+                        </Button>
+                      ) : null}
+                    </>
+                  ) : null}
+                </div>
 
-                {submitStatus === 'error' ? (
-                  <p className={styles.error}>
-                    Не получилось отправить заявку. Попробуйте еще раз.
-                  </p>
-                ) : null}
+                <p className={styles.error} role="alert">
+                  {submitStatus === 'error'
+                    ? 'Не получилось отправить заявку. Попробуйте еще раз.'
+                    : ''}
+                </p>
               </form>
             </>
           ) : null}
