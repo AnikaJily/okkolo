@@ -35,11 +35,6 @@ export function Footer() {
                   </a>
                 </li>
               ))}
-              <li>
-                <a href="/#about" className={styles.navLink}>
-                  О проекте
-                </a>
-              </li>
             </ul>
           </nav>
 

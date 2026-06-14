@@ -13,6 +13,7 @@ import { WorkshopsPage } from '@/components/pages/WorkshopsPage';
 import { CafePage } from '@/components/pages/CafePage';
 import { AccessibilityPage } from '@/components/pages/AccessibilityPage';
 import { ReportsPage } from '@/components/pages/ReportsPage';
+import { AboutPage } from '@/components/pages/AboutPage';
 import { CartProvider } from '@/context/CartContext';
 import styles from './App.module.css';
 
@@ -24,6 +25,7 @@ export function App() {
   const isCafePage = pathname === '/cafe';
   const isAccessibilityPage = pathname === '/accessibility';
   const isReportsPage = pathname === '/reports';
+  const isAboutPage = pathname === '/about';
   const eventDetailId = pathname.match(/^\/events\/([^/]+)$/)?.[1];
 
   useEffect(() => {
@@ -55,6 +57,8 @@ export function App() {
             <AccessibilityPage />
           ) : isReportsPage ? (
             <ReportsPage />
+          ) : isAboutPage ? (
+            <AboutPage />
           ) : (
             <main id="main" className={styles.main}>
               <HeroSection />

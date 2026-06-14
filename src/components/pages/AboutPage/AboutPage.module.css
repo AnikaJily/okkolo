@@ -1,0 +1,564 @@
+.root {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  width: 100%;
+  box-sizing: border-box;
+  padding-top: 24px;
+  padding-bottom: max(100px, env(safe-area-inset-bottom));
+  padding-inline: max(var(--page-padding-x), env(safe-area-inset-left))
+    max(var(--page-padding-x), env(safe-area-inset-right));
+  overflow-x: clip;
+}
+
+/* Фоновые «пятна» — как на остальных страницах (Figma 357:1978 / 357:1979) */
+.root::before,
+.root::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 999px;
+  filter: blur(48px);
+  opacity: 0.85;
+}
+
+.root::before {
+  width: 200px;
+  height: 200px;
+  top: 40px;
+  right: -90px;
+  background: radial-gradient(circle, rgba(254, 221, 91, 0.85) 0%, rgba(254, 221, 91, 0) 72%);
+}
+
+.root::after {
+  width: 300px;
+  height: 190px;
+  left: -130px;
+  top: 48%;
+  transform: rotate(-24deg);
+  background: radial-gradient(circle, rgba(197, 148, 232, 0.55) 0%, rgba(197, 148, 232, 0) 72%);
+}
+
+.section {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+  scroll-margin-top: var(--header-offset);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-section-title);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  text-box: trim-both cap alphabetic;
+}
+
+.sectionLead {
+  margin: 0;
+  max-width: 760px;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+/* Жёлтая плашка-тег (Figma): без скругления, padding 8×12 */
+.eyebrow {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  background-color: var(--color-yellow);
+  padding: 8px 12px;
+  font-family: var(--font-display);
+  font-size: var(--text-tag);
+  font-weight: 500;
+  line-height: normal;
+  color: var(--color-text);
+}
+
+/* ── Hero ─────────────────────────────────────────────────────────── */
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.heroTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-section-title);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  text-wrap: balance;
+  text-box: trim-both cap alphabetic;
+}
+
+.heroLead {
+  margin: 0;
+  max-width: 620px;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.tagline {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-card-title);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-purple-text);
+  text-box: trim-both cap alphabetic;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+/* ── Плейсхолдеры фото ────────────────────────────────────────────── */
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-purple-subtle);
+}
+
+.placeholderText {
+  padding: 12px;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  line-height: normal;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.heroMedia {
+  min-height: 240px;
+}
+
+/* ── Миссия / проблема ────────────────────────────────────────────── */
+.problemsTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-card-title);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  text-box: trim-both cap alphabetic;
+}
+
+.problemsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.problemCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px 22px;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.problemMarker {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background-color: var(--color-purple);
+}
+
+.problemText {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.callout {
+  display: flex;
+  flex-direction: column;
+  max-width: 860px;
+  padding: 28px;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-purple-subtle);
+}
+
+.calloutText {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-card-title);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--color-purple-text);
+  text-box: trim-both cap alphabetic;
+}
+
+/* ── Цифры ────────────────────────────────────────────────────────── */
+.statsBand {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-size: var(--text-section-title);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-purple-text);
+  text-box: trim-both cap alphabetic;
+}
+
+.statLabel {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--color-muted);
+}
+
+/* ── Карточки (рабочие места и «чем живём») ───────────────────────── */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  padding: 24px;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.cardThumb {
+  min-height: 150px;
+  border-radius: var(--radius-lg);
+}
+
+.cardTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-card-title);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  text-wrap: balance;
+  text-box: trim-both cap alphabetic;
+}
+
+.cardText {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--color-muted);
+}
+
+/* ── Партнёры ─────────────────────────────────────────────────────── */
+.partnersStrip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.partnerCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 96px;
+  padding: 20px;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  font-family: var(--font-display);
+  font-size: var(--text-card-title);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  text-align: center;
+  color: var(--color-text);
+}
+
+.partnersNote {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+/* ── Команда ──────────────────────────────────────────────────────── */
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.teamCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.teamPhoto {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-lg);
+  /* Жёлтая рамка-акцент: фирменный жёлтый из дека, ширина 3px как у Button */
+  border: 3px solid var(--color-yellow);
+}
+
+.teamName {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-text);
+  text-box: trim-both cap alphabetic;
+}
+
+.teamRole {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--color-muted);
+}
+
+/* ── Контакты ─────────────────────────────────────────────────────── */
+.contactCard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 760px;
+  padding: 28px;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-purple-subtle);
+}
+
+.contactPerson {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contactPersonName {
+  font-family: var(--font-display);
+  font-size: var(--text-card-title);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  text-box: trim-both cap alphabetic;
+}
+
+.contactPersonRole {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.contactList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contactLink {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  color: var(--color-purple-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.contactLink:hover {
+  text-decoration-thickness: 2px;
+}
+
+.contactAddress {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.inlineLink {
+  color: var(--color-purple-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.inlineLink:hover {
+  text-decoration-thickness: 2px;
+}
+
+.contactActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ── Адаптив ──────────────────────────────────────────────────────── */
+@media (min-width: 640px) {
+  .root {
+    gap: 64px;
+    padding-top: 32px;
+  }
+
+  .problemsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .statsBand {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .cardsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .partnersStrip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .teamGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .root {
+    gap: 80px;
+    padding-top: 40px;
+  }
+
+  .section {
+    gap: 32px;
+  }
+
+  .hero {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 60px;
+  }
+
+  .heroContent {
+    flex: 0 0 min(560px, 52%);
+    gap: 28px;
+    justify-content: center;
+  }
+
+  .heroMedia {
+    flex: 1 1 0;
+    min-height: 360px;
+  }
+
+  .teamGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 28px 20px;
+  }
+
+  .teamName {
+    font-size: var(--text-body);
+  }
+
+  .root::before {
+    width: 320px;
+    height: 320px;
+    top: 40px;
+    right: 8%;
+  }
+
+  .root::after {
+    width: 440px;
+    height: 230px;
+    left: -60px;
+    top: 55%;
+  }
+}
+
+@media (min-width: 1440px) {
+  .root {
+    padding-inline: 100px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root::before,
+  .root::after {
+    filter: none;
+  }
+}

@@ -33,6 +33,7 @@ export const OKKOLO_HOURS = [
 /* Порядок — по макету Figma */
 export const NAV_ITEMS = [
   { label: 'Главная', href: '/' },
+  { label: 'О нас', href: '/about' },
   { label: 'Мероприятия', href: '/events' },
   { label: 'Шоурум', href: '/showroom' },
   { label: 'Мастерские', href: '/workshops' },
