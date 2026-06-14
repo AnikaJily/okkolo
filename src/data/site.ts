@@ -1,4 +1,5 @@
 export const SUPPORT_HREF = 'mailto:hello@okkolo.ru';
+export const CONTACT_EMAIL = 'hello@okkolo.ru';
 
 /**
  * Телефон для записи в мастерские.
@@ -8,9 +9,11 @@ export const SUPPORT_HREF = 'mailto:hello@okkolo.ru';
  */
 export const CONTACT_PHONE = '';
 export const CONTACT_PHONE_DISPLAY = '';
+export const CONTACT_PHONE_HOURS = ['Пн–Чт 11:00–18:00', 'Пт–Вс 12:00–20:00'] as const;
 
 export const OKKOLO_ADDRESS = 'Краснодар, ул. Зиповская, 9К';
 export const OKKOLO_MAP_URL = 'https://2gis.ru/krasnodar/firm/70000001067242910';
+export const ACCESSIBILITY_HREF = '/accessibility';
 
 /* Порядок — по макету Figma */
 export const NAV_ITEMS = [
