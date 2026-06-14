@@ -1,0 +1,365 @@
+.root {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+  box-sizing: border-box;
+  padding-top: 30px;
+  padding-bottom: max(80px, env(safe-area-inset-bottom));
+  padding-inline: max(var(--page-padding-x), env(safe-area-inset-left))
+    max(var(--page-padding-x), env(safe-area-inset-right));
+  overflow-x: clip;
+}
+
+/* Легкие фоновые блики — фирменный прием страниц «Окколо» */
+.root::before,
+.root::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 999px;
+  filter: blur(56px);
+  opacity: 0.85;
+}
+
+.root::before {
+  width: 220px;
+  height: 220px;
+  top: 80px;
+  right: -100px;
+  background: radial-gradient(circle, rgba(254, 221, 91, 0.85) 0%, rgba(254, 221, 91, 0) 72%);
+}
+
+.root::after {
+  width: 320px;
+  height: 200px;
+  left: -140px;
+  top: 55%;
+  transform: rotate(-22deg);
+  background: radial-gradient(circle, rgba(197, 148, 232, 0.5) 0%, rgba(197, 148, 232, 0) 72%);
+}
+
+.panel,
+.updatedWrap,
+.heading {
+  position: relative;
+  z-index: 1;
+}
+
+/* header-1 — по центру, как на странице «Мероприятия» */
+.heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-section-title);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  text-align: center;
+  text-box: trim-both cap alphabetic;
+  scroll-margin-top: var(--header-offset);
+}
+
+/* —— Табы: по центру, под заголовком */
+.tablist {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  padding: 6px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-purple-subtle);
+  overflow-x: auto;
+  scrollbar-width: none;
+  align-self: center;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: 32px;
+}
+
+.tablist::-webkit-scrollbar {
+  display: none;
+}
+
+.tab,
+.tabActive {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: transparent;
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: var(--text-tag);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--color-text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.tab:hover {
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.tabActive {
+  background-color: var(--color-yellow);
+  font-weight: 600;
+  box-shadow: var(--shadow-card);
+}
+
+.tab:focus-visible,
+.tabActive:focus-visible {
+  outline: 2px solid var(--color-purple-dark);
+  outline-offset: 2px;
+}
+
+.tab:active,
+.tabActive:active {
+  transform: translateY(1px);
+}
+
+/* —— Панель таба */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  scroll-margin-top: var(--header-offset);
+}
+
+/* —— Группы (год / категория документов) */
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.groupHeading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-card-title);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  text-box: trim-both cap alphabetic;
+}
+
+/* —— Список файлов */
+.fileList {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fileItem {
+  min-width: 0;
+}
+
+.fileLink,
+.fileLinkPending {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  text-decoration: none;
+  color: var(--color-text);
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+  min-height: 64px;
+  box-sizing: border-box;
+}
+
+.fileLink {
+  cursor: pointer;
+}
+
+.fileLink:hover {
+  background-color: var(--color-purple-subtle);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.fileLink:active {
+  transform: translateY(1px);
+}
+
+.fileLink:focus-visible {
+  outline: 2px solid var(--color-purple-dark);
+  outline-offset: 2px;
+}
+
+.fileLinkPending {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.fileIcon {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 38px;
+}
+
+.fileTitle {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--color-text);
+  word-break: break-word;
+}
+
+.fileMeta,
+.fileMetaPending {
+  flex: 0 0 auto;
+  font-family: var(--font-display);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.fileMeta {
+  background-color: var(--color-yellow);
+  color: var(--color-text);
+}
+
+.fileMetaPending {
+  background-color: var(--color-purple-subtle);
+  color: var(--color-purple-text);
+}
+
+.empty {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+/* —— Подпись «обновлено» */
+.updatedWrap {
+  margin-top: -4px;
+}
+
+.updated {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+/* —— Адаптивность */
+@media (min-width: 640px) {
+  .root {
+    gap: 48px;
+    padding-top: 32px;
+  }
+
+  .tab,
+  .tabActive {
+    padding: 12px 22px;
+    font-size: var(--text-caption);
+  }
+
+  .tablist {
+    margin-bottom: 40px;
+  }
+
+  .fileList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .fileLink,
+  .fileLinkPending {
+    padding: 16px 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .root {
+    gap: 56px;
+    padding-top: 44px;
+    padding-bottom: 80px;
+  }
+
+  .tab,
+  .tabActive {
+    padding: 14px 28px;
+  }
+
+  .tablist {
+    margin-bottom: 48px;
+  }
+
+  .group {
+    gap: 24px;
+  }
+
+  .fileList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .fileLink,
+  .fileLinkPending {
+    padding: 18px 24px;
+    min-height: 72px;
+  }
+
+  .root::before {
+    width: 320px;
+    height: 320px;
+    top: 60px;
+    right: calc(20% - 60px);
+  }
+
+  .root::after {
+    width: 440px;
+    height: 240px;
+    left: -80px;
+    top: 60%;
+  }
+}
+
+@media (min-width: 1440px) {
+  .root {
+    padding-inline: 100px;
+  }
+
+  .fileList {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root::before,
+  .root::after {
+    filter: none;
+  }
+}

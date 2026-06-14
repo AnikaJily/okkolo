@@ -138,7 +138,7 @@
   transform: scale(1.05);
 }
 
-/* Figma «Progress Tags»: жёлтая плашка без скругления, под фото */
+/* Figma «Progress Tags»: желтая плашка без скругления, под фото */
 .previewMeta {
   display: inline-flex;
   width: fit-content;

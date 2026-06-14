@@ -1,10 +1,29 @@
+import { useEffect, useState } from 'react';
 import { Picture } from '@/components/ui/Picture';
-import { cafeMenus } from '@/data/cafe';
+import {
+  cafeMenusFromFallback,
+  loadCafeMenus,
+  type CafeMenuView,
+} from '@/lib/cafe';
 import styles from './CafePage.module.css';
 
 const GALLERY_PLACEHOLDERS = ['Фото интерьера', 'Фото бара', 'Фото зала'];
 
 export function CafePage() {
+  /* Стартуем со статичных меню — пока CMS не ответила, страница уже выглядит как обычно */
+  const [menus, setMenus] = useState<CafeMenuView[]>(() => cafeMenusFromFallback());
+
+  useEffect(() => {
+    let cancelled = false;
+    loadCafeMenus().then((result) => {
+      if (cancelled) return;
+      if (!result.isFallback) setMenus(result.menus);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <main id="main" className={styles.root}>
       <section className={styles.intro} aria-labelledby="cafe-heading">
@@ -19,7 +38,7 @@ export function CafePage() {
             напитков.
           </p>
           <p>
-            Каждый купленный стакан помогает проекту жить: выручка кофейни идёт
+            Каждый купленный стакан помогает проекту жить: выручка кофейни идет
             на обучение и трудоустройство новых ребят. Зайдите на чашку — это и
             есть самый простой способ нас поддержать.
           </p>
@@ -27,14 +46,24 @@ export function CafePage() {
       </section>
 
       <section className={styles.menus} aria-label="Меню кофейни">
-        {cafeMenus.map((menu) => (
+        {menus.map((menu) => (
           <figure key={menu.id} className={styles.menuFigure}>
-            <Picture
-              picture={menu.picture}
-              alt={menu.alt}
-              className={styles.menuImage}
-              sizes="(min-width: 1024px) 50vw, 100vw"
-            />
+            {menu.picture ? (
+              <Picture
+                picture={menu.picture}
+                alt={menu.alt}
+                className={styles.menuImage}
+                sizes="(min-width: 1024px) 50vw, 100vw"
+              />
+            ) : menu.imageUrl ? (
+              <img
+                src={menu.imageUrl}
+                alt={menu.alt}
+                className={styles.menuImage}
+                loading="lazy"
+                decoding="async"
+              />
+            ) : null}
             <figcaption className={styles.menuCaption}>{menu.title}</figcaption>
 
             <details className={styles.menuText}>

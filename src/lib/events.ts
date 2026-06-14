@@ -2,8 +2,8 @@ import { events as fallbackEvents } from '@/data/events';
 import type { OkkoloEvent } from '@/data/events';
 import { SUPPORT_HREF } from '@/data/site';
 import {
+  collectStrapiImageUrls,
   fetchEvents,
-  getStrapiImageUrl,
   type StrapiEventItem,
 } from '@/lib/strapi';
 
@@ -31,20 +31,24 @@ function formatEventAdmission(isPaid: boolean, price?: number | null) {
 
 export function toEvent(item: StrapiEventItem, index: number): OkkoloEvent {
   const isPaid = item.isPaid ?? false;
+  /* slug — приоритетный идентификатор в URL; documentId — фоллбэк до миграции */
+  const slug = item.slug?.trim() || item.documentId;
+  const galleryUrls = collectStrapiImageUrls(item.photo, item.gallery);
+  const cover = galleryUrls[0] ?? fallbackEvents[index]?.image ?? fallbackEvents[0].image;
 
   return {
-    id: item.documentId,
+    id: slug,
     title: item.title,
     date: item.date,
     dateLabel: formatEventDate(item.date),
     admission: formatEventAdmission(isPaid, item.price),
     description: item.description ?? undefined,
-    href: item.href ?? `/events/${item.documentId}`,
+    href: item.href ?? `/events/${slug}`,
     signupHref: item.signupHref ?? SUPPORT_HREF,
     isPaid,
     price: item.price ?? undefined,
     paymentUrl: item.paymentUrl ?? undefined,
-    image: getStrapiImageUrl(item.photo) ?? fallbackEvents[index]?.image ?? fallbackEvents[0].image,
+    image: cover,
   };
 }
 
@@ -85,5 +89,8 @@ export async function loadEvents() {
 
 export async function loadEventById(eventId: string) {
   const events = await loadEvents();
-  return events.find((event) => event.id === eventId || event.href.endsWith(`/${eventId}`));
+  /* eventId из URL может быть slug, documentId или legacy-ид мока */
+  return events.find(
+    (event) => event.id === eventId || event.href.endsWith(`/${eventId}`),
+  );
 }

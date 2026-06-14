@@ -1,7 +1,8 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Button } from '@/components/ui/Button';
+import { Checkbox } from '@/components/ui/Checkbox';
 import type { OkkoloEvent } from '@/data/events';
 import { createEventRegistration } from '@/lib/strapi';
 import styles from './EventSignupModal.module.css';
@@ -21,10 +22,13 @@ const priceFormatter = new Intl.NumberFormat('ru-RU', {
 });
 
 export function EventSignupModal({ event, open, onOpenChange }: EventSignupModalProps) {
+  const fieldIdPrefix = useId();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
+  const [consent, setConsent] = useState(false);
+  const [consentError, setConsentError] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
   const [demoPaymentComplete, setDemoPaymentComplete] = useState(false);
   const isPaidEvent = Boolean(event?.isPaid);
@@ -35,6 +39,8 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
       setPhone('');
       setEmail('');
       setComment('');
+      setConsent(false);
+      setConsentError(false);
       setSubmitStatus('idle');
       setDemoPaymentComplete(false);
     }
@@ -43,6 +49,11 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
   const handleSubmit = async (formEvent: FormEvent<HTMLFormElement>) => {
     formEvent.preventDefault();
     if (!event || submitStatus === 'submitting') return;
+
+    if (!consent) {
+      setConsentError(true);
+      return;
+    }
 
     setSubmitStatus('submitting');
 
@@ -61,6 +72,7 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
       setPhone('');
       setEmail('');
       setComment('');
+      setConsent(false);
     } catch (error) {
       console.error(error);
       setSubmitStatus('error');
@@ -96,60 +108,89 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
                 ) : null}
               </div>
 
-              <form className={styles.form} onSubmit={handleSubmit}>
-                <label className={styles.field}>
-                  <span className={styles.label}>Имя</span>
+              <form className={styles.form} onSubmit={handleSubmit} noValidate>
+                <div className={styles.field}>
+                  <label htmlFor={`${fieldIdPrefix}-name`} className={styles.label}>
+                    Имя*
+                  </label>
                   <input
+                    id={`${fieldIdPrefix}-name`}
                     className={styles.input}
                     value={name}
                     onChange={(changeEvent) => setName(changeEvent.target.value)}
                     required
                     autoComplete="name"
                   />
-                </label>
+                </div>
 
-                <label className={styles.field}>
-                  <span className={styles.label}>Телефон</span>
+                <div className={styles.field}>
+                  <label htmlFor={`${fieldIdPrefix}-phone`} className={styles.label}>
+                    Телефон*
+                  </label>
                   <input
+                    id={`${fieldIdPrefix}-phone`}
                     className={styles.input}
                     value={phone}
                     onChange={(changeEvent) => setPhone(changeEvent.target.value)}
                     required
                     type="tel"
+                    inputMode="tel"
                     autoComplete="tel"
                   />
-                </label>
+                </div>
 
-                <label className={styles.field}>
-                  <span className={styles.label}>Email, если удобно</span>
+                <div className={styles.field}>
+                  <label htmlFor={`${fieldIdPrefix}-email`} className={styles.label}>
+                    Email, если удобно
+                  </label>
                   <input
+                    id={`${fieldIdPrefix}-email`}
                     className={styles.input}
                     value={email}
                     onChange={(changeEvent) => setEmail(changeEvent.target.value)}
                     type="email"
                     autoComplete="email"
                   />
-                </label>
+                </div>
 
-                <label className={styles.field}>
-                  <span className={styles.label}>Комментарий</span>
+                <div className={styles.field}>
+                  <label htmlFor={`${fieldIdPrefix}-comment`} className={styles.label}>
+                    Комментарий
+                  </label>
                   <textarea
+                    id={`${fieldIdPrefix}-comment`}
                     className={`${styles.input} ${styles.textarea}`}
                     value={comment}
                     onChange={(changeEvent) => setComment(changeEvent.target.value)}
                     rows={3}
                   />
-                </label>
+                </div>
+
+                <Checkbox
+                  id={`${fieldIdPrefix}-consent`}
+                  checked={consent}
+                  error={consentError}
+                  onChange={(changeEvent) => {
+                    setConsent(changeEvent.target.checked);
+                    if (changeEvent.target.checked) {
+                      setConsentError(false);
+                    }
+                  }}
+                  required
+                >
+                  Согласие на обработку персональных данных
+                </Checkbox>
 
                 <Button
                   variant="primary"
-                  size="md"
+                  size="lg"
                   fullWidth
                   type="submit"
+                  className={styles.submitButton}
                   disabled={submitStatus === 'submitting' || submitStatus === 'success'}
                 >
                   {submitStatus === 'submitting'
-                    ? 'Отправляем...'
+                    ? 'Отправляем…'
                     : submitStatus === 'success'
                     ? 'Заявка отправлена'
                     : 'Отправить заявку'}

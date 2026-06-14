@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useId, useMemo, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/Button';
+import { Checkbox } from '@/components/ui/Checkbox';
 import { IconButton } from '@/components/ui/IconButton';
 import { Sheet, SheetClose, SheetContent, SheetTitle } from '@/components/ui/Sheet';
 import { useCart } from '@/context/CartContext';
@@ -18,6 +19,7 @@ interface CartSheetProps {
 type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
 
 export function CartSheet({ open, onOpenChange, orderingDisabled = false }: CartSheetProps) {
+  const fieldIdPrefix = useId();
   const { items, totalPrice, removeItem, clearCart } = useCart();
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
@@ -26,6 +28,8 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
   const [deliveryComment, setDeliveryComment] = useState('');
+  const [consent, setConsent] = useState(false);
+  const [consentError, setConsentError] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
 
   const isDelivery = fulfillmentType === 'delivery';
@@ -45,6 +49,8 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
       setCity('');
       setAddress('');
       setDeliveryComment('');
+      setConsent(false);
+      setConsentError(false);
       setSubmitStatus('idle');
     }
   }, [open]);
@@ -52,6 +58,11 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
   const handleSubmit = async (formEvent: FormEvent<HTMLFormElement>) => {
     formEvent.preventDefault();
     if (items.length === 0 || submitStatus === 'submitting' || orderingDisabled) return;
+
+    if (!consent) {
+      setConsentError(true);
+      return;
+    }
 
     setSubmitStatus('submitting');
 
@@ -103,7 +114,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
             <p className={styles.successText}>
               {isDelivery
                 ? 'Мы свяжемся с вами для уточнения доставки.'
-                : 'Ждём вас в шоуруме — мы позвоним для подтверждения.'}
+                : 'Ждем вас в шоуруме — мы позвоним для подтверждения.'}
             </p>
             <Button variant="primary" size="md" fullWidth onClick={() => onOpenChange(false)}>
               Закрыть
@@ -137,11 +148,14 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
               ))}
             </ul>
 
-            <form className={styles.checkout} onSubmit={handleSubmit}>
+            <form className={styles.checkout} onSubmit={handleSubmit} noValidate>
               <p className={styles.formHeading}>Контакты</p>
-              <label className={styles.field}>
-                <span className={styles.label}>Имя</span>
+              <div className={styles.field}>
+                <label htmlFor={`${fieldIdPrefix}-name`} className={styles.label}>
+                  Имя*
+                </label>
                 <input
+                  id={`${fieldIdPrefix}-name`}
                   className={styles.input}
                   type="text"
                   name="customerName"
@@ -150,22 +164,29 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                   required
                   autoComplete="name"
                 />
-              </label>
-              <label className={styles.field}>
-                <span className={styles.label}>Телефон</span>
+              </div>
+              <div className={styles.field}>
+                <label htmlFor={`${fieldIdPrefix}-phone`} className={styles.label}>
+                  Телефон*
+                </label>
                 <input
+                  id={`${fieldIdPrefix}-phone`}
                   className={styles.input}
                   type="tel"
+                  inputMode="tel"
                   name="phone"
                   value={phone}
                   onChange={(event) => setPhone(event.target.value)}
                   required
                   autoComplete="tel"
                 />
-              </label>
-              <label className={styles.field}>
-                <span className={styles.label}>Email (необязательно)</span>
+              </div>
+              <div className={styles.field}>
+                <label htmlFor={`${fieldIdPrefix}-email`} className={styles.label}>
+                  Email
+                </label>
                 <input
+                  id={`${fieldIdPrefix}-email`}
                   className={styles.input}
                   type="email"
                   name="email"
@@ -173,7 +194,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                   onChange={(event) => setEmail(event.target.value)}
                   autoComplete="email"
                 />
-              </label>
+              </div>
 
               <p className={styles.formHeading}>Способ получения</p>
               {/* Не полу-ARIA radio: кнопки-переключатели с aria-pressed (паттерн дат EventsPage) */}
@@ -206,9 +227,12 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
 
               {isDelivery ? (
                 <>
-                  <label className={styles.field}>
-                    <span className={styles.label}>Город</span>
+                  <div className={styles.field}>
+                    <label htmlFor={`${fieldIdPrefix}-city`} className={styles.label}>
+                      Город*
+                    </label>
                     <input
+                      id={`${fieldIdPrefix}-city`}
                       className={styles.input}
                       type="text"
                       name="city"
@@ -217,13 +241,16 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                       required
                       autoComplete="address-level2"
                     />
-                  </label>
+                  </div>
                   {deliveryHint ? (
                     <p className={styles.deliveryHint}>Доставка: {deliveryHint}</p>
                   ) : null}
-                  <label className={styles.field}>
-                    <span className={styles.label}>Адрес</span>
+                  <div className={styles.field}>
+                    <label htmlFor={`${fieldIdPrefix}-address`} className={styles.label}>
+                      Адрес*
+                    </label>
                     <input
+                      id={`${fieldIdPrefix}-address`}
                       className={styles.input}
                       type="text"
                       name="address"
@@ -232,10 +259,13 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                       required
                       autoComplete="street-address"
                     />
-                  </label>
-                  <label className={styles.field}>
-                    <span className={styles.label}>Комментарий к доставке</span>
+                  </div>
+                  <div className={styles.field}>
+                    <label htmlFor={`${fieldIdPrefix}-deliveryComment`} className={styles.label}>
+                      Комментарий к доставке
+                    </label>
                     <textarea
+                      id={`${fieldIdPrefix}-deliveryComment`}
                       className={styles.textarea}
                       name="deliveryComment"
                       value={deliveryComment}
@@ -243,11 +273,26 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                       rows={2}
                       placeholder="Подъезд, этаж, время"
                     />
-                  </label>
+                  </div>
                 </>
               ) : (
                 <p className={styles.pickupHint}>Самовывоз из шоурума «Окколо» после подтверждения заказа.</p>
               )}
+
+              <Checkbox
+                id={`${fieldIdPrefix}-consent`}
+                checked={consent}
+                error={consentError}
+                onChange={(event) => {
+                  setConsent(event.target.checked);
+                  if (event.target.checked) {
+                    setConsentError(false);
+                  }
+                }}
+                required
+              >
+                Согласие на обработку персональных данных
+              </Checkbox>
 
               <div className={styles.footer}>
                 <div className={styles.totalRow}>
@@ -266,7 +311,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                 </div>
                 {submitStatus === 'error' ? (
                   <p className={styles.error} role="alert">
-                    Не удалось отправить заказ. Попробуйте ещё раз.
+                    Не удалось отправить заказ. Попробуйте еще раз.
                   </p>
                 ) : null}
                 {orderingDisabled ? (
@@ -280,6 +325,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                   size="lg"
                   fullWidth
                   type="submit"
+                  className={styles.submitButton}
                   disabled={
                     submitStatus === 'submitting' || items.length === 0 || orderingDisabled
                   }

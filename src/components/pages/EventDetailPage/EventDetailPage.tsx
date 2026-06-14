@@ -85,7 +85,7 @@ export function EventDetailPage({ eventId }: EventDetailPageProps) {
         <div className={styles.errorState}>
           <p className={styles.empty} role="alert">
             Не получилось загрузить мероприятие. Проверьте соединение и
-            попробуйте ещё раз.
+            попробуйте еще раз.
           </p>
           <Button
             variant="outline"

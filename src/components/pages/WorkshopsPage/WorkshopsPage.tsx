@@ -1,9 +1,6 @@
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
-import {
-  ACCESSIBILITY_HREF,
-  OKKOLO_ADDRESS,
-  OKKOLO_MAP_URL,
-} from '@/data/site';
+import { ACCESSIBILITY_HREF, OKKOLO_ADDRESS } from '@/data/site';
 import {
   WORKSHOPS_AFTER_CALLOUTS,
   WORKSHOPS_AFTER_INTRO,
@@ -24,9 +21,22 @@ function PhotoPlaceholder() {
   );
 }
 
-function CalloutCard({ tag, text }: { tag: string; text: string }) {
+function CalloutCard({
+  tag,
+  text,
+  variant = 'important',
+}: {
+  tag: string;
+  text: string;
+  variant?: 'important' | 'interesting';
+}) {
   return (
-    <div className={styles.callout}>
+    <div
+      className={cn(
+        styles.callout,
+        variant === 'interesting' && styles.calloutInteresting,
+      )}
+    >
       <span className={styles.calloutTag}>{tag}</span>
       <p className={styles.calloutText}>{text}</p>
     </div>
@@ -43,10 +53,10 @@ export function WorkshopsPage() {
           </h1>
           <p className={styles.heroLead}>{WORKSHOPS_INTRO}</p>
           <div className={styles.heroActions}>
-            <Button variant="primary" href="#workshops-signup" className={styles.heroPrimaryButton}>
+            <Button variant="primary" size="lg" href="#workshops-signup">
               Записаться
             </Button>
-            <Button variant="outline" href="/#about" className={styles.heroOutlineButton}>
+            <Button variant="outline" size="lg" href="/#about">
               Узнать о проекте
             </Button>
           </div>
@@ -88,7 +98,12 @@ export function WorkshopsPage() {
           <div className={styles.splitText}>
             <p className={styles.bodyText}>{WORKSHOPS_AFTER_INTRO}</p>
             {WORKSHOPS_AFTER_CALLOUTS.map((item) => (
-              <CalloutCard key={item.text} tag={item.tag} text={item.text} />
+              <CalloutCard
+                key={item.text}
+                tag={item.tag}
+                text={item.text}
+                variant="interesting"
+              />
             ))}
           </div>
         </div>
@@ -104,13 +119,10 @@ export function WorkshopsPage() {
         <p className={styles.address}>{OKKOLO_ADDRESS}</p>
         <div className={styles.locationActions}>
           <p className={styles.locationNote}>Подробнее о физической доступности</p>
-          <Button variant="primary" href={ACCESSIBILITY_HREF} className={styles.locationButton}>
+          <Button variant="primary" size="lg" href={ACCESSIBILITY_HREF} className={styles.locationButton}>
             Доступность
           </Button>
         </div>
-        <a href={OKKOLO_MAP_URL} className={styles.mapLink} target="_blank" rel="noopener noreferrer">
-          Открыть на карте (2ГИС)
-        </a>
       </section>
     </main>
   );

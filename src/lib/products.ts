@@ -53,7 +53,9 @@ export interface LoadProductsResult {
 export async function loadProducts(): Promise<LoadProductsResult> {
   try {
     const items = await fetchProducts();
-    const products = items
+    /* На случай, если CMS вернёт записи с isAvailable=false без серверной фильтрации */
+    const visible = items.filter((item) => item.isAvailable !== false);
+    const products = visible
       .map((item, index) => toProduct(item, index))
       .filter((product): product is ShowroomProduct => product !== null);
     if (products.length > 0) return { products, isFallback: false };

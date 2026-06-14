@@ -25,6 +25,7 @@ export interface StrapiEventItem {
   id: number;
   documentId: string;
   title: string;
+  slug?: string | null;
   date: string;
   description?: string | null;
   href?: string | null;
@@ -33,6 +34,7 @@ export interface StrapiEventItem {
   price?: number | null;
   paymentUrl?: string | null;
   photo: StrapiImage | null;
+  gallery?: StrapiImage[] | null;
 }
 
 export type StrapiProductCategory = 'ceramics' | 'jewelry' | 'clothing' | 'textile';
@@ -47,6 +49,81 @@ export interface StrapiProductItem {
   cartUrl?: string | null;
   image: StrapiImage | null;
   gallery?: StrapiImage[] | null;
+  isAvailable?: boolean | null;
+}
+
+export interface StrapiFile {
+  id?: number;
+  documentId?: string;
+  url: string;
+  name?: string;
+  size?: number;
+  ext?: string;
+  mime?: string;
+}
+
+export interface StrapiCafeMenuPage {
+  id: number;
+  documentId: string;
+  mainPosterImage: StrapiImage | null;
+  mainPosterAlt: string | null;
+  summerPosterImage: StrapiImage | null;
+  summerPosterAlt: string | null;
+  footnote: string | null;
+}
+
+export type StrapiMenuCategory =
+  | 'coffee'
+  | 'tea'
+  | 'signature'
+  | 'topping'
+  | 'cold'
+  | 'lemonade';
+
+export type StrapiMenuSeason = 'main' | 'summer' | 'winter';
+
+export interface StrapiMenuItem {
+  id: number;
+  documentId: string;
+  name: string;
+  volume?: string | null;
+  price: string;
+  note?: string | null;
+  category: StrapiMenuCategory | string;
+  season: StrapiMenuSeason | string;
+  order?: number | null;
+  isAvailable?: boolean | null;
+}
+
+export interface StrapiMonthlyReport {
+  id: number;
+  documentId: string;
+  month: number;
+  year: number;
+  pdf: StrapiFile | null;
+  summary?: string | null;
+}
+
+export type StrapiAnnualReportKind = 'content' | 'finance' | 'nko-activity' | 'spending';
+
+export interface StrapiAnnualReport {
+  id: number;
+  documentId: string;
+  year: number;
+  kind: StrapiAnnualReportKind | string;
+  pdf: StrapiFile | null;
+  note?: string | null;
+}
+
+export type StrapiLegalDocumentCategory = 'requisites' | 'foundation' | 'privacy';
+
+export interface StrapiLegalDocument {
+  id: number;
+  documentId: string;
+  title: string;
+  category: StrapiLegalDocumentCategory | string;
+  pdf: StrapiFile | null;
+  order?: number | null;
 }
 
 export interface StrapiShowroomSettings {
@@ -72,7 +149,7 @@ export interface EventRegistrationInput {
   phone: string;
   email?: string;
   comment?: string;
-  paymentStatus?: 'pending' | 'not_required';
+  paymentStatus?: 'pending' | 'not_required' | 'paid';
 }
 
 export interface OrderLineInput {
@@ -109,6 +186,12 @@ export function getStrapiImageUrl(image: StrapiImage | null): string | null {
   if (!image) return null;
   const url = image.formats.large?.url ?? image.formats.medium?.url ?? image.url;
   return url.startsWith('http') ? url : `${STRAPI_URL}${url}`;
+}
+
+/** Прямая ссылка на медиа-файл (PDF, doc и т.п.) с учётом базового адреса CMS. */
+export function getStrapiFileUrl(file: StrapiFile | null): string | null {
+  if (!file?.url) return null;
+  return file.url.startsWith('http') ? file.url : `${STRAPI_URL}${file.url}`;
 }
 
 function getStrapiImageDedupKey(image: StrapiImage): string | null {
@@ -157,18 +240,64 @@ export async function fetchDirections(): Promise<StrapiDirectionItem[]> {
 }
 
 export async function fetchEvents(): Promise<StrapiEventItem[]> {
-  const res = await fetch(`${STRAPI_URL}/api/events?populate=photo&sort=date:asc`);
+  const res = await fetch(
+    `${STRAPI_URL}/api/events?populate[photo]=true&populate[gallery]=true&sort=date:asc`,
+  );
   if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
   const json: StrapiListResponse<StrapiEventItem> = await res.json();
   return json.data;
 }
 
 export async function fetchProducts(): Promise<StrapiProductItem[]> {
+  /* isAvailable=null/undefined у старых записей до миграции — пропустим, если не false */
   const res = await fetch(
-    `${STRAPI_URL}/api/products?populate[image]=true&populate[gallery]=true&sort=title:asc`,
+    `${STRAPI_URL}/api/products?populate[image]=true&populate[gallery]=true&sort=title:asc&filters[isAvailable][$ne]=false`,
   );
   if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
   const json: StrapiListResponse<StrapiProductItem> = await res.json();
+  return json.data;
+}
+
+export async function fetchCafeMenuPage(): Promise<StrapiCafeMenuPage | null> {
+  const res = await fetch(`${STRAPI_URL}/api/cafe-menu-page?populate=*`);
+  if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
+  const json: StrapiSingleResponse<StrapiCafeMenuPage> = await res.json();
+  return json.data ?? null;
+}
+
+export async function fetchMenuItems(): Promise<StrapiMenuItem[]> {
+  const res = await fetch(
+    `${STRAPI_URL}/api/menu-items?filters[isAvailable][$ne]=false&sort[0]=order:asc&sort[1]=name:asc&pagination[pageSize]=200`,
+  );
+  if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
+  const json: StrapiListResponse<StrapiMenuItem> = await res.json();
+  return json.data;
+}
+
+export async function fetchMonthlyReports(): Promise<StrapiMonthlyReport[]> {
+  const res = await fetch(
+    `${STRAPI_URL}/api/monthly-reports?populate=pdf&sort[0]=year:desc&sort[1]=month:desc&pagination[pageSize]=200`,
+  );
+  if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
+  const json: StrapiListResponse<StrapiMonthlyReport> = await res.json();
+  return json.data;
+}
+
+export async function fetchAnnualReports(): Promise<StrapiAnnualReport[]> {
+  const res = await fetch(
+    `${STRAPI_URL}/api/annual-reports?populate=pdf&sort[0]=year:desc&pagination[pageSize]=200`,
+  );
+  if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
+  const json: StrapiListResponse<StrapiAnnualReport> = await res.json();
+  return json.data;
+}
+
+export async function fetchLegalDocuments(): Promise<StrapiLegalDocument[]> {
+  const res = await fetch(
+    `${STRAPI_URL}/api/legal-documents?populate=pdf&sort=order:asc&pagination[pageSize]=200`,
+  );
+  if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
+  const json: StrapiListResponse<StrapiLegalDocument> = await res.json();
   return json.data;
 }
 

@@ -35,7 +35,7 @@ function isNamedWorkshopStudio(direction: { title: string }): boolean {
   return title.includes('студия') || title.includes('лаборатор');
 }
 
-/** Агрегирующая карточка раздела «Мастерские» — ведёт на страницу списка. */
+/** Агрегирующая карточка раздела «Мастерские» — ведет на страницу списка. */
 export function isWorkshopsHubDirection(direction: DirectionLike): boolean {
   const title = direction.title.trim().toLowerCase();
   const href = (direction.href ?? '').trim().toLowerCase().replace(/\/$/, '');

@@ -1,0 +1,1 @@
+export { ShowroomTeaser } from './ShowroomTeaser';

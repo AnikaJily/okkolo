@@ -80,10 +80,10 @@
 .dateScroller {
   display: flex;
   align-items: flex-start;
-  gap: 28px;
+  gap: 12px;
   overflow-x: auto;
   margin: 0 calc(var(--page-padding-x) * -1);
-  padding: 0 var(--page-padding-x) 6px;
+  padding: 4px var(--page-padding-x) 8px;
   scroll-padding-inline: var(--page-padding-x);
   scroll-snap-type: x proximity;
   scrollbar-width: none;
@@ -96,7 +96,7 @@
 .scrollArrow {
   position: absolute;
   right: 0;
-  top: 76px;
+  top: 88px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,13 +129,17 @@
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
-  gap: 28px;
+  gap: 16px;
   scroll-snap-align: start;
+  padding: 14px 16px 16px;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-purple-subtle);
 }
 
 .monthDates {
   display: flex;
   gap: 10px;
+  flex-wrap: nowrap;
 }
 
 .scrollArrowHidden {
@@ -182,7 +186,7 @@
 }
 
 .dateButton:hover {
-  background-color: var(--color-hover-soft);
+  background-color: rgba(255, 255, 255, 0.55);
 }
 
 .dateButton:focus-visible,
@@ -244,7 +248,12 @@
   }
 
   .dateScroller {
-    gap: 32px;
+    gap: 14px;
+  }
+
+  .monthGroup {
+    padding: 16px 20px 18px;
+    gap: 18px;
   }
 
   .monthDates {

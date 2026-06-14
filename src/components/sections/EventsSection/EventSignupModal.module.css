@@ -37,7 +37,7 @@
   color: var(--color-text);
   cursor: pointer;
   font-family: var(--font-display);
-  /* Визуальная высота ≈ жёлтой плашки (34–36px) */
+  /* Визуальная высота ≈ желтой плашки (34–36px) */
   font-size: 48px;
   font-weight: 500;
   line-height: 1;
@@ -60,7 +60,7 @@
   padding-right: 48px;
 }
 
-/* Жёлтая плашка с датой — как «Progress Tags» в Figma */
+/* Желтая плашка с датой — как «Progress Tags» в Figma */
 .tag {
   display: inline-flex;
   align-items: flex-end;
@@ -110,47 +110,54 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 25px;
   margin-top: 24px;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  font-family: var(--font-display);
+  gap: 15px;
 }
 
-/* tag */
 .label {
-  font-size: var(--text-tag);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
   font-weight: 500;
   line-height: normal;
-  color: var(--color-text-secondary);
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .input {
+  box-sizing: border-box;
   width: 100%;
+  height: 52px;
+  padding: 0 16px;
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-md);
-  background-color: var(--color-bg);
-  padding: 12px 14px;
-  font: inherit;
-  font-size: var(--text-tag);
+  background-color: var(--color-surface);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
   font-weight: 500;
   line-height: var(--leading-tight);
   color: var(--color-text);
 }
 
-/* Единый видимый фокус проекта (purple-subtle 12% был ~1.1:1 — невидим) */
+/* Единый видимый фокус проекта */
 .input:focus-visible {
   outline: 2px solid var(--color-purple-dark);
-  outline-offset: 1px;
+  outline-offset: 2px;
 }
 
 .textarea {
+  height: auto;
   min-height: 96px;
+  padding: 14px 16px;
   resize: vertical;
+}
+
+.submitButton {
+  border-radius: var(--radius-pill-card);
 }
 
 .successBlock {
@@ -163,9 +170,9 @@
 .error {
   margin: 0;
   font-family: var(--font-body);
-  font-size: var(--text-tag);
+  font-size: var(--text-caption);
   font-weight: 500;
-  line-height: var(--leading-tight);
+  line-height: 1.4;
 }
 
 .success {
@@ -173,7 +180,7 @@
 }
 
 .error {
-  color: var(--color-text);
+  color: #b00020;
 }
 
 @media (min-width: 640px) {

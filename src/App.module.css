@@ -54,7 +54,7 @@
 
 /*
   Фоновые «пятна» из макета (Figma 357:1978 / 357:1979):
-  фиолетовый эллипс под углом слева сверху + жёлтый круг справа.
+  фиолетовый эллипс под углом слева сверху + желтый круг справа.
   Размеры/позиции — из Desktop-фрейма, blur = stdDeviation из Figma.
 */
 .main::before,
@@ -101,21 +101,14 @@
 
 @media (min-width: 1024px) {
   .main {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      'hero'
-      'directions'
-      'events';
-    row-gap: 80px;
-    align-items: stretch;
+    gap: 80px;
     padding-top: 0;
     padding-inline: 0;
     padding-bottom: 80px;
   }
 
-  .main > :nth-child(2),
-  .main > :nth-child(3) {
+  /* HeroSection задаёт собственный padding-inline (макет Figma 1024+) — пропускаем */
+  .main > :not(:first-child) {
     padding-inline: var(--page-padding-x);
     box-sizing: border-box;
   }
@@ -134,18 +127,6 @@
     left: calc(75% - 35px);
     top: -127px;
     filter: blur(142px);
-  }
-
-  .main > :nth-child(1) {
-    grid-area: hero;
-  }
-
-  .main > :nth-child(2) {
-    grid-area: directions;
-  }
-
-  .main > :nth-child(3) {
-    grid-area: events;
   }
 }
 

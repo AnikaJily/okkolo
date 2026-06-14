@@ -4,12 +4,15 @@ import { Header } from '@/components/layout/Header';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { DirectionsSection } from '@/components/sections/DirectionsSection';
 import { EventsSection } from '@/components/sections/EventsSection';
+import { ShowroomTeaser } from '@/components/sections/ShowroomTeaser';
+import { LocationSection } from '@/components/sections/LocationSection';
 import { EventsPage } from '@/components/pages/EventsPage';
 import { EventDetailPage } from '@/components/pages/EventDetailPage';
 import { ShowroomPage } from '@/components/pages/ShowroomPage';
 import { WorkshopsPage } from '@/components/pages/WorkshopsPage';
 import { CafePage } from '@/components/pages/CafePage';
 import { AccessibilityPage } from '@/components/pages/AccessibilityPage';
+import { ReportsPage } from '@/components/pages/ReportsPage';
 import { CartProvider } from '@/context/CartContext';
 import styles from './App.module.css';
 
@@ -20,6 +23,7 @@ export function App() {
   const isWorkshopsPage = pathname === '/workshops';
   const isCafePage = pathname === '/cafe';
   const isAccessibilityPage = pathname === '/accessibility';
+  const isReportsPage = pathname === '/reports';
   const eventDetailId = pathname.match(/^\/events\/([^/]+)$/)?.[1];
 
   useEffect(() => {
@@ -49,11 +53,15 @@ export function App() {
             <CafePage />
           ) : isAccessibilityPage ? (
             <AccessibilityPage />
+          ) : isReportsPage ? (
+            <ReportsPage />
           ) : (
             <main id="main" className={styles.main}>
               <HeroSection />
               <DirectionsSection />
               <EventsSection />
+              <ShowroomTeaser />
+              <LocationSection />
             </main>
           )}
         </div>
