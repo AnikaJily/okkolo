@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
+import { Radio } from '@/components/ui/Radio';
 import {
   CONTACT_EMAIL,
   CONTACT_PHONE,
@@ -78,17 +79,17 @@ export function WorkshopsSignupSection() {
 
     const nextErrors: { name?: string; contact?: string } = {};
     if (!name.trim()) {
-      nextErrors.name = 'Напишите, как вас зовут.';
+      nextErrors.name = 'Напишите, как вас зовут';
     }
     if (!contactValue.trim()) {
       nextErrors.contact =
         contactMethod === 'phone'
-          ? 'Введите номер телефона.'
-          : 'Введите адрес электронной почты.';
+          ? 'Введите номер телефона'
+          : 'Введите адрес электронной почты';
     } else if (contactMethod === 'phone' && !isValidPhone(contactValue)) {
-      nextErrors.contact = 'Введите номер телефона, например +7 918 123-45-67.';
+      nextErrors.contact = 'Введите номер телефона, например +7 918 123-45-67';
     } else if (contactMethod === 'email' && !contactValue.includes('@')) {
-      nextErrors.contact = 'Введите адрес электронной почты.';
+      nextErrors.contact = 'Введите адрес электронной почты';
     }
     setErrors(nextErrors);
 
@@ -238,26 +239,24 @@ export function WorkshopsSignupSection() {
               Как с вами связаться?*
             </legend>
             <div className={styles.radioOptions}>
-              <label className={styles.radioOption}>
-                <input
-                  type="radio"
-                  name="contact-method"
-                  value="phone"
-                  checked={isPhoneContact}
-                  onChange={() => handleContactMethodChange('phone')}
-                />
-                <span>Позвонить</span>
-              </label>
-              <label className={styles.radioOption}>
-                <input
-                  type="radio"
-                  name="contact-method"
-                  value="email"
-                  checked={!isPhoneContact}
-                  onChange={() => handleContactMethodChange('email')}
-                />
-                <span>Написать</span>
-              </label>
+              <Radio
+                id="workshops-signup-contact-phone"
+                name="contact-method"
+                value="phone"
+                checked={isPhoneContact}
+                onChange={() => handleContactMethodChange('phone')}
+              >
+                Позвонить
+              </Radio>
+              <Radio
+                id="workshops-signup-contact-email"
+                name="contact-method"
+                value="email"
+                checked={!isPhoneContact}
+                onChange={() => handleContactMethodChange('email')}
+              >
+                Написать
+              </Radio>
             </div>
           </fieldset>
 
@@ -317,7 +316,7 @@ export function WorkshopsSignupSection() {
 
           <p className={styles.statusSuccess} role="status">
             {submitStatus === 'success'
-              ? 'Спасибо! Заявка отправлена. Мы свяжемся с вами в ближайшее время.'
+              ? 'Спасибо! Заявка отправлена. Мы свяжемся с вами в ближайшее время'
               : ''}
           </p>
           <p className={styles.statusError} role="alert">
@@ -326,7 +325,7 @@ export function WorkshopsSignupSection() {
                   CONTACT_PHONE_DISPLAY
                     ? ` — или позвоните нам: ${CONTACT_PHONE_DISPLAY}`
                     : ''
-                }.`
+                }`
               : ''}
           </p>
         </form>

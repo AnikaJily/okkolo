@@ -33,9 +33,15 @@ export function EventsSection() {
       className={styles.root}
       aria-labelledby="events-heading"
     >
-      <h2 id="events-heading" className={styles.heading}>
-        Ближайшие мероприятия
-      </h2>
+      <header className={`${styles.head} sectionHeadGap`}>
+        <h2 id="events-heading" className={styles.heading}>
+          Ближайшие мероприятия
+        </h2>
+        <p className={styles.lead}>
+          Киновечера, лекции и мастер-классы, совместные мероприятия с другими
+          организациями города.
+        </p>
+      </header>
 
       <ul className={styles.list}>
         {events.map((event) => (

@@ -1,0 +1,14 @@
+.root {
+  display: block;
+  flex-shrink: 0;
+}
+
+.sheet {
+  width: var(--icon-close-sheet);
+  height: var(--icon-close-sheet);
+}
+
+.dialog {
+  width: var(--icon-close-dialog);
+  height: var(--icon-close-dialog);
+}

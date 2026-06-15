@@ -1,5 +1,6 @@
 import { useEffect, useId, useMemo, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/Button';
+import { CloseIcon } from '@/components/ui/CloseIcon/CloseIcon';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { IconButton } from '@/components/ui/IconButton';
 import { Sheet, SheetClose, SheetContent, SheetTitle } from '@/components/ui/Sheet';
@@ -98,12 +99,10 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent variant="center" aria-describedby={undefined}>
         <div className="flex items-center justify-between gap-4">
-          <SheetTitle className="font-display text-xl font-semibold">Корзина</SheetTitle>
+          <SheetTitle className={styles.headerTitle}>Корзина</SheetTitle>
           <SheetClose asChild>
             <IconButton label="Закрыть корзину">
-              <span aria-hidden="true" className="text-3xl leading-none">
-                ×
-              </span>
+              <CloseIcon size="sheet" />
             </IconButton>
           </SheetClose>
         </div>
@@ -113,8 +112,8 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
             <p className={styles.successTitle}>Заказ оформлен</p>
             <p className={styles.successText}>
               {isDelivery
-                ? 'Мы свяжемся с вами для уточнения доставки.'
-                : 'Ждем вас в шоуруме — мы позвоним для подтверждения.'}
+                ? 'Мы свяжемся с вами для уточнения доставки'
+                : 'Ждем вас в шоуруме — мы позвоним для подтверждения'}
             </p>
             <Button variant="primary" size="md" fullWidth onClick={() => onOpenChange(false)}>
               Закрыть
@@ -311,13 +310,13 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                 </div>
                 {submitStatus === 'error' ? (
                   <p className={styles.error} role="alert">
-                    Не удалось отправить заказ. Попробуйте еще раз.
+                    Не удалось отправить заказ. Попробуйте еще раз
                   </p>
                 ) : null}
                 {orderingDisabled ? (
                   <p className={styles.error} role="status">
                     Каталог временно недоступен, заказ оформить нельзя. Напишите
-                    нам — поможем с покупкой.
+                    нам — поможем с покупкой
                   </p>
                 ) : null}
                 <Button

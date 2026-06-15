@@ -3,16 +3,6 @@
 @import './reset.css';
 
 @theme {
-  --color-background: var(--color-bg);
-  --color-surface: var(--color-surface);
-  --color-foreground: var(--color-text);
-  --color-foreground-inverse: var(--color-text-inverse);
-  --color-muted: var(--color-muted);
-  --color-border: var(--color-border);
-  --color-brand: var(--color-purple);
-  --color-brand-strong: var(--color-purple-dark);
-  --color-accent: var(--color-yellow);
-
   --font-display: 'Onest', 'Inter', system-ui, -apple-system, sans-serif;
   --font-body: 'Onest', 'Inter', system-ui, -apple-system, sans-serif;
 
@@ -26,9 +16,85 @@ body {
   font-size: var(--text-body);
   color: var(--color-text);
   background-color: var(--color-bg);
-  line-height: var(--leading-tight);
+  line-height: var(--leading-body);
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
+}
+
+/*
+  text-box-trim для всей типографики (как text-box-trim в Figma):
+  гэпы считаются от cap-height / baseline, хвосты р/у/г не раздувают flex-gap.
+  Не сочетать overflow: hidden / line-clamp на том же элементе — обрежет хвосты.
+*/
+:where(
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  li,
+  dt,
+  dd,
+  figcaption,
+  blockquote,
+  cite,
+  label,
+  legend,
+  th,
+  td,
+  caption,
+  summary,
+  a,
+  button,
+  span,
+  small,
+  strong,
+  em,
+  b,
+  i,
+  div
+) {
+  text-box: var(--text-box-trim);
+}
+
+input,
+textarea,
+select,
+pre,
+code,
+kbd,
+samp {
+  text-box: none;
+}
+
+/* Body: единая типографика (trim — глобально выше) */
+.bodyCopy {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: var(--leading-body);
+  color: var(--color-text);
+}
+
+.bodyCopyMuted {
+  color: var(--color-muted);
+}
+
+/*
+  Ритм «заголовок → lead/body»: 24px mobile, 40px desktop (Figma --gap-after-h1).
+  Вешать на flex-колонку вместе с локальным классом (.head, .intro, .heroContent…).
+*/
+.sectionHeadGap {
+  gap: 24px;
+}
+
+@media (min-width: 1024px) {
+  .sectionHeadGap {
+    gap: var(--gap-after-h1);
+  }
 }
 
 html {

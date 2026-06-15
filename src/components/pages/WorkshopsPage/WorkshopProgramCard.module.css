@@ -63,7 +63,6 @@
   color: var(--color-text);
   text-align: left;
   text-wrap: balance;
-  text-box: trim-both cap alphabetic;
 }
 
 .description {
@@ -71,8 +70,8 @@
   font-family: var(--font-body);
   font-size: var(--text-body);
   font-weight: 500;
-  line-height: normal;
-  color: rgba(0, 0, 0, 0.5);
+  line-height: var(--leading-body);
+  color: var(--color-muted);
   text-align: left;
 }
 

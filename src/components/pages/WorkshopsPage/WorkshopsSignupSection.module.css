@@ -15,7 +15,6 @@
   line-height: var(--leading-tight);
   text-align: center;
   color: var(--color-text);
-  text-box: trim-both cap alphabetic;
 }
 
 .panel {
@@ -93,7 +92,6 @@
   font-weight: 600;
   line-height: var(--leading-tight);
   color: var(--color-text);
-  text-box: trim-both cap alphabetic;
 }
 
 .directLead,
@@ -146,7 +144,7 @@
   font-size: var(--text-card-title);
   font-weight: 600;
   line-height: var(--leading-tight);
-  color: var(--color-purple-link);
+  color: var(--color-purple-dark);
   text-decoration: none;
 }
 
@@ -214,8 +212,7 @@
   font-size: var(--text-body);
   font-weight: 500;
   line-height: normal;
-  color: rgba(0, 0, 0, 0.6);
-  text-box: trim-both cap alphabetic;
+  color: var(--color-muted);
 }
 
 .fieldLabelStrong {
@@ -233,23 +230,6 @@
   flex-wrap: wrap;
   gap: 24px 32px;
   margin-top: 15px;
-}
-
-.radioOption {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-body);
-  font-size: var(--text-body);
-  font-weight: 500;
-  color: var(--color-text);
-  cursor: pointer;
-}
-
-.radioOption input {
-  width: 22px;
-  height: 22px;
-  accent-color: var(--color-purple);
 }
 
 .input {
@@ -288,7 +268,7 @@
 }
 
 .statusError {
-  color: #b00020;
+  color: var(--color-error);
 }
 
 .fieldError {
@@ -296,5 +276,5 @@
   font-family: var(--font-body);
   font-size: var(--text-caption);
   font-weight: 500;
-  color: #b00020;
+  color: var(--color-error);
 }

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import audiencePicture from '@/assets/images/workshops-for-who.png?w=480;768;1200&format=avif;webp;jpg&as=picture';
 import afterLearningPicture from '@/assets/images/workshops-after-learning.png?w=480;768;1200&format=avif;webp;jpg&as=picture';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
@@ -11,13 +10,14 @@ import {
   loadWorkshopsDirectionImage,
 } from '@/lib/directions';
 import {
-  WORKSHOPS_AFTER_CALLOUTS,
-  WORKSHOPS_AFTER_INTRO,
-  WORKSHOPS_AUDIENCE,
-  WORKSHOPS_AUDIENCE_NOTE,
-  WORKSHOPS_INTRO,
-  workshopPrograms,
-} from '@/data/workshopsPage';
+  loadWorkshopPrograms,
+  loadWorkshopsPage,
+  type SplitPhotoView,
+  workshopsPageFromFallback,
+  workshopProgramsFromFallback,
+} from '@/lib/workshops';
+import type { WorkshopProgram } from '@/data/workshopsPage';
+import { WORKSHOPS_AFTER_CALLOUT } from '@/data/workshopsPage';
 import { WorkshopProgramCard } from './WorkshopProgramCard';
 import { WorkshopsSignupSection } from './WorkshopsSignupSection';
 import styles from './WorkshopsPage.module.css';
@@ -30,12 +30,32 @@ function PhotoPlaceholder() {
   );
 }
 
-function SplitPhoto({ picture, alt }: { picture: PictureSource; alt: string }) {
+function SplitPhoto({
+  photo,
+  fallbackPicture,
+}: {
+  photo: SplitPhotoView;
+  fallbackPicture: PictureSource;
+}) {
+  if (photo.imageUrl) {
+    return (
+      <div className={styles.splitMedia}>
+        <img
+          src={photo.imageUrl}
+          alt={photo.alt}
+          className={styles.splitImage}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.splitMedia}>
       <Picture
-        picture={picture}
-        alt={alt}
+        picture={photo.picture ?? fallbackPicture}
+        alt={photo.alt}
         className={styles.splitImage}
         loading="lazy"
         sizes="(min-width: 1024px) 620px, 100vw"
@@ -68,6 +88,8 @@ function CalloutCard({
 
 export function WorkshopsPage() {
   const [heroImage, setHeroImage] = useState(getFallbackWorkshopsDirectionImage);
+  const [page, setPage] = useState(workshopsPageFromFallback);
+  const [programs, setPrograms] = useState<WorkshopProgram[]>(workshopProgramsFromFallback);
 
   useEffect(() => {
     let cancelled = false;
@@ -79,14 +101,27 @@ export function WorkshopsPage() {
     };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    loadWorkshopsPage().then((data) => {
+      if (!cancelled) setPage(data);
+    });
+    loadWorkshopPrograms().then((items) => {
+      if (!cancelled) setPrograms(items);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <main id="main" className={styles.root}>
       <section className={styles.hero} aria-labelledby="workshops-page-heading">
-        <div className={styles.heroContent}>
+        <div className={`${styles.heroContent} sectionHeadGap`}>
           <h1 id="workshops-page-heading" className={styles.heroTitle}>
             Мастерские
           </h1>
-          <p className={styles.heroLead}>{WORKSHOPS_INTRO}</p>
+          <p className={styles.heroLead}>{page.intro}</p>
           <div className={styles.heroActions}>
             <Button variant="primary" size="md" href="#workshops-signup">
               Записаться
@@ -116,51 +151,28 @@ export function WorkshopsPage() {
           Чему мы учим
         </h2>
         <ul className={styles.programGrid}>
-          {workshopPrograms.map((program) => (
+          {programs.map((program) => (
             <li key={program.id}>
-              <WorkshopProgramCard program={program} />
+              <WorkshopProgramCard {...program} />
             </li>
           ))}
         </ul>
       </section>
 
-      <section className={styles.splitSection} aria-labelledby="workshops-audience-heading">
-        <div className={styles.splitContent}>
-          <h2 id="workshops-audience-heading" className={styles.sectionTitle}>
-            Кому подходят мастерские
-          </h2>
-          <div className={styles.splitText}>
-            <p className={styles.bodyText}>{WORKSHOPS_AUDIENCE}</p>
-            <CalloutCard tag="Важно" text={WORKSHOPS_AUDIENCE_NOTE} />
-          </div>
-        </div>
-        <SplitPhoto
-          picture={audiencePicture}
-          alt="Занятия в мастерских «Окколо»"
-        />
-      </section>
-
       <section className={styles.splitSection} aria-labelledby="workshops-after-heading">
-        <div className={styles.splitContent}>
+        <div className={`${styles.splitContent} sectionHeadGap`}>
           <h2 id="workshops-after-heading" className={styles.sectionTitle}>
             Что будет после обучения
           </h2>
           <div className={styles.splitText}>
-            <p className={styles.bodyText}>{WORKSHOPS_AFTER_INTRO}</p>
-            {WORKSHOPS_AFTER_CALLOUTS.map((item) => (
-              <CalloutCard
-                key={item.text}
-                tag={item.tag}
-                text={item.text}
-                variant="interesting"
-              />
-            ))}
+            <p className={styles.bodyText}>{page.afterIntro}</p>
+            <CalloutCard
+              tag={WORKSHOPS_AFTER_CALLOUT.tag}
+              text={WORKSHOPS_AFTER_CALLOUT.text}
+            />
           </div>
         </div>
-        <SplitPhoto
-          picture={afterLearningPicture}
-          alt="Обучение в мастерских «Окколо»"
-        />
+        <SplitPhoto photo={page.afterLearningPhoto} fallbackPicture={afterLearningPicture} />
       </section>
 
       <WorkshopsSignupSection />

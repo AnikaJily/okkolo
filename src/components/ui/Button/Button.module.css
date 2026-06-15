@@ -59,6 +59,21 @@
   color: var(--color-text);
 }
 
+/* Самый компактный вариант — для шапки и плотных мест,
+   где нужен скруглённый CTA, но md выглядит крупно. */
+.xs {
+  min-height: 36px;
+  padding: 4px 16px;
+  font-size: var(--text-caption);
+}
+
+@media (min-width: 1024px) {
+  .xs {
+    min-height: 40px;
+    padding: 6px 20px;
+  }
+}
+
 .sm {
   min-height: 35px;
   padding: 7px 17px;

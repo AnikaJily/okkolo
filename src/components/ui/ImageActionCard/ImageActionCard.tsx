@@ -1,10 +1,10 @@
-import type { ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Picture, type PictureSource } from '@/components/ui/Picture';
 import { cn } from '@/lib/utils';
 import styles from './ImageActionCard.module.css';
 
-type ImageActionCardVariant = 'overlay' | 'preview';
+type ImageActionCardVariant = 'overlay' | 'preview' | 'content';
 
 interface ImageActionCardProps {
   variant: ImageActionCardVariant;
@@ -12,11 +12,11 @@ interface ImageActionCardProps {
   actionVariant?: 'primary' | 'outline';
   title: string;
   description: string;
-  image: string;
+  image?: string;
   picture?: PictureSource;
   imageSizes?: string;
-  href: string;
-  actionLabel: string;
+  href?: string;
+  actionLabel?: string;
   action?: () => void;
   secondaryActionLabel?: string;
   secondaryHref?: string;
@@ -27,8 +27,6 @@ interface ImageActionCardProps {
   descriptionClassName?: string;
   extraContent?: ReactNode;
   actionsLayout?: 'column' | 'row';
-  /** Выше блок с фото — для карточек товаров в шоуруме */
-  tallImage?: boolean;
 }
 
 export function ImageActionCard({
@@ -51,19 +49,40 @@ export function ImageActionCard({
   descriptionClassName,
   extraContent,
   actionsLayout = 'column',
-  tallImage = false,
 }: ImageActionCardProps) {
+  const titleId = useId();
+
+  if (variant === 'content') {
+    return (
+      <article className={cn(styles.previewCard, styles.contentCard, className)}>
+        <div className={cn(styles.previewBody, styles.contentBody)}>
+          <div className={styles.previewText}>
+            <h3 className={styles.previewTitle}>{title}</h3>
+            <p className={cn('bodyCopy bodyCopyMuted', descriptionClassName)}>
+              {description}
+            </p>
+          </div>
+        </div>
+      </article>
+    );
+  }
+
+  /** Карточка ведёт на href, если единственное действие — ссылка «Подробнее» */
+  const cardNavHref = !action && !secondaryAction && href ? href : undefined;
+  const cardMainInteractive = Boolean(secondaryAction) || Boolean(cardNavHref);
+  const cardMainLabel = `${secondaryActionLabel ?? actionLabel}: ${title}`;
+
   const overlayMedia = picture ? (
     <Picture
       picture={picture}
-      alt={imageAlt}
+      alt={cardNavHref ? '' : imageAlt}
       className={styles.overlayImage}
       sizes={imageSizes}
     />
   ) : (
     <img
       src={image}
-      alt={imageAlt}
+      alt={cardNavHref ? '' : imageAlt}
       className={styles.overlayImage}
       loading="lazy"
       decoding="async"
@@ -73,14 +92,14 @@ export function ImageActionCard({
   const previewMedia = picture ? (
     <Picture
       picture={picture}
-      alt={imageAlt}
+      alt={cardMainInteractive ? '' : imageAlt}
       className={styles.previewImage}
       sizes={imageSizes}
     />
   ) : (
     <img
       src={image}
-      alt={imageAlt}
+      alt={cardMainInteractive ? '' : imageAlt}
       className={styles.previewImage}
       loading="lazy"
       decoding="async"
@@ -90,10 +109,22 @@ export function ImageActionCard({
   if (variant === 'overlay') {
     return (
       <article className={cn(styles.overlayCard, className)}>
+        {cardNavHref ? (
+          <a
+            href={cardNavHref}
+            className={styles.overlayStretchedLink}
+            aria-label={cardMainLabel}
+          />
+        ) : null}
         {overlayMedia}
         <div className={styles.overlayGradient} aria-hidden="true" />
 
-        <div className={styles.overlayContent}>
+        <div
+          className={cn(
+            styles.overlayContent,
+            cardNavHref && styles.overlayContentWithLink,
+          )}
+        >
           <div className={styles.overlayText}>
             <h3 className={styles.overlayTitle}>{title}</h3>
             <p className={styles.overlayDescription}>{description}</p>
@@ -113,67 +144,100 @@ export function ImageActionCard({
     );
   }
 
-  return (
-    <article className={cn(styles.previewCard, tallImage && styles.previewCardTallImage, className)}>
-      <div className={styles.previewImageWrap}>{previewMedia}</div>
+  const previewTextBlock = (
+    <div className={styles.previewText}>
+      <h3 id={titleId} className={styles.previewTitle}>
+        {title}
+      </h3>
+      <p className={cn('bodyCopy bodyCopyMuted', descriptionClassName)}>
+        {description}
+      </p>
+    </div>
+  );
 
+  const previewActionsBlock = (
+    <div
+      className={cn(
+        styles.previewActions,
+        actionsLayout === 'row' && styles.previewActionsRow,
+      )}
+    >
+      {action ? (
+        <Button variant={actionVariant} size="md" fullWidth className="min-w-0 max-w-full" onClick={action}>
+          {actionLabel}
+        </Button>
+      ) : (
+        <Button variant={actionVariant} size="md" fullWidth className="min-w-0 max-w-full" href={href}>
+          {actionLabel}
+        </Button>
+      )}
+      {secondaryActionLabel ? (
+        secondaryAction ? (
+          <Button
+            variant="outline"
+            size="md"
+            fullWidth
+            className="min-w-0 max-w-full"
+            onClick={secondaryAction}
+          >
+            {secondaryActionLabel}
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            size="md"
+            fullWidth
+            className="min-w-0 max-w-full"
+            href={secondaryHref ?? href}
+          >
+            {secondaryActionLabel}
+          </Button>
+        )
+      ) : null}
+    </div>
+  );
+
+  const previewMainContent = (
+    <>
+      <div className={styles.previewImageWrap}>{previewMedia}</div>
       <div className={styles.previewBody}>
         {meta ? <span className={styles.previewMeta}>{meta}</span> : null}
-
-        <div className={styles.previewText}>
-          <h3 className={styles.previewTitle}>{title}</h3>
-          <p
-            className={cn(
-              'font-medium text-[var(--color-text-secondary)]',
-              descriptionClassName ??
-                'text-[length:var(--text-body)] leading-normal',
-            )}
-          >
-            {description}
-          </p>
-        </div>
-
-        <div
-          className={cn(
-            styles.previewActions,
-            actionsLayout === 'row' && styles.previewActionsRow,
-          )}
-        >
-          {action ? (
-            <Button variant={actionVariant} size="md" fullWidth className="min-w-0 max-w-full" onClick={action}>
-              {actionLabel}
-            </Button>
-          ) : (
-            <Button variant={actionVariant} size="md" fullWidth className="min-w-0 max-w-full" href={href}>
-              {actionLabel}
-            </Button>
-          )}
-          {secondaryActionLabel ? (
-            secondaryAction ? (
-              <Button
-                variant="outline"
-                size="md"
-                fullWidth
-                className="min-w-0 max-w-full"
-                onClick={secondaryAction}
-              >
-                {secondaryActionLabel}
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                size="md"
-                fullWidth
-                className="min-w-0 max-w-full"
-                href={secondaryHref ?? href}
-              >
-                {secondaryActionLabel}
-              </Button>
-            )
-          ) : null}
-        </div>
-        {extraContent ? <div className={styles.previewExtra}>{extraContent}</div> : null}
+        {previewTextBlock}
       </div>
+    </>
+  );
+
+  return (
+    <article className={cn(styles.previewCard, className)}>
+      {cardMainInteractive ? (
+        <>
+          {secondaryAction ? (
+            <button
+              type="button"
+              className={styles.previewMain}
+              onClick={secondaryAction}
+              aria-label={cardMainLabel}
+            >
+              {previewMainContent}
+            </button>
+          ) : (
+            <a href={cardNavHref} className={styles.previewMain} aria-label={cardMainLabel}>
+              {previewMainContent}
+            </a>
+          )}
+          {previewActionsBlock}
+        </>
+      ) : (
+        <>
+          <div className={styles.previewImageWrap}>{previewMedia}</div>
+          <div className={styles.previewBody}>
+            {meta ? <span className={styles.previewMeta}>{meta}</span> : null}
+            {previewTextBlock}
+            {previewActionsBlock}
+          </div>
+        </>
+      )}
+      {extraContent ? <div className={styles.previewExtra}>{extraContent}</div> : null}
     </article>
   );
 }

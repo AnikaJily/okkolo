@@ -11,7 +11,6 @@ export function ProductCard({ product, onAddToCart, onDetails }: ProductCardProp
   return (
     <ImageActionCard
       variant="preview"
-      tallImage
       title={product.title}
       description={formatProductPrice(product.price)}
       image={product.image}

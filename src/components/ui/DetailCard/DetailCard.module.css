@@ -24,12 +24,8 @@
   background: none;
   color: var(--color-text);
   cursor: pointer;
-  font-family: var(--font-display);
-  /* Визуальная высота ≈ желтой плашки (34–36px) */
-  font-size: 48px;
-  font-weight: 500;
-  line-height: 1;
-  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.9));
+  /* На мобильных крестик поверх фото — белое свечение для контраста */
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--color-surface) 90%, transparent));
 }
 
 .close:hover {
@@ -82,7 +78,6 @@
   font-weight: 500;
   line-height: normal;
   color: var(--color-text);
-  text-box: trim-both cap alphabetic;
 }
 
 /* header-2 */
@@ -92,7 +87,6 @@
   font-weight: 600;
   line-height: var(--leading-tight);
   color: var(--color-text);
-  text-box: trim-both cap alphabetic;
 }
 
 /* body */
@@ -101,9 +95,8 @@
   font-family: var(--font-body);
   font-size: var(--text-body);
   font-weight: 500;
-  line-height: normal;
-  color: var(--color-text-secondary);
-  text-box: trim-both cap alphabetic;
+  line-height: var(--leading-body);
+  color: var(--color-muted);
 }
 
 /* Нижний блок: «Цена: …» + кнопки, прижат к низу */
@@ -121,8 +114,7 @@
   font-size: var(--text-card-title);
   font-weight: 600;
   line-height: var(--leading-tight);
-  color: var(--color-text-secondary);
-  text-box: trim-both cap alphabetic;
+  color: var(--color-muted);
 }
 
 /* Dialog.Title/Description рендерят h2/p со своими UA-стилями */

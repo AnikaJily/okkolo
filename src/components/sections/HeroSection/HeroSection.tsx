@@ -1,6 +1,7 @@
 import heroPicture from '@/assets/images/hero-team.jpg?w=480;768;1200;1600&format=avif;webp;jpg&as=picture';
 import { Button } from '@/components/ui/Button';
 import { Picture } from '@/components/ui/Picture';
+import { ABOUT_INTRO } from '@/data/about';
 import { getSupportAction } from '@/lib/support';
 import styles from './HeroSection.module.css';
 
@@ -25,24 +26,26 @@ export function HeroSection({ onSupport }: HeroSectionProps) {
         />
       </div>
 
-      <div className={styles.content}>
+      <div className={`${styles.content} sectionHeadGap`}>
         <h1 id="hero-heading" className={styles.title}>
-          <span className={styles.titleLine}>«Окколо» — это инклюзивный</span>
-          <span className={styles.titleLine}>социальный проект</span>
+          «Окколо» — это инклюзивный социальный проект
         </h1>
 
         <p className={styles.description}>
           Пространство для работы, творчества и встреч. Кофейня, мастерские и
-          возможности для людей с инвалидностью.
+          возможности для людей с инвалидностью.{' '}
+          <span className={styles.taglinePhrase}>{ABOUT_INTRO.tagline}</span>
         </p>
 
-        <div className={styles.actions}>
-          <Button variant="primary" size="md" {...supportAction}>
-            Поддержать проект
-          </Button>
-          <Button variant="outline" size="md" href="#directions">
-            Узнать о проекте
-          </Button>
+        <div className={styles.ctaBlock}>
+          <div className={styles.actions}>
+            <Button variant="primary" size="md" {...supportAction}>
+              Поддержать проект
+            </Button>
+            <Button variant="outline" size="md" href="#directions">
+              Узнать о проекте
+            </Button>
+          </div>
         </div>
       </div>
     </section>

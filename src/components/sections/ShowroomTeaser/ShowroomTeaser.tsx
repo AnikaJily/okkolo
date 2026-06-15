@@ -7,6 +7,7 @@ import {
   products as fallbackProducts,
   type ShowroomProduct,
 } from '@/data/products';
+import { cn } from '@/lib/utils';
 import { loadProducts } from '@/lib/products';
 import styles from './ShowroomTeaser.module.css';
 
@@ -52,7 +53,7 @@ export function ShowroomTeaser() {
         className={styles.root}
         aria-labelledby="showroom-teaser-heading"
       >
-        <header className={styles.head}>
+        <header className={cn(styles.head, 'sectionHeadGap')}>
           <h2 id="showroom-teaser-heading" className={styles.heading}>
             Сделано в наших мастерских
           </h2>

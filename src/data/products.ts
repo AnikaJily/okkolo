@@ -19,7 +19,7 @@ export interface ShowroomProduct {
 }
 
 const FALLBACK_DESCRIPTION =
-  'Изделие ручной работы студии «Окколо»: натуральные материалы, внимание к деталям, небольшой тираж.';
+  'Изделие ручной работы студии «Окколо»: натуральные материалы, внимание к деталям, небольшой тираж';
 
 export const PRODUCT_CATEGORIES: { id: ProductCategory; label: string }[] = [
   { id: 'all', label: 'Все товары' },
@@ -62,7 +62,7 @@ export const products: ShowroomProduct[] = [
     category: 'jewelry',
     image: productImage,
     description:
-      'Бусы из натурального камня в спокойной серо-черной гамме. Универсальная длина, подходят для повседневных образов.',
+      'Бусы из натурального камня в спокойной серо-черной гамме. Универсальная длина, подходят для повседневных образов',
   }),
   demoProduct({
     id: 'beads-dalmatian-2',
@@ -77,7 +77,7 @@ export const products: ShowroomProduct[] = [
     price: 3200,
     category: 'ceramics',
     image: productImage,
-    description: 'Керамическая ваза с мягкой глазурью. Каждое изделие слегка отличается по оттенку — это часть ручной работы.',
+    description: 'Керамическая ваза с мягкой глазурью. Каждое изделие слегка отличается по оттенку — это часть ручной работы',
   }),
   demoProduct({
     id: 'linen-napkin',

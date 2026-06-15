@@ -14,7 +14,6 @@
   line-height: var(--leading-tight);
   color: var(--color-text);
   text-align: center;
-  text-box: trim-both cap alphabetic;
 }
 
 .calendar {
@@ -155,9 +154,9 @@
   flex: 0 0 auto;
   padding: 0 6px;
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: var(--text-caption);
   font-weight: 600;
-  color: var(--color-text-subtle);
+  color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   border-left: 1.5px solid var(--color-border);
@@ -186,7 +185,7 @@
 }
 
 .dateButton:hover {
-  background-color: rgba(255, 255, 255, 0.55);
+  background-color: color-mix(in srgb, var(--color-surface) 55%, transparent);
 }
 
 .dateButton:focus-visible,
@@ -200,7 +199,7 @@
 }
 
 .dateDay {
-  font-size: 24px;
+  font-size: var(--text-feature-title);
   font-weight: 600;
 }
 
@@ -238,7 +237,7 @@
   font-family: var(--font-display);
   font-size: var(--text-caption);
   font-weight: 500;
-  color: var(--color-text-subtle);
+  color: var(--color-muted);
 }
 
 @media (min-width: 640px) {
@@ -267,7 +266,7 @@
 
 @media (min-width: 1024px) {
   .root {
-    gap: 42px;
+    gap: var(--gap-after-h1);
     padding-top: 56px;
   }
 

@@ -15,7 +15,7 @@
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1rem;
   padding: 1rem var(--page-padding-x);
   box-sizing: border-box;
 }
@@ -23,6 +23,27 @@
 @media (min-width: 1024px) {
   .inner {
     padding-block: 1.25rem;
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1140px) {
+  .inner {
+    gap: 2rem;
+  }
+}
+
+/* Шапке не нужны такие большие боковые отступы, как контенту страницы:
+   ограничиваем, чтобы навигация и кнопка поддержки помещались без наложений. */
+@media (min-width: 1280px) {
+  .inner {
+    padding-inline: 48px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .inner {
+    padding-inline: 56px;
   }
 }
 
@@ -61,16 +82,26 @@
   }
 }
 
-.nav {
-  flex: 1;
+.desktopNav {
+  display: none;
   min-width: 0;
+}
+
+/* Появляется уже без «Шоурум», «О нас» и «Отчёты»:
+   5 основных пунктов спокойно помещаются с ~1140px. */
+@media (min-width: 1140px) {
+  .desktopNav {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .navList {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 30px;
+  flex-wrap: nowrap;
+  gap: 25px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -78,6 +109,7 @@
 
 .navLink {
   position: relative;
+  display: inline-block;
   border-radius: var(--radius-sm);
   padding: 0.5rem 0.25rem;
   font-family: var(--font-display);
@@ -85,6 +117,7 @@
   font-weight: 500;
   color: var(--color-text-nav);
   text-decoration: none;
+  white-space: nowrap;
   transition: color 0.15s ease;
 }
 
@@ -114,29 +147,40 @@
   outline-offset: 4px;
 }
 
-.navCluster {
-  display: flex;
-  flex: 1;
-  min-width: 0;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
-}
-
-@media (min-width: 1024px) {
-  .navCluster {
-    justify-content: center;
-    gap: 1.875rem;
-  }
-}
-
-.navListDesktop {
+/* «Шоурум» прячется на узких десктопах, чтобы 5 основных пунктов
+   успевали поместиться без давки. */
+.navItemWide {
   display: none;
 }
 
+@media (min-width: 1200px) {
+  .navItemWide {
+    display: list-item;
+  }
+}
+
+/* «О нас» и «Отчёты» появляются, только когда точно хватает места,
+   чтобы они не наезжали на иконку меню или кнопку поддержки. */
+.navItemExtra {
+  display: none;
+}
+
+@media (min-width: 1600px) {
+  .navItemExtra {
+    display: list-item;
+  }
+}
+
+.actions {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 @media (min-width: 1024px) {
-  .navListDesktop {
-    display: flex;
+  .actions {
+    gap: 1rem;
   }
 }
 
@@ -149,7 +193,7 @@
   flex-shrink: 0;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .supportWrap {
     display: inline-flex;
   }
@@ -159,17 +203,10 @@
   display: block;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .sheetSupport {
     display: none;
   }
-}
-
-.actions {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 .menuIcon {
@@ -196,11 +233,6 @@
   border: 0;
 }
 
-.sheetCloseIcon {
-  font-size: 1.875rem;
-  line-height: 1;
-}
-
 .sheetNavList {
   display: flex;
   flex-direction: column;
@@ -215,7 +247,7 @@
   border-radius: var(--radius-md);
   padding: 0.75rem 1rem;
   font-family: var(--font-display);
-  font-size: 1.125rem;
+  font-size: var(--text-card-title);
   font-weight: 500;
   color: inherit;
   text-decoration: none;
@@ -229,30 +261,4 @@
 .sheetNavLink:focus-visible {
   outline: 2px solid var(--color-purple-dark);
   outline-offset: 2px;
-}
-
-.measure {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  visibility: hidden;
-  pointer-events: none;
-  white-space: nowrap;
-}
-
-.measureNavList {
-  display: flex;
-  gap: 30px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.measureNavLink {
-  display: inline-block;
-  padding: 0.5rem 0.25rem;
-  font-family: var(--font-display);
-  font-size: var(--text-tag);
-  font-weight: 500;
 }

@@ -54,8 +54,9 @@
 
 /*
   Фоновые «пятна» из макета (Figma 357:1978 / 357:1979):
-  фиолетовый эллипс под углом слева сверху + желтый круг справа.
-  Размеры/позиции — из Desktop-фрейма, blur = stdDeviation из Figma.
+  фиолетовый эллипс под углом слева сверху + жёлтый круг справа.
+  Позиции — относительно .main; на сверхшироких экранах слегка
+  «выезжают» за контейнер, чтобы не было резкой границы по max-width.
 */
 .main::before,
 .main::after {
@@ -127,6 +128,24 @@
     left: calc(75% - 35px);
     top: -127px;
     filter: blur(142px);
+  }
+}
+
+/* На сверхшироких экранах контейнер уже окна — пятна мягко
+   продолжаются в боковые поля, без резкой вертикальной границы. */
+@media (min-width: 1440px) {
+  .main {
+    overflow-x: visible;
+  }
+
+  .main::before {
+    left: calc(-13px - max(0px, (100vw - var(--container-max)) / 2));
+    width: calc(556px + max(0px, (100vw - var(--container-max)) / 2));
+  }
+
+  .main::after {
+    width: calc(318px + max(0px, (100vw - var(--container-max)) / 2));
+    left: calc(75% - 35px);
   }
 }
 

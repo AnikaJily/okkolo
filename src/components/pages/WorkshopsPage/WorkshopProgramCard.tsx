@@ -1,28 +1,46 @@
 import { Button } from '@/components/ui/Button';
 import { Picture } from '@/components/ui/Picture';
-import type { WorkshopProgram } from '@/data/workshopsPage';
+import type { PictureSource } from '@/components/ui/Picture';
 import styles from './WorkshopProgramCard.module.css';
 
-interface WorkshopProgramCardProps {
-  program: WorkshopProgram;
+export interface WorkshopProgramCardProps {
+  id: string;
+  title: string;
+  description: string;
+  image?: string;
+  picture?: PictureSource;
+  imageAlt?: string;
+  showAction?: boolean;
+  actionLabel?: string;
+  actionHref?: string;
 }
 
-export function WorkshopProgramCard({ program }: WorkshopProgramCardProps) {
+export function WorkshopProgramCard({
+  id,
+  title,
+  description,
+  image,
+  picture,
+  imageAlt = '',
+  showAction = true,
+  actionLabel = 'Записаться',
+  actionHref = '#workshops-signup',
+}: WorkshopProgramCardProps) {
   return (
-    <article className={styles.card} aria-labelledby={`program-${program.id}-title`}>
+    <article className={styles.card} aria-labelledby={`program-${id}-title`}>
       <div className={styles.media}>
-        {program.picture ? (
+        {picture ? (
           <Picture
-            picture={program.picture}
-            alt=""
+            picture={picture}
+            alt={imageAlt}
             className={styles.image}
             loading="lazy"
             sizes="(min-width: 1024px) 33vw, 100vw"
           />
-        ) : program.image ? (
+        ) : image ? (
           <img
-            src={program.image}
-            alt=""
+            src={image}
+            alt={imageAlt}
             className={styles.image}
             loading="lazy"
             decoding="async"
@@ -32,21 +50,23 @@ export function WorkshopProgramCard({ program }: WorkshopProgramCardProps) {
 
       <div className={styles.body}>
         <div className={styles.text}>
-          <h3 id={`program-${program.id}-title`} className={styles.title}>
-            {program.title}
+          <h3 id={`program-${id}-title`} className={styles.title}>
+            {title}
           </h3>
-          <p className={styles.description}>{program.description}</p>
+          <p className={styles.description}>{description}</p>
         </div>
 
-        <Button
-          variant="primary"
-          size="md"
-          href="#workshops-signup"
-          className={styles.action}
-          fullWidth
-        >
-          Записаться
-        </Button>
+        {showAction ? (
+          <Button
+            variant="primary"
+            size="md"
+            href={actionHref}
+            className={styles.action}
+            fullWidth
+          >
+            {actionLabel}
+          </Button>
+        ) : null}
       </div>
     </article>
   );

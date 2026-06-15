@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Button } from '@/components/ui/Button';
+import { CloseIcon } from '@/components/ui/CloseIcon/CloseIcon';
 import styles from './DetailCard.module.css';
 
 /**
@@ -41,7 +42,7 @@ export function DetailCard({
         onClick={onClose}
         aria-label="Закрыть"
       >
-        ×
+        <CloseIcon size="dialog" />
       </button>
 
       <div className={styles.media}>{media}</div>

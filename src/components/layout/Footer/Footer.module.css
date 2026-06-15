@@ -44,7 +44,7 @@
   font-size: var(--text-body);
   font-weight: 500;
   line-height: 1.45;
-  color: var(--color-text-subtle);
+  color: var(--color-muted);
 }
 
 .columns {
@@ -64,15 +64,16 @@
   font-family: var(--font-display);
   font-size: var(--text-caption);
   font-weight: 600;
+  line-height: var(--leading-body);
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--color-text-subtle);
+  color: var(--color-muted);
 }
 
 .navList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -85,13 +86,11 @@
   font-family: var(--font-display);
   font-size: var(--text-body);
   font-weight: 500;
-  line-height: var(--leading-tight);
+  line-height: var(--leading-body);
   color: var(--color-text);
   text-decoration: none;
   transition: color 0.15s ease;
-  /* Хит-зона ≥24px (SC 2.5.8) без сдвига визуального ритма */
-  padding-block: 6px;
-  margin-block: -6px;
+  padding-block: 2px;
 }
 
 .navLink:hover {
@@ -109,7 +108,7 @@
   font-size: var(--text-body);
   font-weight: 500;
   line-height: 1.45;
-  color: var(--color-text-subtle);
+  color: var(--color-muted);
 }
 
 .contactLink {
@@ -119,12 +118,10 @@
   font-family: var(--font-display);
   font-size: var(--text-body);
   font-weight: 500;
-  line-height: var(--leading-tight);
+  line-height: var(--leading-body);
   color: var(--color-purple-text);
   text-decoration: none;
-  /* Хит-зона ≥24px (SC 2.5.8) без сдвига визуального ритма */
-  padding-block: 6px;
-  margin-block: -6px;
+  padding-block: 2px;
 }
 
 .contactLink:hover {
@@ -158,7 +155,7 @@
   font-size: var(--text-caption);
   font-weight: 500;
   line-height: 1.4;
-  color: var(--color-text-subtle);
+  color: var(--color-muted);
 }
 
 .srOnly {

@@ -27,7 +27,7 @@ export const directions: Direction[] = [
     id: 'workshops',
     title: 'Мастерские',
     description:
-      'Живые студии и курсы.',
+      'Живые студии и курсы',
     image: showroomHero, picture: showroomHeroPicture,
     href: '/workshops',
   },

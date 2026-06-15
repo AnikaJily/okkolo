@@ -36,11 +36,6 @@
   background: none;
   color: var(--color-text);
   cursor: pointer;
-  font-family: var(--font-display);
-  /* Визуальная высота ≈ желтой плашки (34–36px) */
-  font-size: 48px;
-  font-weight: 500;
-  line-height: 1;
 }
 
 .close:hover {
@@ -71,7 +66,6 @@
   font-weight: 500;
   line-height: normal;
   color: var(--color-text);
-  text-box: trim-both cap alphabetic;
 }
 
 /* header-2 */
@@ -82,7 +76,6 @@
   font-weight: 600;
   line-height: var(--leading-tight);
   color: var(--color-text);
-  text-box: trim-both cap alphabetic;
 }
 
 /* header-3 */
@@ -93,7 +86,6 @@
   font-weight: 600;
   line-height: var(--leading-tight);
   color: var(--color-text);
-  text-box: trim-both cap alphabetic;
 }
 
 /* header-3, серый */
@@ -103,8 +95,7 @@
   font-size: var(--text-card-title);
   font-weight: 600;
   line-height: var(--leading-tight);
-  color: var(--color-text-secondary);
-  text-box: trim-both cap alphabetic;
+  color: var(--color-muted);
 }
 
 .form {
@@ -125,8 +116,7 @@
   font-size: var(--text-body);
   font-weight: 500;
   line-height: normal;
-  color: rgba(0, 0, 0, 0.6);
-  text-box: trim-both cap alphabetic;
+  color: var(--color-muted);
 }
 
 .input {
@@ -181,7 +171,7 @@
 }
 
 .error {
-  color: #b00020;
+  color: var(--color-error);
 }
 
 @media (min-width: 640px) {

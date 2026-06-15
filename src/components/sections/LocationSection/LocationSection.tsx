@@ -18,13 +18,13 @@ export function LocationSection() {
       aria-labelledby="location-heading"
     >
       <div className={styles.content}>
-        <header className={styles.head}>
+        <header className={`${styles.head} sectionHeadGap`}>
           <h2 id="location-heading" className={styles.heading}>
             Как нас найти
           </h2>
           <p className={styles.lead}>
             Заходите на чашку кофе или на мероприятие — мы на первом этаже,
-            пандус есть у входа.
+            пандус есть у входа
           </p>
         </header>
 

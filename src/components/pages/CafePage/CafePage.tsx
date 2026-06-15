@@ -26,7 +26,7 @@ export function CafePage() {
 
   return (
     <main id="main" className={styles.root}>
-      <section className={styles.intro} aria-labelledby="cafe-heading">
+      <section className={`${styles.intro} sectionHeadGap`} aria-labelledby="cafe-heading">
         <h1 id="cafe-heading" className={styles.heading}>
           Кофейня
         </h1>

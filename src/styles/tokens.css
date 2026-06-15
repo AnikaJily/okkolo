@@ -3,13 +3,11 @@
   --color-purple: #c594e8;
   --color-purple-light: #d5a7f6;
   --color-purple-dark: #b078dc;
-  --color-purple-link: #b468eb;
   --color-purple-text: #5b2d8c;
   --color-yellow: #fedd5b;
   --color-bg: #f9f9f9;
   --color-surface: #ffffff;
   --color-text: #000000;
-  --color-text-inverse: #ffffff;
   --color-text-nav: #292929;
   /* Единый серый для второстепенного текста */
   --color-muted: #666666;
@@ -18,12 +16,21 @@
   --color-border-strong: #8a8a8a;
   /* Подложка модалок и шторок — единственное место, где задается скрим */
   --color-scrim: rgba(0, 0, 0, 0.36);
-  --color-text-muted: #666666;
-  --color-text-subtle: #666666;
-  --color-text-secondary: #666666;
   --color-hover-soft: rgba(0, 0, 0, 0.05);
-  --color-purple-soft: rgba(197, 148, 232, 0.16);
   --color-purple-subtle: rgba(197, 148, 232, 0.12);
+  --color-error: #b00020;
+
+  /* Декоративные фоновые «пятна» (About, Workshops, Accessibility, Reports) */
+  --gradient-blob-yellow: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-yellow) 85%, transparent) 0%,
+    transparent 72%
+  );
+  --gradient-blob-purple: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-purple) 55%, transparent) 0%,
+    transparent 72%
+  );
 
   /* Typography — Onest (Figma), 5 стилей: header-1/2/3, body, tag */
   --font-display: 'Onest', 'Inter', system-ui, -apple-system, sans-serif;
@@ -49,16 +56,26 @@
   --text-tag: var(--text-caption);
 
   /* Type roles (mobile-first; на 1024+ совпадают со стилями Figma) */
-  --text-label: 0.6875rem;       /* 11 */
+  --text-label: 0.75rem;         /* 12 — бейджи, не для основного текста */
   --text-caption: 0.875rem;      /* 14 → 18 (tag) */
   --text-body: 1rem;             /* 16 → 21 (body) */
   --text-button: 1rem;           /* 16 → 21 (body) */
   --text-card-title: 1.125rem;   /* 18 → 25 (header-3) */
   --text-feature-title: 1.5rem;  /* 24 */
   --text-section-title: 1.5rem;  /* 24 → 40 (header-1) */
+  /* Размеры иконки закрытия (SVG, не типографика) */
+  --icon-close-sheet: 1.875rem;  /* 30 — шторки меню, корзина */
+  --icon-close-dialog: 3rem;     /* 48 — модалки поверх контента */
 
+  --leading-body: 1.5;
   --leading-tight: 1.3;
   --leading-none: 1;
+
+  /* Figma text-box-trim: cap/baseline в line-box, хвосты букв снаружи */
+  --text-box-trim: trim-both cap alphabetic;
+
+  /* Отступ после h1 / header-1 до следующего блока (desktop, Figma) */
+  --gap-after-h1: 40px;
 
   /* Spacing scale (4-pt) */
   --space-1: 0.25rem;
@@ -73,8 +90,8 @@
   /* Radii — шкала из макета Figma */
   --radius-sm: 10px;        /* чипы, фильтры, мелкие контролы */
   --radius-md: 14px;        /* поля, бейджи, пункты меню */
-  --radius-lg: 20px;        /* фото (hero-photo) */
-  --radius-xl: 25px;        /* карточки (Product) */
+  --radius-lg: 16px;        /* фото (hero-photo) */
+  --radius-xl: 20px;        /* карточки (Product) */
   --radius-pill: 40px;      /* отдельно стоящие кнопки */
   --radius-pill-card: 30px; /* кнопки внутри карточек */
 
@@ -85,9 +102,9 @@
   --shadow-header: 0 0 2px rgba(0, 0, 0, 0.25);
   --gradient-image-overlay: linear-gradient(
     180deg,
-    rgba(0, 0, 0, 0) 0%,
+    transparent 0%,
     rgba(0, 0, 0, 0.9) 48%,
-    #000000 100%
+    var(--color-text) 100%
   );
 
   /* Layout */
@@ -116,6 +133,7 @@
     --text-feature-title: 1.625rem;/* 26 */
     --text-section-title: 1.75rem; /* 28 */
     --text-header-2: 1.625rem;     /* 26 */
+    --text-label: 0.875rem;        /* 14 */
   }
 }
 
@@ -130,14 +148,18 @@
     --text-button: 1.3125rem;      /* 21 — body */
     --text-card-title: 1.5625rem;  /* 25 — header-3 */
     --text-feature-title: 1.75rem; /* 28 */
-    --text-section-title: 2.5rem;  /* 40 — header-1 */
-    --text-header-2: 2rem;         /* 32 — header-2 */
+    /* На ноутбуках 1024–1279 берём промежуточный размер,
+       чтобы заголовки не выглядели крупнее, чем колонка контента. */
+    --text-section-title: 2rem;    /* 32 — header-1 (ноут) */
+    --text-header-2: 1.75rem;      /* 28 — header-2 (ноут) */
   }
 }
 
 @media (min-width: 1280px) {
   :root {
     --page-padding-x: 72px;
+    --text-section-title: 2.25rem; /* 36 — header-1 (широкий ноут) */
+    --text-header-2: 1.875rem;     /* 30 — header-2 (широкий ноут) */
   }
 }
 
@@ -145,5 +167,8 @@
   :root {
     --container-max: 1520px;
     --page-padding-x: 96px;
+    /* Полный desktop-размер из макета Figma. */
+    --text-section-title: 2.5rem;  /* 40 — header-1 (desktop) */
+    --text-header-2: 2rem;         /* 32 — header-2 (desktop) */
   }
 }

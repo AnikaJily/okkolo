@@ -2,6 +2,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { useEffect, useId, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Button } from '@/components/ui/Button';
+import { CloseIcon } from '@/components/ui/CloseIcon/CloseIcon';
 import { Checkbox } from '@/components/ui/Checkbox';
 import type { OkkoloEvent } from '@/data/events';
 import { createEventRegistration } from '@/lib/strapi';
@@ -92,7 +93,7 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
                 onClick={() => onOpenChange(false)}
                 aria-label="Закрыть"
               >
-                ×
+                <CloseIcon size="dialog" />
               </button>
 
               <div className={styles.summary}>
@@ -202,10 +203,10 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
                     <>
                       <p className={styles.success}>
                         {demoPaymentComplete
-                          ? 'Демо-оплата прошла. В реальной версии здесь заявка подтвердится после оплаты.'
+                          ? 'Демо-оплата прошла. В реальной версии здесь заявка подтвердится после оплаты'
                           : isPaidEvent
-                          ? 'Спасибо, мы получили вашу заявку. Она будет подтверждена после оплаты.'
-                          : 'Спасибо, мы получили вашу заявку.'}
+                          ? 'Спасибо, мы получили вашу заявку. Она будет подтверждена после оплаты'
+                          : 'Спасибо, мы получили вашу заявку'}
                       </p>
                       {isPaidEvent && event.paymentUrl ? (
                         <Button
@@ -236,7 +237,7 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
 
                 <p className={styles.error} role="alert">
                   {submitStatus === 'error'
-                    ? 'Не получилось отправить заявку. Попробуйте еще раз.'
+                    ? 'Не получилось отправить заявку. Попробуйте еще раз'
                     : ''}
                 </p>
               </form>

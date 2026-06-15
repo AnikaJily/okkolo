@@ -5,13 +5,32 @@
   scroll-margin-top: var(--header-offset);
 }
 
+.head {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
 .heading {
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 600;
   font-size: var(--text-section-title);
   line-height: var(--leading-tight);
   text-wrap: balance;
   text-align: center;
+}
+
+.lead {
+  margin: 0 auto;
+  max-width: 720px;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: var(--leading-body);
+  color: var(--color-text);
+  text-align: center;
+  text-wrap: balance;
 }
 
 .list {

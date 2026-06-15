@@ -3,7 +3,7 @@
   isolation: isolate;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: var(--gap-after-h1);
   width: 100%;
   box-sizing: border-box;
   padding-top: 30px;
@@ -30,7 +30,7 @@
   height: 220px;
   top: 80px;
   right: -100px;
-  background: radial-gradient(circle, rgba(254, 221, 91, 0.85) 0%, rgba(254, 221, 91, 0) 72%);
+  background: var(--gradient-blob-yellow);
 }
 
 .root::after {
@@ -39,7 +39,7 @@
   left: -140px;
   top: 55%;
   transform: rotate(-22deg);
-  background: radial-gradient(circle, rgba(197, 148, 232, 0.5) 0%, rgba(197, 148, 232, 0) 72%);
+  background: var(--gradient-blob-purple);
 }
 
 .panel,
@@ -58,7 +58,6 @@
   line-height: var(--leading-tight);
   color: var(--color-text);
   text-align: left;
-  text-box: trim-both cap alphabetic;
   scroll-margin-top: var(--header-offset);
 }
 
@@ -106,7 +105,7 @@
 }
 
 .tab:hover {
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: color-mix(in srgb, var(--color-surface) 60%, transparent);
 }
 
 .tabActive {
@@ -154,7 +153,6 @@
   font-weight: 600;
   line-height: var(--leading-tight);
   color: var(--color-text);
-  text-box: trim-both cap alphabetic;
 }
 
 /* —— Список файлов */

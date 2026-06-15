@@ -1,3 +1,4 @@
+import { CloseIcon } from '@/components/ui/CloseIcon/CloseIcon';
 import { IconButton } from '@/components/ui/IconButton';
 import { Button } from '@/components/ui/Button';
 import {
@@ -7,7 +8,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/Sheet';
-import { HEADER_NAV_ITEMS, NAV_ITEMS } from '@/data/site';
+import { HEADER_NAV, NAV_ITEMS } from '@/data/site';
 import { getSupportAction } from '@/lib/support';
 import logoSrc from '@/assets/images/logo.svg';
 import menuSrc from '@/assets/images/menu.svg';
@@ -36,16 +37,33 @@ export function Header({ onMenuClick, onSupport }: HeaderProps) {
           />
         </a>
 
-        <nav className={styles.navCluster} aria-label="Основная навигация">
-          <ul className={`${styles.navList} ${styles.navListDesktop}`}>
-            {HEADER_NAV_ITEMS.map((item) => (
-              <li key={item.href}>
+        <nav className={styles.desktopNav} aria-label="Основная навигация">
+          <ul className={styles.navList}>
+            {HEADER_NAV.map((item) => (
+              <li
+                key={item.href}
+                className={
+                  item.priority === 'always'
+                    ? undefined
+                    : styles[
+                        item.priority === 'wide' ? 'navItemWide' : 'navItemExtra'
+                      ]
+                }
+              >
                 <a href={item.href} className={styles.navLink}>
                   {item.label}
                 </a>
               </li>
             ))}
           </ul>
+        </nav>
+
+        <div className={styles.actions}>
+          <div className={styles.supportWrap}>
+            <Button variant="primary" size="xs" {...supportAction}>
+              Поддержать проект
+            </Button>
+          </div>
 
           <Sheet>
             <SheetTrigger asChild>
@@ -62,9 +80,7 @@ export function Header({ onMenuClick, onSupport }: HeaderProps) {
                 <SheetTitle className={styles.sheetTitleHidden}>Меню</SheetTitle>
                 <SheetClose asChild>
                   <IconButton label="Закрыть меню">
-                    <span aria-hidden="true" className={styles.sheetCloseIcon}>
-                      ×
-                    </span>
+                    <CloseIcon size="sheet" />
                   </IconButton>
                 </SheetClose>
               </div>
@@ -96,12 +112,6 @@ export function Header({ onMenuClick, onSupport }: HeaderProps) {
               </SheetClose>
             </SheetContent>
           </Sheet>
-        </nav>
-
-        <div className={styles.supportWrap}>
-          <Button variant="primary" size="md" {...supportAction}>
-            Поддержать проект
-          </Button>
         </div>
       </div>
     </header>

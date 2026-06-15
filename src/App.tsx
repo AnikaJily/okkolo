@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { HeroSection } from '@/components/sections/HeroSection';
+import { AboutMissionSection } from '@/components/sections/AboutMissionSection';
+import { AboutTodaySection } from '@/components/sections/AboutTodaySection';
 import { DirectionsSection } from '@/components/sections/DirectionsSection';
 import { EventsSection } from '@/components/sections/EventsSection';
 import { ShowroomTeaser } from '@/components/sections/ShowroomTeaser';
@@ -62,6 +64,8 @@ export function App() {
           ) : (
             <main id="main" className={styles.main}>
               <HeroSection />
+              <AboutMissionSection />
+              <AboutTodaySection />
               <DirectionsSection />
               <EventsSection />
               <ShowroomTeaser />

@@ -47,7 +47,27 @@ export const NAV_ITEMS = [
   { label: 'Отчеты', href: '/reports' },
 ] as const;
 
-/** Пункты в строке навигации шапки — «О нас» и «Отчеты» только в меню. */
-export const HEADER_NAV_ITEMS = NAV_ITEMS.filter(
-  (item) => item.href !== '/reports' && item.href !== '/about',
-);
+/**
+ * Inline-навигация в шапке (порядок по макету Figma).
+ * Приоритет управляет тем, на какой ширине пункт прячется в меню-бургер:
+ *   - 'always' — всегда виден, когда вообще показывается inline-навигация;
+ *   - 'wide'   — прячется на узких десктопах, чтобы освободить место остальным;
+ *   - 'xwide'  — только на самых широких экранах.
+ * Иконка меню видна на любых ширинах и открывает полный список из NAV_ITEMS.
+ */
+export type HeaderNavPriority = 'always' | 'wide' | 'xwide';
+
+export const HEADER_NAV: ReadonlyArray<{
+  label: string;
+  href: string;
+  priority: HeaderNavPriority;
+}> = [
+  { label: 'Главная', href: '/', priority: 'always' },
+  { label: 'Мероприятия', href: '/events', priority: 'always' },
+  { label: 'Шоурум', href: '/showroom', priority: 'wide' },
+  { label: 'Мастерские', href: '/workshops', priority: 'always' },
+  { label: 'Кофейня', href: '/cafe', priority: 'always' },
+  { label: 'Доступность', href: '/accessibility', priority: 'always' },
+  { label: 'О нас', href: '/about', priority: 'xwide' },
+  { label: 'Отчеты', href: '/reports', priority: 'xwide' },
+];

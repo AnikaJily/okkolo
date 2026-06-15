@@ -84,7 +84,7 @@
   z-index: 2;
   transform: translateX(-50%);
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.92);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
   padding: 4px 12px;
   font-family: var(--font-display);
   font-size: var(--text-caption);

@@ -129,6 +129,57 @@ export interface StrapiShowroomEntry {
   heroImage: StrapiImage | null;
 }
 
+export interface StrapiWorkshopsPage {
+  id: number;
+  documentId: string;
+  intro?: string | null;
+  audienceText?: string | null;
+  audienceNote?: string | null;
+  afterIntro?: string | null;
+  audiencePhoto: StrapiImage | null;
+  audiencePhotoAlt?: string | null;
+  afterLearningPhoto: StrapiImage | null;
+  afterLearningPhotoAlt?: string | null;
+}
+
+export interface StrapiWorkshopProgram {
+  id: number;
+  documentId: string;
+  title: string;
+  description: string;
+  image: StrapiImage | null;
+  order?: number | null;
+}
+
+export interface StrapiAboutPage {
+  id: number;
+  documentId: string;
+  eyebrow?: string | null;
+  title?: string | null;
+  lead?: string | null;
+  tagline?: string | null;
+  heroPhoto: StrapiImage | null;
+  heroPhotoAlt?: string | null;
+}
+
+export interface StrapiAboutPhoto {
+  id: number;
+  documentId: string;
+  image: StrapiImage;
+  alt?: string | null;
+  caption?: string | null;
+  order?: number | null;
+}
+
+export interface StrapiAccessibilityPage {
+  id: number;
+  documentId: string;
+  title?: string | null;
+  lead?: string | null;
+  heroPhoto: StrapiImage | null;
+  heroPhotoAlt?: string | null;
+}
+
 export interface StrapiSingleResponse<T> {
   data: T | null;
 }
@@ -310,6 +361,54 @@ export function fetchShowroomHeroUrl(): Promise<string | null> {
     })();
   }
   return showroomHeroCache;
+}
+
+export async function fetchWorkshopsPage(): Promise<StrapiWorkshopsPage | null> {
+  const res = await fetch(`${STRAPI_URL}/api/workshops-page?populate=*`);
+  if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
+  const json: StrapiSingleResponse<StrapiWorkshopsPage> = await res.json();
+  return json.data ?? null;
+}
+
+export async function fetchWorkshopPrograms(): Promise<StrapiWorkshopProgram[]> {
+  const res = await fetch(
+    `${STRAPI_URL}/api/workshop-programs?populate=image&sort[0]=order:asc&sort[1]=title:asc&pagination[pageSize]=50`,
+  );
+  if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
+  const json: StrapiListResponse<StrapiWorkshopProgram> = await res.json();
+  return json.data;
+}
+
+export async function fetchAboutPage(): Promise<StrapiAboutPage | null> {
+  const res = await fetch(`${STRAPI_URL}/api/about-page?populate=heroPhoto`);
+  if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
+  const json: StrapiSingleResponse<StrapiAboutPage> = await res.json();
+  return json.data ?? null;
+}
+
+export async function fetchAboutTeamPhotos(): Promise<StrapiAboutPhoto[]> {
+  const res = await fetch(
+    `${STRAPI_URL}/api/about-team-photos?populate=image&sort[0]=order:asc&pagination[pageSize]=50`,
+  );
+  if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
+  const json: StrapiListResponse<StrapiAboutPhoto> = await res.json();
+  return json.data;
+}
+
+export async function fetchAboutWorkplacePhotos(): Promise<StrapiAboutPhoto[]> {
+  const res = await fetch(
+    `${STRAPI_URL}/api/about-workplace-photos?populate=image&sort[0]=order:asc&pagination[pageSize]=50`,
+  );
+  if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
+  const json: StrapiListResponse<StrapiAboutPhoto> = await res.json();
+  return json.data;
+}
+
+export async function fetchAccessibilityPage(): Promise<StrapiAccessibilityPage | null> {
+  const res = await fetch(`${STRAPI_URL}/api/accessibility-page?populate=heroPhoto`);
+  if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
+  const json: StrapiSingleResponse<StrapiAccessibilityPage> = await res.json();
+  return json.data ?? null;
 }
 
 export async function createEventRegistration(input: EventRegistrationInput) {

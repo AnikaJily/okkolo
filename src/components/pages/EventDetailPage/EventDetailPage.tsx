@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { EventSignupModal } from '@/components/sections/EventsSection/EventSignupModal';
 import { events as fallbackEvents } from '@/data/events';
 import type { OkkoloEvent } from '@/data/events';
 import { loadEventById } from '@/lib/events';
@@ -21,6 +22,7 @@ export function EventDetailPage({ eventId }: EventDetailPageProps) {
   // CMS-события мелькают ложным 404 (initial state ищет только в моках)
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [retryKey, setRetryKey] = useState(0);
+  const [signupOpen, setSignupOpen] = useState(false);
 
   useEffect(() => {
     setEvent(findFallbackEvent(eventId));
@@ -67,7 +69,13 @@ export function EventDetailPage({ eventId }: EventDetailPageProps) {
                 <p className={styles.admission}>{event.admission}</p>
               </div>
 
-              <Button variant="primary" size="sm" fullWidth href={event.signupHref}>
+              <Button
+                variant="primary"
+                size="sm"
+                fullWidth
+                type="button"
+                onClick={() => setSignupOpen(true)}
+              >
                 Записаться
               </Button>
 
@@ -85,7 +93,7 @@ export function EventDetailPage({ eventId }: EventDetailPageProps) {
         <div className={styles.errorState}>
           <p className={styles.empty} role="alert">
             Не получилось загрузить мероприятие. Проверьте соединение и
-            попробуйте еще раз.
+            попробуйте еще раз
           </p>
           <Button
             variant="outline"
@@ -99,6 +107,14 @@ export function EventDetailPage({ eventId }: EventDetailPageProps) {
       ) : (
         <p className={styles.empty}>Мероприятие не найдено.</p>
       )}
+
+      {event ? (
+        <EventSignupModal
+          event={event}
+          open={signupOpen}
+          onOpenChange={setSignupOpen}
+        />
+      ) : null}
     </main>
   );
 }

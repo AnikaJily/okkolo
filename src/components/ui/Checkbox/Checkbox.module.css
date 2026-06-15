@@ -26,11 +26,11 @@
   border: 1.375px solid var(--color-text);
   border-radius: 6px;
   background-color: transparent;
-  filter: drop-shadow(0 3.67px 7.33px rgba(151, 71, 255, 0.08));
+  filter: drop-shadow(0 3.67px 7.33px color-mix(in srgb, var(--color-purple) 8%, transparent));
 }
 
 .boxError {
-  border-color: #d64751;
+  border-color: var(--color-error);
 }
 
 .input:checked + .box {
