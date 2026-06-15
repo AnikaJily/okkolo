@@ -2,12 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import {
   ANNUAL_REPORTS,
   DOCUMENTS_GROUPS,
-  MONTHLY_REPORTS,
   REPORTS_TABS,
   REPORTS_UPDATED,
   type AnnualReportGroup,
   type DocumentsGroup,
-  type MonthlyReportGroup,
   type ReportFile,
   type ReportsTabId,
 } from '@/data/reports';
@@ -99,33 +97,6 @@ function FileLink({ file }: FileLinkProps) {
   );
 }
 
-function MonthlyPanel({ groups }: { groups: readonly MonthlyReportGroup[] }) {
-  if (groups.length === 0) {
-    return <p className={styles.empty}>Отчетов пока нет.</p>;
-  }
-
-  return (
-    <div className={styles.groups}>
-      {groups.map((group) => (
-        <section
-          key={group.year}
-          className={styles.group}
-          aria-labelledby={`monthly-${group.year}`}
-        >
-          <h3 id={`monthly-${group.year}`} className={styles.groupHeading}>
-            {group.year}
-          </h3>
-          <ul className={styles.fileList}>
-            {group.reports.map((report) => (
-              <FileLink key={report.id} file={report} />
-            ))}
-          </ul>
-        </section>
-      ))}
-    </div>
-  );
-}
-
 function AnnualPanel({ groups }: { groups: readonly AnnualReportGroup[] }) {
   if (groups.length === 0) {
     return <p className={styles.empty}>Отчетов пока нет.</p>;
@@ -179,11 +150,9 @@ function DocumentsPanel({ groups }: { groups: readonly DocumentsGroup[] }) {
 export function ReportsPage() {
   const [activeTab, setActiveTab] = useState<ReportsTabId>(() => getInitialTab());
   /* Стартуем с мок-каркаса (заглушки «скоро»), затем заменяем тем, что вернёт CMS */
-  const [monthly, setMonthly] = useState<readonly MonthlyReportGroup[]>(MONTHLY_REPORTS);
   const [annual, setAnnual] = useState<readonly AnnualReportGroup[]>(ANNUAL_REPORTS);
   const [documents, setDocuments] = useState<readonly DocumentsGroup[]>(DOCUMENTS_GROUPS);
   const tabRefs = useRef<Record<ReportsTabId, HTMLButtonElement | null>>({
-    monthly: null,
     annual: null,
     documents: null,
   });
@@ -198,7 +167,6 @@ export function ReportsPage() {
     let cancelled = false;
     loadReports().then((result) => {
       if (cancelled || result.isFallback) return;
-      setMonthly(result.monthly);
       setAnnual(result.annual);
       setDocuments(result.documents);
     });
@@ -266,7 +234,6 @@ export function ReportsPage() {
           })}
         </div>
 
-        {activeTab === 'monthly' ? <MonthlyPanel groups={monthly} /> : null}
         {activeTab === 'annual' ? <AnnualPanel groups={annual} /> : null}
         {activeTab === 'documents' ? <DocumentsPanel groups={documents} /> : null}
       </section>

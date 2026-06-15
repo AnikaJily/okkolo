@@ -27,6 +27,8 @@ interface ImageActionCardProps {
   descriptionClassName?: string;
   extraContent?: ReactNode;
   actionsLayout?: 'column' | 'row';
+  /** Выше блок с фото — для карточек товаров в шоуруме */
+  tallImage?: boolean;
 }
 
 export function ImageActionCard({
@@ -49,6 +51,7 @@ export function ImageActionCard({
   descriptionClassName,
   extraContent,
   actionsLayout = 'column',
+  tallImage = false,
 }: ImageActionCardProps) {
   const overlayMedia = picture ? (
     <Picture
@@ -111,7 +114,7 @@ export function ImageActionCard({
   }
 
   return (
-    <article className={cn(styles.previewCard, className)}>
+    <article className={cn(styles.previewCard, tallImage && styles.previewCardTallImage, className)}>
       <div className={styles.previewImageWrap}>{previewMedia}</div>
 
       <div className={styles.previewBody}>

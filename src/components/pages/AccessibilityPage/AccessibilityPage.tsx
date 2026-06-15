@@ -1,10 +1,8 @@
 import {
   ACCESSIBILITY_CONTACTS,
   ACCESSIBILITY_FACTS,
-  ACCESSIBILITY_TRANSPORT,
   ACCESSIBILITY_UPDATED,
 } from '@/data/accessibility';
-import { OKKOLO_ADDRESS, OKKOLO_MAP_URL } from '@/data/site';
 import styles from './AccessibilityPage.module.css';
 
 function PhotoPlaceholder() {
@@ -37,74 +35,6 @@ export function AccessibilityPage() {
           </ul>
         </section>
       </div>
-
-      <section className={styles.simpleSection} aria-labelledby="contact-heading">
-        <h2 id="contact-heading" className={styles.sectionTitle}>
-          Напишите нам перед визитом
-        </h2>
-        <div className={styles.contactCard}>
-          <p className={styles.bodyText}>
-            Если у вас есть вопросы о доступности или нужна помощь на месте,
-            напишите нам. Звонить не обязательно: мы спокойно отвечаем
-            письменно.
-          </p>
-          <ul className={styles.contactList}>
-            <li>
-              <a className={styles.contactLink} href={ACCESSIBILITY_CONTACTS.telegramHref}>
-                Telegram
-              </a>
-            </li>
-            {ACCESSIBILITY_CONTACTS.whatsappHref ? (
-              <li>
-                <a className={styles.contactLink} href={ACCESSIBILITY_CONTACTS.whatsappHref}>
-                  WhatsApp
-                </a>
-              </li>
-            ) : null}
-            <li>
-              <a className={styles.contactLink} href={ACCESSIBILITY_CONTACTS.emailHref}>
-                {ACCESSIBILITY_CONTACTS.email}
-              </a>
-            </li>
-            {ACCESSIBILITY_CONTACTS.phoneHref ? (
-              <li>
-                <a className={styles.contactLink} href={ACCESSIBILITY_CONTACTS.phoneHref}>
-                  {ACCESSIBILITY_CONTACTS.phone}
-                </a>
-              </li>
-            ) : null}
-          </ul>
-        </div>
-      </section>
-
-      <section className={styles.splitSection} aria-labelledby="route-heading">
-        <div className={styles.splitContent}>
-          <h2 id="route-heading" className={styles.sectionTitle}>
-            Как добраться
-          </h2>
-          <div className={styles.splitText}>
-            <p className={styles.bodyText}>
-              Мы находимся по адресу {OKKOLO_ADDRESS}, первый этаж (
-              <a
-                className={styles.inlineLink}
-                href={OKKOLO_MAP_URL}
-                target="_blank"
-                rel="noreferrer"
-              >
-                посмотреть на карте
-              </a>
-              ). Ближайшая остановка — «{ACCESSIBILITY_TRANSPORT.stop}»,{' '}
-              {ACCESSIBILITY_TRANSPORT.trams}.
-            </p>
-            <p className={styles.bodyText}>
-              Подробное описание пути от остановки до двери мы сейчас готовим.
-              Пока его нет, напишите нам: расскажем маршрут словами и, если
-              нужно, встретим у входа.
-            </p>
-          </div>
-        </div>
-        <PhotoPlaceholder />
-      </section>
 
       <section className={styles.splitSection} aria-labelledby="inside-heading">
         <div className={styles.splitContent}>

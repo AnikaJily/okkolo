@@ -49,7 +49,7 @@
   z-index: 1;
 }
 
-/* header-1 — по центру, как на странице «Мероприятия» */
+/* header-1 */
 .heading {
   margin: 0;
   font-family: var(--font-display);
@@ -57,12 +57,12 @@
   font-weight: 600;
   line-height: var(--leading-tight);
   color: var(--color-text);
-  text-align: center;
+  text-align: left;
   text-box: trim-both cap alphabetic;
   scroll-margin-top: var(--header-offset);
 }
 
-/* —— Табы: по центру, под заголовком */
+/* —— Табы */
 .tablist {
   display: flex;
   flex-wrap: nowrap;
@@ -72,7 +72,7 @@
   background-color: var(--color-purple-subtle);
   overflow-x: auto;
   scrollbar-width: none;
-  align-self: center;
+  align-self: flex-start;
   width: fit-content;
   max-width: 100%;
   margin-bottom: 32px;
@@ -165,17 +165,22 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  align-items: stretch;
 }
 
 .fileItem {
+  display: flex;
   min-width: 0;
 }
 
 .fileLink,
 .fileLinkPending {
-  display: flex;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
   align-items: center;
   gap: 16px;
+  width: 100%;
+  height: 100%;
   padding: 14px 18px;
   border-radius: var(--radius-md);
   background-color: var(--color-surface);
@@ -186,7 +191,7 @@
     background-color 0.15s ease,
     box-shadow 0.15s ease,
     transform 0.15s ease;
-  min-height: 64px;
+  min-height: 80px;
   box-sizing: border-box;
 }
 
@@ -220,7 +225,6 @@
 }
 
 .fileTitle {
-  flex: 1 1 auto;
   min-width: 0;
   font-family: var(--font-body);
   font-size: var(--text-body);
@@ -230,9 +234,10 @@
   word-break: break-word;
 }
 
-.fileMeta,
-.fileMetaPending {
-  flex: 0 0 auto;
+.fileMeta {
+  justify-self: end;
+  min-width: 3.25rem;
+  text-align: center;
   font-family: var(--font-display);
   font-size: var(--text-label);
   font-weight: 600;
@@ -240,15 +245,20 @@
   text-transform: uppercase;
   padding: 4px 10px;
   border-radius: var(--radius-pill);
-}
-
-.fileMeta {
   background-color: var(--color-yellow);
   color: var(--color-text);
+  box-sizing: border-box;
 }
 
 .fileMetaPending {
-  background-color: var(--color-purple-subtle);
+  justify-self: end;
+  min-width: 3.25rem;
+  text-align: right;
+  font-family: var(--font-display);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--color-purple-text);
 }
 
@@ -298,6 +308,7 @@
   .fileLink,
   .fileLinkPending {
     padding: 16px 20px;
+    min-height: 84px;
   }
 }
 
@@ -329,7 +340,7 @@
   .fileLink,
   .fileLinkPending {
     padding: 18px 24px;
-    min-height: 72px;
+    min-height: 88px;
   }
 
   .root::before {
@@ -350,10 +361,6 @@
 @media (min-width: 1440px) {
   .root {
     padding-inline: 100px;
-  }
-
-  .fileList {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

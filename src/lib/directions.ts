@@ -1,13 +1,16 @@
+import { directions as fallbackDirections } from '@/data/directions';
+import { fetchDirections, getStrapiImageUrl } from '@/lib/strapi';
+
 type DirectionLike = {
   title: string;
   href?: string | null;
-  id?: string;
+  id?: string | number;
   documentId?: string;
 };
 
 const SHOWROOM_PATH = '/showroom';
 const EVENTS_PATH = '/events';
-const WORKSHOPS_PATH = '/workshops';
+export const WORKSHOPS_PATH = '/workshops';
 const CAFE_PATH = '/cafe';
 
 function directionHaystack(direction: DirectionLike): string {
@@ -99,4 +102,29 @@ export function resolveDirectionHref(direction: DirectionLike): string {
   }
 
   return '#';
+}
+
+/** Картинка карточки «Мастерские» из статичного fallback (как на главной без CMS). */
+export function getFallbackWorkshopsDirectionImage(): string {
+  const workshops = fallbackDirections.find(
+    (direction) =>
+      direction.href === WORKSHOPS_PATH ||
+      direction.id === 'workshops' ||
+      isWorkshopsHubDirection(direction),
+  );
+  return workshops?.image ?? '';
+}
+
+/** То же фото, что у карточки «Мастерские» на главной: Strapi → fallback. */
+export async function loadWorkshopsDirectionImage(): Promise<string> {
+  try {
+    const items = await fetchDirections();
+    const workshops = items.find((item) => isWorkshopsHubDirection(item));
+    const url = getStrapiImageUrl(workshops?.image ?? null);
+    if (url) return url;
+  } catch {
+    // сеть или CMS недоступны — покажем fallback
+  }
+
+  return getFallbackWorkshopsDirectionImage();
 }

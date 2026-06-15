@@ -2,10 +2,9 @@
  * Данные раздела «Отчеты» (/reports).
  *
  * Окколо — некоммерческий проект, поэтому отчеты для нас — это про
- * прозрачность, а не формальность. Здесь живут три типа документов:
- * 1) ежемесячные содержательные отчеты,
- * 2) годовые (содержательный + финансовый + отчеты в Минюст),
- * 3) учредительные документы и реквизиты фонда.
+ * прозрачность, а не формальность. Здесь живут два типа документов:
+ * 1) годовые (содержательный + финансовый + отчеты в Минюст),
+ * 2) учредительные документы и реквизиты фонда.
  *
  * Файлы пока не загружены — у каждого пункта есть `available: false`
  * и подпись «скоро будет опубликован». Когда PDF появится, замени
@@ -13,7 +12,7 @@
  * или просто положить в /public/reports/).
  */
 
-export type ReportsTabId = 'monthly' | 'annual' | 'documents';
+export type ReportsTabId = 'annual' | 'documents';
 
 export interface ReportsTab {
   id: ReportsTabId;
@@ -21,10 +20,6 @@ export interface ReportsTab {
 }
 
 export const REPORTS_TABS: readonly ReportsTab[] = [
-  {
-    id: 'monthly',
-    label: 'Ежемесячные отчеты',
-  },
   {
     id: 'annual',
     label: 'Годовые отчеты',
@@ -43,48 +38,6 @@ export interface ReportFile {
   /** Опубликован ли документ. false → показываем пометку «скоро» */
   available: boolean;
 }
-
-export interface MonthlyReportGroup {
-  year: number;
-  reports: readonly (ReportFile & { month: string })[];
-}
-
-const MONTHS_RU = [
-  'Январь',
-  'Февраль',
-  'Март',
-  'Апрель',
-  'Май',
-  'Июнь',
-  'Июль',
-  'Август',
-  'Сентябрь',
-  'Октябрь',
-  'Ноябрь',
-  'Декабрь',
-] as const;
-
-function monthlyPlaceholder(year: number, untilMonthIndex: number) {
-  return MONTHS_RU.slice(0, untilMonthIndex + 1).map((month, index) => ({
-    id: `monthly-${year}-${index + 1}`,
-    title: `${month} ${year}`,
-    month,
-    href: '',
-    available: false,
-  }));
-}
-
-/** Ежемесячные отчеты от свежего к старому. Сейчас все — заглушки. */
-export const MONTHLY_REPORTS: readonly MonthlyReportGroup[] = [
-  {
-    year: 2026,
-    reports: monthlyPlaceholder(2026, 4),
-  },
-  {
-    year: 2025,
-    reports: monthlyPlaceholder(2025, 11).reverse(),
-  },
-] as const;
 
 export interface AnnualReportGroup {
   year: number;

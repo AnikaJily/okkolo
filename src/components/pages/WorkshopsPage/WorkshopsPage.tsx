@@ -1,6 +1,15 @@
+import { useEffect, useState } from 'react';
+import audiencePicture from '@/assets/images/workshops-for-who.png?w=480;768;1200&format=avif;webp;jpg&as=picture';
+import afterLearningPicture from '@/assets/images/workshops-after-learning.png?w=480;768;1200&format=avif;webp;jpg&as=picture';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
-import { ACCESSIBILITY_HREF, OKKOLO_ADDRESS } from '@/data/site';
+import { Picture } from '@/components/ui/Picture';
+import type { PictureSource } from '@/components/ui/Picture';
+import { LocationSection } from '@/components/sections/LocationSection';
+import {
+  getFallbackWorkshopsDirectionImage,
+  loadWorkshopsDirectionImage,
+} from '@/lib/directions';
 import {
   WORKSHOPS_AFTER_CALLOUTS,
   WORKSHOPS_AFTER_INTRO,
@@ -17,6 +26,20 @@ function PhotoPlaceholder() {
   return (
     <div className={styles.photoPlaceholder} aria-hidden="true">
       <span className={styles.photoPlaceholderText}>Фото мастерских (скоро)</span>
+    </div>
+  );
+}
+
+function SplitPhoto({ picture, alt }: { picture: PictureSource; alt: string }) {
+  return (
+    <div className={styles.splitMedia}>
+      <Picture
+        picture={picture}
+        alt={alt}
+        className={styles.splitImage}
+        loading="lazy"
+        sizes="(min-width: 1024px) 620px, 100vw"
+      />
     </div>
   );
 }
@@ -44,6 +67,18 @@ function CalloutCard({
 }
 
 export function WorkshopsPage() {
+  const [heroImage, setHeroImage] = useState(getFallbackWorkshopsDirectionImage);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadWorkshopsDirectionImage().then((url) => {
+      if (!cancelled && url) setHeroImage(url);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <main id="main" className={styles.root}>
       <section className={styles.hero} aria-labelledby="workshops-page-heading">
@@ -53,15 +88,27 @@ export function WorkshopsPage() {
           </h1>
           <p className={styles.heroLead}>{WORKSHOPS_INTRO}</p>
           <div className={styles.heroActions}>
-            <Button variant="primary" size="lg" href="#workshops-signup">
+            <Button variant="primary" size="md" href="#workshops-signup">
               Записаться
             </Button>
-            <Button variant="outline" size="lg" href="/#about">
+            <Button variant="outline" size="md" href="/#about">
               Узнать о проекте
             </Button>
           </div>
         </div>
-        <PhotoPlaceholder />
+        {heroImage ? (
+          <div className={styles.heroMedia}>
+            <img
+              src={heroImage}
+              alt="Мастерские «Окколо»"
+              className={styles.heroImage}
+              loading="eager"
+              decoding="async"
+            />
+          </div>
+        ) : (
+          <PhotoPlaceholder />
+        )}
       </section>
 
       <section className={styles.programs} aria-labelledby="workshops-programs-heading">
@@ -87,7 +134,10 @@ export function WorkshopsPage() {
             <CalloutCard tag="Важно" text={WORKSHOPS_AUDIENCE_NOTE} />
           </div>
         </div>
-        <PhotoPlaceholder />
+        <SplitPhoto
+          picture={audiencePicture}
+          alt="Занятия в мастерских «Окколо»"
+        />
       </section>
 
       <section className={styles.splitSection} aria-labelledby="workshops-after-heading">
@@ -107,23 +157,15 @@ export function WorkshopsPage() {
             ))}
           </div>
         </div>
-        <PhotoPlaceholder />
+        <SplitPhoto
+          picture={afterLearningPicture}
+          alt="Обучение в мастерских «Окколо»"
+        />
       </section>
 
       <WorkshopsSignupSection />
 
-      <section className={styles.location} aria-labelledby="workshops-location-heading">
-        <h2 id="workshops-location-heading" className={styles.sectionTitle}>
-          Где мы находимся
-        </h2>
-        <p className={styles.address}>{OKKOLO_ADDRESS}</p>
-        <div className={styles.locationActions}>
-          <p className={styles.locationNote}>Подробнее о физической доступности</p>
-          <Button variant="primary" size="lg" href={ACCESSIBILITY_HREF} className={styles.locationButton}>
-            Доступность
-          </Button>
-        </div>
-      </section>
+      <LocationSection />
     </main>
   );
 }

@@ -40,6 +40,7 @@ export function WorkshopProgramCard({ program }: WorkshopProgramCardProps) {
 
         <Button
           variant="primary"
+          size="md"
           href="#workshops-signup"
           className={styles.action}
           fullWidth

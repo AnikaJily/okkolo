@@ -215,6 +215,7 @@
   font-weight: 500;
   line-height: normal;
   color: rgba(0, 0, 0, 0.6);
+  text-box: trim-both cap alphabetic;
 }
 
 .fieldLabelStrong {

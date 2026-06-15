@@ -4,26 +4,13 @@ import {
   ACCESSIBILITY_HREF,
   CONTACT_EMAIL,
   OKKOLO_ADDRESS,
-  OKKOLO_COORDINATES,
   OKKOLO_HOURS,
+  OKKOLO_MAP_EMBED_URL,
   OKKOLO_MAP_URL,
 } from '@/data/site';
 import styles from './LocationSection.module.css';
 
-/* OSM embed: bbox примерно ±0.005° вокруг точки (≈800 м) — масштаб квартала */
-const MAP_DELTA = 0.005;
-
-function buildMapEmbedUrl({ lat, lng }: { lat: number; lng: number }) {
-  const bbox = [lng - MAP_DELTA, lat - MAP_DELTA, lng + MAP_DELTA, lat + MAP_DELTA]
-    .map((value) => value.toFixed(4))
-    .join('%2C');
-  const marker = `${lat.toFixed(4)}%2C${lng.toFixed(4)}`;
-  return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${marker}`;
-}
-
 export function LocationSection() {
-  const mapUrl = buildMapEmbedUrl(OKKOLO_COORDINATES);
-
   return (
     <section
       id="location"
@@ -96,7 +83,7 @@ export function LocationSection() {
 
         <div className={styles.cta}>
           <Button variant="primary" size="md" href={OKKOLO_MAP_URL}>
-            Открыть в 2GIS
+            Открыть в Яндекс Картах
           </Button>
           <Button variant="outline" size="md" href={ACCESSIBILITY_HREF}>
             Подробнее о доступности
@@ -106,20 +93,21 @@ export function LocationSection() {
 
       <div className={styles.mapWrap}>
         <iframe
-          src={mapUrl}
+          src={OKKOLO_MAP_EMBED_URL}
           title={`Карта: ${OKKOLO_ADDRESS}`}
           className={styles.map}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
+          allowFullScreen
         />
         <a
           href={OKKOLO_MAP_URL}
           target="_blank"
           rel="noreferrer"
           className={styles.mapOverlayLink}
-          aria-label={`Открыть «${OKKOLO_ADDRESS}» в 2GIS`}
+          aria-label={`Открыть «${OKKOLO_ADDRESS}» в Яндекс Картах`}
         >
-          Открыть карту в 2GIS
+          Открыть карту в Яндекс Картах
         </a>
       </div>
     </section>

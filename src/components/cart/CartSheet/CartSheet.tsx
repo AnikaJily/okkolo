@@ -96,7 +96,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent aria-describedby={undefined}>
+      <SheetContent variant="center" aria-describedby={undefined}>
         <div className="flex items-center justify-between gap-4">
           <SheetTitle className="font-display text-xl font-semibold">Корзина</SheetTitle>
           <SheetClose asChild>
@@ -322,7 +322,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                 ) : null}
                 <Button
                   variant="primary"
-                  size="lg"
+                  size="md"
                   fullWidth
                   type="submit"
                   className={styles.submitButton}
@@ -337,6 +337,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                   size="md"
                   fullWidth
                   type="button"
+                  className={styles.secondaryButton}
                   onClick={() => {
                     clearCart();
                     onOpenChange(false);

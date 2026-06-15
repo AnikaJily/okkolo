@@ -69,19 +69,10 @@
   padding: 9px 21px;
 }
 
-.lg {
-  min-height: 48px;
-  padding: 13px 27px;
-}
-
 /* Figma: отдельно стоящие кнопки на десктопе — padding 22/30 (учитывая 3px border) */
 @media (min-width: 1024px) {
   .md {
     padding: 13px 27px;
-  }
-
-  .lg {
-    padding: 19px 27px;
   }
 }
 

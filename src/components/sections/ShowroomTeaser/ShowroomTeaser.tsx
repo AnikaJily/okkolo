@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
-import { ImageActionCard } from '@/components/ui/ImageActionCard';
+import { ProductCard } from '@/components/sections/ShowroomSection/ProductCard';
+import { ProductDetailsModal } from '@/components/sections/ShowroomSection/ProductDetailsModal';
+import { useCart } from '@/context/CartContext';
 import {
   products as fallbackProducts,
-  formatProductPrice,
   type ShowroomProduct,
 } from '@/data/products';
 import { loadProducts } from '@/lib/products';
@@ -15,10 +16,16 @@ function pickTeaserProducts(products: ShowroomProduct[]): ShowroomProduct[] {
   return products.slice(0, TEASER_PRODUCT_LIMIT);
 }
 
+function goToShowroom() {
+  window.location.href = '/showroom';
+}
+
 export function ShowroomTeaser() {
+  const { addItem } = useCart();
   const [products, setProducts] = useState<ShowroomProduct[]>(() =>
     pickTeaserProducts(fallbackProducts),
   );
+  const [detailsProduct, setDetailsProduct] = useState<ShowroomProduct | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -31,47 +38,57 @@ export function ShowroomTeaser() {
     };
   }, []);
 
+  const handleAddToCart = (product: ShowroomProduct) => {
+    addItem(product);
+    goToShowroom();
+  };
+
   if (products.length === 0) return null;
 
   return (
-    <section
-      id="showroom-teaser"
-      className={styles.root}
-      aria-labelledby="showroom-teaser-heading"
-    >
-      <header className={styles.head}>
-        <h2 id="showroom-teaser-heading" className={styles.heading}>
-          Сделано в наших мастерских
-        </h2>
-        <p className={styles.lead}>
-          Керамика, украшения, текстиль — ручная работа резидентов
-          студии. Каждая покупка поддерживает мастеров проекта.
-        </p>
-      </header>
+    <>
+      <section
+        id="showroom-teaser"
+        className={styles.root}
+        aria-labelledby="showroom-teaser-heading"
+      >
+        <header className={styles.head}>
+          <h2 id="showroom-teaser-heading" className={styles.heading}>
+            Сделано в наших мастерских
+          </h2>
+          <p className={styles.lead}>
+            Керамика, украшения, текстиль — ручная работа резидентов
+            студии. Каждая покупка поддерживает мастеров проекта.
+          </p>
+        </header>
 
-      <ul className={styles.list}>
-        {products.map((product) => (
-          <li key={product.id} className={styles.item}>
-            <ImageActionCard
-              variant="preview"
-              title={product.title}
-              description={formatProductPrice(product.price)}
-              image={product.image}
-              picture={product.picture}
-              imageSizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 90vw"
-              imageAlt={product.title}
-              href="/showroom"
-              actionLabel="Смотреть в шоуруме"
-            />
-          </li>
-        ))}
-      </ul>
+        <ul className={styles.list}>
+          {products.map((product) => (
+            <li key={product.id} className={styles.item}>
+              <ProductCard
+                product={product}
+                onAddToCart={handleAddToCart}
+                onDetails={setDetailsProduct}
+              />
+            </li>
+          ))}
+        </ul>
 
-      <div className={styles.cta}>
-        <Button variant="primary" size="md" href="/showroom">
-          Все товары в шоуруме
-        </Button>
-      </div>
-    </section>
+        <div className={styles.cta}>
+          <Button variant="primary" size="md" href="/showroom">
+            Все товары в шоуруме
+          </Button>
+        </div>
+      </section>
+
+      <ProductDetailsModal
+        product={detailsProduct}
+        open={detailsProduct !== null}
+        onOpenChange={(open) => {
+          if (!open) setDetailsProduct(null);
+        }}
+        onAddToCart={handleAddToCart}
+      />
+    </>
   );
 }

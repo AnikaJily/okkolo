@@ -24,24 +24,29 @@ export const SheetOverlay = forwardRef<
 ));
 SheetOverlay.displayName = 'SheetOverlay';
 
-export const SheetContent = forwardRef<
-  ElementRef<typeof Dialog.Content>,
-  ComponentPropsWithoutRef<typeof Dialog.Content>
->(({ className, children, ...props }, ref) => (
-  <SheetPortal>
-    <SheetOverlay />
-    <Dialog.Content
-      ref={ref}
-      className={cn(
-        'fixed inset-y-0 right-0 z-50 flex w-[min(88vw,360px)] flex-col gap-8 overflow-y-auto overscroll-contain bg-[var(--color-surface)] px-6 py-7 shadow-[var(--shadow-card-hover)] outline-none',
-        className,
-      )}
-      {...props}
-    >
-      {children}
-    </Dialog.Content>
-  </SheetPortal>
-));
+type SheetContentProps = ComponentPropsWithoutRef<typeof Dialog.Content> & {
+  variant?: 'side' | 'center';
+};
+
+export const SheetContent = forwardRef<ElementRef<typeof Dialog.Content>, SheetContentProps>(
+  ({ className, children, variant = 'side', ...props }, ref) => (
+    <SheetPortal>
+      <SheetOverlay />
+      <Dialog.Content
+        ref={ref}
+        className={cn(
+          variant === 'center'
+            ? 'fixed left-1/2 top-1/2 z-50 flex w-[min(calc(100vw-var(--page-padding-x)*2),560px)] max-h-[min(90dvh,820px)] -translate-x-1/2 -translate-y-1/2 flex-col gap-8 overflow-y-auto overscroll-contain rounded-[var(--radius-xl)] bg-[var(--color-surface)] px-5 py-6 shadow-[var(--shadow-card-hover)] outline-none sm:px-6 sm:py-7'
+            : 'fixed inset-y-0 right-0 z-50 flex w-[min(88vw,360px)] flex-col gap-8 overflow-y-auto overscroll-contain bg-[var(--color-surface)] px-6 py-7 shadow-[var(--shadow-card-hover)] outline-none',
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </Dialog.Content>
+    </SheetPortal>
+  ),
+);
 SheetContent.displayName = 'SheetContent';
 
 export const SheetTitle = Dialog.Title;

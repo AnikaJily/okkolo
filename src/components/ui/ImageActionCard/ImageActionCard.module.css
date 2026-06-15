@@ -254,4 +254,19 @@
   .previewImageWrap {
     height: 245px;
   }
+
+  .previewCardTallImage .previewImageWrap {
+    height: 300px;
+  }
+}
+
+.previewCardTallImage .previewImageWrap {
+  aspect-ratio: 1 / 1;
+}
+
+@media (min-width: 640px) {
+  .previewCardTallImage .previewImageWrap {
+    aspect-ratio: auto;
+    height: 260px;
+  }
 }

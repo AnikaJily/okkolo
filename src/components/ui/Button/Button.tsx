@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import styles from './Button.module.css';
 
 type ButtonVariant = 'primary' | 'outline';
-type ButtonSize = 'sm' | 'md' | 'lg';
+type ButtonSize = 'sm' | 'md';
 
 type BaseProps = {
   variant?: ButtonVariant;

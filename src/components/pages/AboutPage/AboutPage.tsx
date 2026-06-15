@@ -44,10 +44,10 @@ export function AboutPage() {
           <p className={styles.heroLead}>{ABOUT_INTRO.lead}</p>
           <p className={styles.tagline}>{ABOUT_INTRO.tagline}</p>
           <div className={styles.heroActions}>
-            <Button variant="primary" size="lg" {...supportAction}>
+            <Button variant="primary" size="md" {...supportAction}>
               Поддержать проект
             </Button>
-            <Button variant="outline" size="lg" href="#about-contacts">
+            <Button variant="outline" size="md" href="#about-contacts">
               Связаться с нами
             </Button>
           </div>
@@ -218,7 +218,7 @@ export function AboutPage() {
           </p>
 
           <div className={styles.contactActions}>
-            <Button variant="primary" size="lg" {...supportAction}>
+            <Button variant="primary" size="md" {...supportAction}>
               Поддержать проект
             </Button>
           </div>

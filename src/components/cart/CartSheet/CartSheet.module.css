@@ -152,6 +152,7 @@
   font-weight: 500;
   line-height: normal;
   color: rgba(0, 0, 0, 0.6);
+  text-box: trim-both cap alphabetic;
 }
 
 .input {
@@ -272,6 +273,7 @@
   outline-offset: 2px;
 }
 
-.submitButton {
+.submitButton,
+.secondaryButton {
   border-radius: var(--radius-pill-card);
 }

@@ -97,9 +97,9 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
 
               <div className={styles.summary}>
                 <span className={styles.tag}>{event.dateLabel}</span>
-                <Dialog.Title className={styles.heading}>Записаться</Dialog.Title>
-                <Dialog.Description className={styles.eventTitle}>
-                  {event.title}
+                <Dialog.Title className={styles.heading}>Регистрация</Dialog.Title>
+                <Dialog.Description className={styles.eventTitle} asChild>
+                  <h3>{event.title}</h3>
                 </Dialog.Description>
                 {event.isPaid && event.price ? (
                   <p className={styles.price}>
@@ -183,7 +183,7 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
 
                 <Button
                   variant="primary"
-                  size="lg"
+                  size="md"
                   fullWidth
                   type="submit"
                   className={styles.submitButton}

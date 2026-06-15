@@ -95,15 +95,6 @@ export interface StrapiMenuItem {
   isAvailable?: boolean | null;
 }
 
-export interface StrapiMonthlyReport {
-  id: number;
-  documentId: string;
-  month: number;
-  year: number;
-  pdf: StrapiFile | null;
-  summary?: string | null;
-}
-
 export type StrapiAnnualReportKind = 'content' | 'finance' | 'nko-activity' | 'spending';
 
 export interface StrapiAnnualReport {
@@ -271,15 +262,6 @@ export async function fetchMenuItems(): Promise<StrapiMenuItem[]> {
   );
   if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
   const json: StrapiListResponse<StrapiMenuItem> = await res.json();
-  return json.data;
-}
-
-export async function fetchMonthlyReports(): Promise<StrapiMonthlyReport[]> {
-  const res = await fetch(
-    `${STRAPI_URL}/api/monthly-reports?populate=pdf&sort[0]=year:desc&sort[1]=month:desc&pagination[pageSize]=200`,
-  );
-  if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
-  const json: StrapiListResponse<StrapiMonthlyReport> = await res.json();
   return json.data;
 }
 

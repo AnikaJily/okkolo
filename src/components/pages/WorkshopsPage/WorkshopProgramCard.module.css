@@ -45,13 +45,13 @@
   justify-content: space-between;
   gap: 20px;
   min-height: 0;
+  padding-inline: 20px;
 }
 
 .text {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding-inline: 20px;
 }
 
 .title {
@@ -61,7 +61,8 @@
   font-weight: 600;
   line-height: var(--leading-tight);
   color: var(--color-text);
-  text-align: center;
+  text-align: left;
+  text-wrap: balance;
   text-box: trim-both cap alphabetic;
 }
 
@@ -72,9 +73,9 @@
   font-weight: 500;
   line-height: normal;
   color: rgba(0, 0, 0, 0.5);
+  text-align: left;
 }
 
 .action {
-  margin-inline: 20px;
   border-radius: var(--radius-pill-card);
 }

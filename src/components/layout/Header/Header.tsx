@@ -7,7 +7,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/Sheet';
-import { NAV_ITEMS } from '@/data/site';
+import { HEADER_NAV_ITEMS, NAV_ITEMS } from '@/data/site';
 import { getSupportAction } from '@/lib/support';
 import logoSrc from '@/assets/images/logo.svg';
 import menuSrc from '@/assets/images/menu.svg';
@@ -36,57 +36,45 @@ export function Header({ onMenuClick, onSupport }: HeaderProps) {
           />
         </a>
 
-        <nav className="hidden flex-1 lg:block" aria-label="Основная навигация">
-          <ul className="m-0 flex list-none items-center justify-center gap-[30px] p-0">
-            {NAV_ITEMS.map((item) => (
+        <nav className={styles.navCluster} aria-label="Основная навигация">
+          <ul className={`${styles.navList} ${styles.navListDesktop}`}>
+            {HEADER_NAV_ITEMS.map((item) => (
               <li key={item.href}>
-                <a
-                  href={item.href}
-                  className="relative rounded-sm px-1 py-2 font-display text-[length:var(--text-tag)] font-medium text-[var(--color-text-nav)] transition-colors duration-150 after:absolute after:inset-x-1 after:bottom-0.5 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-sm after:bg-[var(--color-purple)] after:transition-transform after:duration-200 hover:text-[var(--color-purple-dark)] hover:after:scale-x-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-purple-dark)]"
-                >
+                <a href={item.href} className={styles.navLink}>
                   {item.label}
                 </a>
               </li>
             ))}
           </ul>
-        </nav>
 
-        <div className="hidden shrink-0 lg:inline-flex">
-          <Button variant="primary" size="md" {...supportAction}>
-            Поддержать проект
-          </Button>
-        </div>
-
-        <div className="inline-flex lg:hidden">
           <Sheet>
             <SheetTrigger asChild>
-              <IconButton label="Открыть меню" onClick={onMenuClick}>
-                <img src={menuSrc} alt="" aria-hidden="true" className="size-[30px]" />
+              <IconButton
+                label="Открыть меню"
+                className={styles.menuButton}
+                onClick={onMenuClick}
+              >
+                <img src={menuSrc} alt="" aria-hidden="true" className={styles.menuIcon} />
               </IconButton>
             </SheetTrigger>
             <SheetContent aria-describedby={undefined}>
-              <div className="flex items-center justify-between gap-4">
-                <SheetTitle className="font-display text-xl font-semibold">
-                  Меню
-                </SheetTitle>
+              <div className={styles.sheetHeader}>
+                <SheetTitle className={styles.sheetTitleHidden}>Меню</SheetTitle>
                 <SheetClose asChild>
                   <IconButton label="Закрыть меню">
-                    <span aria-hidden="true" className="text-3xl leading-none">
+                    <span aria-hidden="true" className={styles.sheetCloseIcon}>
                       ×
                     </span>
                   </IconButton>
                 </SheetClose>
               </div>
 
-              <nav aria-label="Мобильная навигация">
-                <ul className="m-0 flex list-none flex-col gap-2 p-0">
+              <nav aria-label="Навигация в меню">
+                <ul className={styles.sheetNavList}>
                   {NAV_ITEMS.map((item) => (
                     <li key={item.href}>
                       <SheetClose asChild>
-                        <a
-                          href={item.href}
-                          className="block rounded-[var(--radius-md)] px-4 py-3 font-display text-lg font-medium transition-colors hover:bg-[var(--color-purple-subtle)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-purple-dark)]"
-                        >
+                        <a href={item.href} className={styles.sheetNavLink}>
                           {item.label}
                         </a>
                       </SheetClose>
@@ -96,12 +84,24 @@ export function Header({ onMenuClick, onSupport }: HeaderProps) {
               </nav>
 
               <SheetClose asChild>
-                <Button variant="primary" size="lg" fullWidth {...supportAction}>
+                <Button
+                  variant="primary"
+                  size="md"
+                  fullWidth
+                  className={styles.sheetSupport}
+                  {...supportAction}
+                >
                   Поддержать
                 </Button>
               </SheetClose>
             </SheetContent>
           </Sheet>
+        </nav>
+
+        <div className={styles.supportWrap}>
+          <Button variant="primary" size="md" {...supportAction}>
+            Поддержать проект
+          </Button>
         </div>
       </div>
     </header>

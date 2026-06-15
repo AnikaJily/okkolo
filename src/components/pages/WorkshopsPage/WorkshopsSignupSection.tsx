@@ -61,6 +61,12 @@ export function WorkshopsSignupSection() {
     }
   };
 
+  const handleContactMethodChange = (method: ContactMethod) => {
+    setContactMethod(method);
+    setContactValue('');
+    setErrors((prev) => ({ ...prev, contact: undefined }));
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (submitStatus === 'submitting') return;
@@ -74,10 +80,14 @@ export function WorkshopsSignupSection() {
     if (!name.trim()) {
       nextErrors.name = 'Напишите, как вас зовут.';
     }
-    if (contactMethod === 'phone' && !isValidPhone(contactValue)) {
+    if (!contactValue.trim()) {
+      nextErrors.contact =
+        contactMethod === 'phone'
+          ? 'Введите номер телефона.'
+          : 'Введите адрес электронной почты.';
+    } else if (contactMethod === 'phone' && !isValidPhone(contactValue)) {
       nextErrors.contact = 'Введите номер телефона, например +7 918 123-45-67.';
-    }
-    if (contactMethod === 'email' && !contactValue.includes('@')) {
+    } else if (contactMethod === 'email' && !contactValue.includes('@')) {
       nextErrors.contact = 'Введите адрес электронной почты.';
     }
     setErrors(nextErrors);
@@ -111,10 +121,9 @@ export function WorkshopsSignupSection() {
   };
 
   const isSubmitting = submitStatus === 'submitting';
-  const contactLabel =
-    contactMethod === 'phone'
-      ? 'Телефон или почта (смотря что нажали)*'
-      : 'Телефон или почта (смотря что нажали)*';
+  const isPhoneContact = contactMethod === 'phone';
+  const contactLabel = isPhoneContact ? 'Телефон*' : 'Почта*';
+  const contactPlaceholder = isPhoneContact ? '+7 918 123-45-67' : 'hello@example.com';
 
   const phoneDisplay = CONTACT_PHONE_DISPLAY || CONTACT_PHONE_PLACEHOLDER;
 
@@ -234,8 +243,8 @@ export function WorkshopsSignupSection() {
                   type="radio"
                   name="contact-method"
                   value="phone"
-                  checked={contactMethod === 'phone'}
-                  onChange={() => setContactMethod('phone')}
+                  checked={isPhoneContact}
+                  onChange={() => handleContactMethodChange('phone')}
                 />
                 <span>Позвонить</span>
               </label>
@@ -244,8 +253,8 @@ export function WorkshopsSignupSection() {
                   type="radio"
                   name="contact-method"
                   value="email"
-                  checked={contactMethod === 'email'}
-                  onChange={() => setContactMethod('email')}
+                  checked={!isPhoneContact}
+                  onChange={() => handleContactMethodChange('email')}
                 />
                 <span>Написать</span>
               </label>
@@ -258,14 +267,16 @@ export function WorkshopsSignupSection() {
             </label>
             <input
               id="workshops-signup-contact"
+              key={contactMethod}
               ref={contactRef}
               className={styles.input}
               value={contactValue}
               onChange={(event) => setContactValue(event.target.value)}
               required
-              type={contactMethod === 'phone' ? 'tel' : 'email'}
-              inputMode={contactMethod === 'phone' ? 'tel' : 'email'}
-              autoComplete={contactMethod === 'phone' ? 'tel' : 'email'}
+              type={isPhoneContact ? 'tel' : 'email'}
+              inputMode={isPhoneContact ? 'tel' : 'email'}
+              autoComplete={isPhoneContact ? 'tel' : 'email'}
+              placeholder={contactPlaceholder}
               aria-invalid={errors.contact ? true : undefined}
               aria-describedby={
                 errors.contact ? 'workshops-signup-contact-error' : undefined
@@ -296,7 +307,7 @@ export function WorkshopsSignupSection() {
           <Button
             type="submit"
             variant="primary"
-            size="lg"
+            size="md"
             fullWidth
             className={styles.submitButton}
             aria-disabled={isSubmitting || undefined}

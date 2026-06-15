@@ -1,38 +1,19 @@
 import {
   ANNUAL_REPORTS as FALLBACK_ANNUAL_REPORTS,
   DOCUMENTS_GROUPS as FALLBACK_DOCUMENTS_GROUPS,
-  MONTHLY_REPORTS as FALLBACK_MONTHLY_REPORTS,
   type AnnualReportGroup,
   type DocumentsGroup,
-  type MonthlyReportGroup,
   type ReportFile,
 } from '@/data/reports';
 import {
   fetchAnnualReports,
   fetchLegalDocuments,
-  fetchMonthlyReports,
   getStrapiFileUrl,
   type StrapiAnnualReport,
   type StrapiAnnualReportKind,
   type StrapiLegalDocument,
   type StrapiLegalDocumentCategory,
-  type StrapiMonthlyReport,
 } from '@/lib/strapi';
-
-const MONTHS_RU = [
-  'Январь',
-  'Февраль',
-  'Март',
-  'Апрель',
-  'Май',
-  'Июнь',
-  'Июль',
-  'Август',
-  'Сентябрь',
-  'Октябрь',
-  'Ноябрь',
-  'Декабрь',
-] as const;
 
 const ANNUAL_KIND_TITLES: Record<StrapiAnnualReportKind, string> = {
   content: 'Годовой содержательный отчет',
@@ -75,31 +56,6 @@ function toReportFile(
     href: pdfUrl ?? '',
     available: Boolean(pdfUrl),
   };
-}
-
-function buildMonthlyGroups(items: StrapiMonthlyReport[]): MonthlyReportGroup[] {
-  const byYear = new Map<number, StrapiMonthlyReport[]>();
-  for (const item of items) {
-    const bucket = byYear.get(item.year) ?? [];
-    bucket.push(item);
-    byYear.set(item.year, bucket);
-  }
-
-  const years = [...byYear.keys()].sort((a, b) => b - a);
-  return years.map((year) => {
-    const reports = (byYear.get(year) ?? [])
-      .filter((item) => item.month >= 1 && item.month <= 12)
-      .sort((a, b) => b.month - a.month)
-      .map((item) => {
-        const monthName = MONTHS_RU[item.month - 1];
-        const pdfUrl = getStrapiFileUrl(item.pdf);
-        return {
-          ...toReportFile(`monthly-${year}-${item.month}`, `${monthName} ${year}`, pdfUrl),
-          month: monthName,
-        };
-      });
-    return { year, reports };
-  });
 }
 
 function buildAnnualGroups(items: StrapiAnnualReport[]): AnnualReportGroup[] {
@@ -160,29 +116,25 @@ function buildDocumentGroups(items: StrapiLegalDocument[]): DocumentsGroup[] {
 }
 
 export interface LoadReportsResult {
-  monthly: readonly MonthlyReportGroup[];
   annual: readonly AnnualReportGroup[];
   documents: readonly DocumentsGroup[];
-  /** true — все три коллекции CMS пусты или недоступны: показываем мок-каркас. */
+  /** true — обе коллекции CMS пусты или недоступны: показываем мок-каркас. */
   isFallback: boolean;
 }
 
 export async function loadReports(): Promise<LoadReportsResult> {
   try {
-    const [monthlyItems, annualItems, documentItems] = await Promise.all([
-      fetchMonthlyReports().catch(() => [] as StrapiMonthlyReport[]),
+    const [annualItems, documentItems] = await Promise.all([
       fetchAnnualReports().catch(() => [] as StrapiAnnualReport[]),
       fetchLegalDocuments().catch(() => [] as StrapiLegalDocument[]),
     ]);
 
-    const monthly = buildMonthlyGroups(monthlyItems);
     const annual = buildAnnualGroups(annualItems);
     const documents = buildDocumentGroups(documentItems);
 
-    const hasAny = monthly.length > 0 || annual.length > 0 || documents.length > 0;
+    const hasAny = annual.length > 0 || documents.length > 0;
     if (hasAny) {
       return {
-        monthly: monthly.length > 0 ? monthly : FALLBACK_MONTHLY_REPORTS,
         annual: annual.length > 0 ? annual : FALLBACK_ANNUAL_REPORTS,
         documents: documents.length > 0 ? documents : FALLBACK_DOCUMENTS_GROUPS,
         isFallback: false,
@@ -192,7 +144,6 @@ export async function loadReports(): Promise<LoadReportsResult> {
     console.error('loadReports: fallback на статичные данные', error);
   }
   return {
-    monthly: FALLBACK_MONTHLY_REPORTS,
     annual: FALLBACK_ANNUAL_REPORTS,
     documents: FALLBACK_DOCUMENTS_GROUPS,
     isFallback: true,

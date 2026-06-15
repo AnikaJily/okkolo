@@ -85,14 +85,14 @@
   text-box: trim-both cap alphabetic;
 }
 
-/* body */
+/* header-3 */
 .eventTitle {
   margin: 0;
-  font-family: var(--font-body);
-  font-size: var(--text-body);
-  font-weight: 500;
-  line-height: normal;
-  color: var(--color-text-secondary);
+  font-family: var(--font-display);
+  font-size: var(--text-card-title);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
   text-box: trim-both cap alphabetic;
 }
 
@@ -126,6 +126,7 @@
   font-weight: 500;
   line-height: normal;
   color: rgba(0, 0, 0, 0.6);
+  text-box: trim-both cap alphabetic;
 }
 
 .input {
