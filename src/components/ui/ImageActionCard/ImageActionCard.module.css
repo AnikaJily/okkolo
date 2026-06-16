@@ -185,6 +185,7 @@ a.previewMain:visited {
   width: fit-content;
   align-items: flex-end;
   background-color: var(--color-yellow);
+  border-radius: var(--radius-tag);
   padding: 8px 12px;
   margin-bottom: 20px;
   font-family: var(--font-display);

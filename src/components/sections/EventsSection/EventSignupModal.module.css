@@ -55,11 +55,12 @@
   padding-right: 48px;
 }
 
-/* Желтая плашка с датой — как «Progress Tags» в Figma */
+/* Желтая плашка с датой — как «Progress Tags» в Figma, со скруглением 2px */
 .tag {
   display: inline-flex;
   align-items: flex-end;
   background-color: var(--color-yellow);
+  border-radius: var(--radius-tag);
   padding: 8px 12px;
   font-family: var(--font-display);
   font-size: var(--text-tag);

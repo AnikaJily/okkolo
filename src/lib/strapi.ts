@@ -429,7 +429,11 @@ export async function createEventRegistration(input: EventRegistrationInput) {
   return res.json();
 }
 
-export async function createOrder(input: CreateOrderInput) {
+export interface CreateOrderResult {
+  data?: { id?: number; documentId?: string };
+}
+
+export async function createOrder(input: CreateOrderInput): Promise<CreateOrderResult> {
   const res = await fetch(`${STRAPI_URL}/api/orders`, {
     method: 'POST',
     headers: {

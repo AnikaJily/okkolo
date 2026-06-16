@@ -1,7 +1,9 @@
 .root {
   position: fixed;
   z-index: 20;
-  top: 108px;
+  /* Сдвигаемся вниз вместе с хедером, когда открыта панель «для слабовидящих»
+     (иначе кнопка перекрывается панелью именно в режиме для низкого зрения). */
+  top: calc(108px + var(--a11y-panel-h, 0px));
   right: max(var(--page-padding-x), calc((100vw - var(--container-max)) / 2 + var(--page-padding-x)));
   display: flex;
   align-items: center;
@@ -54,7 +56,7 @@
 
 @media (min-width: 640px) {
   .root {
-    top: 120px;
+    top: calc(120px + var(--a11y-panel-h, 0px));
     width: 60px;
     height: 60px;
   }

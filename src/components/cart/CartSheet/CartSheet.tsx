@@ -52,6 +52,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
   const [errors, setErrors] = useState<FormErrors>({});
   const [confirmClear, setConfirmClear] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
+  const [orderId, setOrderId] = useState<number | null>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
   const isDelivery = fulfillmentType === 'delivery';
@@ -77,6 +78,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
       setErrors({});
       setConfirmClear(false);
       setSubmitStatus('idle');
+      setOrderId(null);
     }
   }, [open]);
 
@@ -114,7 +116,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
     setSubmitStatus('submitting');
 
     try {
-      await createOrder({
+      const created = await createOrder({
         customerName: customerName.trim(),
         phone: phone.trim(),
         email: email.trim() || undefined,
@@ -133,6 +135,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
         address: isDelivery ? address.trim() : undefined,
         deliveryComment: isDelivery ? deliveryComment.trim() || undefined : undefined,
       });
+      setOrderId(created?.data?.id ?? null);
       setSubmitStatus('success');
       clearCart();
     } catch (error) {
@@ -164,7 +167,9 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
 
         {submitStatus === 'success' ? (
           <div className={styles.success} role="status">
-            <p className={styles.successTitle}>Заказ оформлен</p>
+            <p className={styles.successTitle}>
+              Заказ оформлен{orderId ? ` №${orderId}` : ''}
+            </p>
             <p className={styles.successText}>
               {isDelivery
                 ? 'Мы свяжемся с вами для уточнения доставки'

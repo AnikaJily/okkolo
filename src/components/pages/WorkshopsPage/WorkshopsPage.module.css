@@ -193,6 +193,7 @@
   align-self: flex-start;
   padding: 8px 12px;
   background-color: var(--color-yellow);
+  border-radius: var(--radius-tag);
   font-family: var(--font-body);
   font-size: var(--text-caption);
   font-weight: 500;

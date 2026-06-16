@@ -160,7 +160,7 @@ src/components/
 | tag | Medium 18 / normal | `--text-caption` (алиас `--text-tag`) |
 
 Палитра и форма:
-- Заливка кнопок `#d5a7f6` → `--color-purple-light`; обводка и hover `#c594e8` → `--color-purple`; фон страницы `#f9f9f9` → `--color-bg`; жёлтый тег `#fedd5b` → `--color-yellow` (тег **без скругления**, padding 8×12); вторичный текст `#666666` (единый серый по просьбе заказчицы, вместо макетного `rgba(0,0,0,.5)`) → `--color-text-secondary` (= `--color-text-subtle`, `--color-text-muted`, `--color-muted`); навигация `#292929` → `--color-text-nav`.
+- Заливка кнопок `#d5a7f6` → `--color-purple-light`; обводка и hover `#c594e8` → `--color-purple`; фон страницы `#f9f9f9` → `--color-bg`; жёлтый тег `#fedd5b` → `--color-yellow` (скругление `--radius-tag` = 2px, padding 8×12; декоративные теги-чипы — `.previewMeta`, `DetailCard .tag`, `EventSignupModal .tag`, `.calloutTag`); вторичный текст `#666666` (единый серый по просьбе заказчицы, вместо макетного `rgba(0,0,0,.5)`) → `--color-text-secondary` (= `--color-text-subtle`, `--color-text-muted`, `--color-muted`); навигация `#292929` → `--color-text-nav`.
 - Радиусы: отдельные кнопки 40 (`--radius-pill`), кнопки в карточках 30 (`--radius-pill-card`), карточки 25 (`--radius-xl`), фото 20 (`--radius-lg`).
 - Тени без смещения: карточка `0 0 4px` (`--shadow-card`), hover `0 0 10.9px 1px`, hero-фото `0 0 6px` (`--shadow-hero`), хедер/футер `0 0 2px` (`--shadow-header`).
 - У `Button` рамка 3px у всех вариантов (у primary — в цвет заливки), поэтому CSS-padding = Figma-значение минус 3 (Figma 22/30 → `lg` на 1024+ = 19/27).
