@@ -40,12 +40,11 @@
   position: absolute;
   top: 50%;
   z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Гарантируем touch target ≥44px независимо от размера иконки (SC 2.5.8) */
-  min-width: 44px;
-  min-height: 44px;
+  /* Фиксированный размер = touch target 44px (SC 2.5.8). Не flex и не min-*:
+     arrow.svg имеет preserveAspectRatio="none" и тянется под контейнер —
+     явные width/height не дают ему расплыться в овал. */
+  width: 44px;
+  height: 44px;
   transform: translateY(-50%);
   border: none;
   padding: 0;
