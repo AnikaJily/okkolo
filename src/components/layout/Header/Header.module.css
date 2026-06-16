@@ -80,7 +80,10 @@
 @media (min-width: 1140px) {
   .desktopNav {
     display: flex;
+    flex: 1 1 auto;
     align-items: center;
+    justify-content: center;
+    min-width: 0;
   }
 }
 
@@ -89,27 +92,60 @@
   align-items: center;
   justify-content: center;
   flex-wrap: nowrap;
-  gap: 25px;
+  gap: 16px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+@media (min-width: 1280px) {
+  .navList {
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .navList {
+    gap: 25px;
+  }
+}
+
+/* При увеличенном шрифте a11y — перенос, иначе обрезка. */
+:global(:root[data-a11y-font='xl']) .navList,
+:global(:root[data-a11y-font='xxl']) .navList {
+  flex-wrap: wrap;
+}
+
 .navLink {
-  display: inline-block;
-  padding: 0.5rem 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 8px 8px;
   font-family: var(--font-display);
   font-size: var(--text-tag);
   font-weight: 500;
+  line-height: normal;
   color: var(--color-text-nav);
   text-decoration: none;
   white-space: nowrap;
   transition: background-color 0.15s ease;
 }
 
+@media (min-width: 1280px) {
+  .navLink {
+    padding: 8px 12px;
+  }
+}
+
 .navLink:hover,
 .navLinkActive {
   background-color: var(--color-yellow);
+  border-radius: var(--radius-tag);
+}
+
+/* Текущая страница — не только цветом: жирность как второй сигнал (SC 1.4.1). */
+.navLinkActive {
+  font-weight: 600;
 }
 
 .navLink:focus-visible {
@@ -265,7 +301,7 @@
 
 .sheetNavLink {
   display: inline-block;
-  padding: 0.5rem 0.25rem;
+  padding: 8px 12px;
   font-family: var(--font-display);
   font-size: var(--text-body);
   font-weight: 500;
@@ -279,6 +315,12 @@
 .sheetNavLink:hover,
 .sheetNavLinkActive {
   background-color: var(--color-yellow);
+  border-radius: var(--radius-tag);
+}
+
+/* Текущая страница — не только цветом: жирность как второй сигнал (SC 1.4.1). */
+.sheetNavLinkActive {
+  font-weight: 600;
 }
 
 .sheetNavLink:focus-visible {

@@ -1,5 +1,5 @@
 import cafeTeachPicture from '@/assets/images/what_we_teach_cafe.jpg?w=480;768;1200&format=avif;webp;jpg&as=picture';
-import potteryPicture from '@/assets/images/what_we_teach_pottery.jpg?w=480;768;1200&format=avif;webp;jpg&as=picture';
+import potteryPicture from '@/assets/images/what_we_teach_pottery.png?w=480;768;1200&format=avif;webp;jpg&as=picture';
 import sewingPicture from '@/assets/images/what_we_teach_sewing.jpg?w=480;768;1200&format=avif;webp;jpg&as=picture';
 import heroTeamPicture from '@/assets/images/hero-team.jpg?w=480;768;1200&format=avif;webp;jpg&as=picture';
 import type { PictureSource } from '@/components/ui/Picture';

@@ -91,9 +91,10 @@
 }
 
 .problemText {
-  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
   margin: 0;
-  padding-left: 32px;
   font-family: var(--font-body);
   font-size: var(--text-body);
   font-weight: 500;
@@ -103,21 +104,11 @@
 
 .problemText::before {
   content: '';
-  position: absolute;
-  left: 0;
-  top: 0.35em;
-  width: 18px;
-  height: 18px;
-  translate: 0 -50%;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
   border-radius: var(--radius-full);
-  background-color: var(--color-purple-text);
-  text-box: none;
-}
-
-@supports (top: 1cap) {
-  .problemText::before {
-    top: 0.5cap;
-  }
+  background-color: var(--color-purple-light);
 }
 
 .callout {

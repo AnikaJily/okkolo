@@ -151,3 +151,25 @@
 :root[data-a11y] header {
   top: var(--a11y-panel-h, 0px) !important;
 }
+
+/*
+  Хедер растёт вместе со шрифтом (текст в nav масштабируется по rem) —
+  поднимаем --header-offset, иначе якорные переходы оставляют заголовок
+  раздела под шапкой. Плюс прибавляем высоту самой панели a11y к
+  scroll-padding-top, чтобы прокрутка к якорю учитывала и её.
+*/
+:root[data-a11y][data-a11y-font='lg'] {
+  --header-offset: 104px;
+}
+
+:root[data-a11y][data-a11y-font='xl'] {
+  --header-offset: 120px;
+}
+
+:root[data-a11y][data-a11y-font='xxl'] {
+  --header-offset: 160px;
+}
+
+:root[data-a11y] {
+  scroll-padding-top: calc(var(--header-offset) + var(--a11y-panel-h, 0px));
+}

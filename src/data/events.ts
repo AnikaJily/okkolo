@@ -16,7 +16,6 @@ export interface OkkoloEvent {
   signupHref: string;
   isPaid?: boolean;
   price?: number;
-  paymentUrl?: string;
   image: string;
   picture?: PictureSource;
 }

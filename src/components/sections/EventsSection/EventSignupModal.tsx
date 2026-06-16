@@ -4,6 +4,7 @@ import type { FormEvent } from 'react';
 import { Button } from '@/components/ui/Button';
 import { CloseIcon } from '@/components/ui/CloseIcon/CloseIcon';
 import { Checkbox } from '@/components/ui/Checkbox';
+import { RequiredMark } from '@/components/ui/RequiredMark';
 import type { OkkoloEvent } from '@/data/events';
 import { createEventRegistration } from '@/lib/strapi';
 import styles from './EventSignupModal.module.css';
@@ -31,7 +32,6 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
   const [consent, setConsent] = useState(false);
   const [consentError, setConsentError] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
-  const [demoPaymentComplete, setDemoPaymentComplete] = useState(false);
   const isPaidEvent = Boolean(event?.isPaid);
 
   useEffect(() => {
@@ -43,7 +43,6 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
       setConsent(false);
       setConsentError(false);
       setSubmitStatus('idle');
-      setDemoPaymentComplete(false);
     }
   }, [open, event?.id]);
 
@@ -65,9 +64,8 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
         eventTitle: event.title,
         name: name.trim(),
         phone: phone.trim(),
-        email: email.trim() || undefined,
+        email: email.trim(),
         comment: comment.trim() || undefined,
-        paymentStatus: isPaidEvent ? 'pending' : undefined,
       });
       setSubmitStatus('success');
       setName('');
@@ -107,12 +105,18 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
                     Цена: {priceFormatter.format(event.price)}
                   </p>
                 ) : null}
+                {isPaidEvent ? (
+                  <p className={styles.paymentNote}>
+                    Оплата на месте — наличными или картой
+                  </p>
+                ) : null}
               </div>
 
               <form className={styles.form} onSubmit={handleSubmit} noValidate>
                 <div className={styles.field}>
                   <label htmlFor={`${fieldIdPrefix}-name`} className={styles.label}>
-                    Имя (обязательно)
+                    Имя
+                    <RequiredMark />
                   </label>
                   <input
                     id={`${fieldIdPrefix}-name`}
@@ -126,7 +130,8 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
 
                 <div className={styles.field}>
                   <label htmlFor={`${fieldIdPrefix}-phone`} className={styles.label}>
-                    Телефон (обязательно)
+                    Телефон
+                    <RequiredMark />
                   </label>
                   <input
                     id={`${fieldIdPrefix}-phone`}
@@ -142,7 +147,8 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
 
                 <div className={styles.field}>
                   <label htmlFor={`${fieldIdPrefix}-email`} className={styles.label}>
-                    Email, если удобно
+                    Email
+                    <RequiredMark />
                   </label>
                   <input
                     id={`${fieldIdPrefix}-email`}
@@ -151,6 +157,7 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
                     onChange={(changeEvent) => setEmail(changeEvent.target.value)}
                     type="email"
                     autoComplete="email"
+                    required
                   />
                 </div>
 
@@ -201,38 +208,11 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
                 {/* Контейнеры статусов существуют в DOM заранее (SC 4.1.3) — паттерн WorkshopsPage */}
                 <div className={styles.successBlock} role="status">
                   {submitStatus === 'success' ? (
-                    <>
-                      <p className={styles.success}>
-                        {demoPaymentComplete
-                          ? 'Демо-оплата прошла. В реальной версии здесь заявка подтвердится после оплаты'
-                          : isPaidEvent
-                          ? 'Спасибо, мы получили вашу заявку. Она будет подтверждена после оплаты'
-                          : 'Спасибо, мы получили вашу заявку'}
-                      </p>
-                      {isPaidEvent && event.paymentUrl ? (
-                        <Button
-                          variant="outline"
-                          size="md"
-                          fullWidth
-                          href={event.paymentUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Перейти к оплате
-                        </Button>
-                      ) : null}
-                      {isPaidEvent && !event.paymentUrl && !demoPaymentComplete ? (
-                        <Button
-                          variant="outline"
-                          size="md"
-                          fullWidth
-                          type="button"
-                          onClick={() => setDemoPaymentComplete(true)}
-                        >
-                          Демо-оплата 0 ₽
-                        </Button>
-                      ) : null}
-                    </>
+                    <p className={styles.success}>
+                      {isPaidEvent
+                        ? 'Спасибо, мы получили вашу заявку. Оплатить можно на месте — наличными или картой'
+                        : 'Спасибо, мы получили вашу заявку'}
+                    </p>
                   ) : null}
                 </div>
 

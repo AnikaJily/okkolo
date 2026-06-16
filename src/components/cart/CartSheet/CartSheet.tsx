@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from 'rea
 import { Button } from '@/components/ui/Button';
 import { CloseIcon } from '@/components/ui/CloseIcon/CloseIcon';
 import { Checkbox } from '@/components/ui/Checkbox';
+import { RequiredMark } from '@/components/ui/RequiredMark';
 import { IconButton } from '@/components/ui/IconButton';
 import { Sheet, SheetClose, SheetContent, SheetTitle } from '@/components/ui/Sheet';
 import { useCart } from '@/context/CartContext';
@@ -54,6 +55,20 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
   const [orderId, setOrderId] = useState<number | null>(null);
   const listRef = useRef<HTMLUListElement>(null);
+
+  const handleRemoveLine = (productId: string, index: number) => {
+    const wasLast = items.length <= 1;
+    removeItem(productId);
+    if (wasLast) {
+      onOpenChange(false);
+      return;
+    }
+    requestAnimationFrame(() => {
+      const buttons = listRef.current?.querySelectorAll<HTMLButtonElement>('[data-cart-decrement]');
+      if (!buttons || buttons.length === 0) return;
+      buttons[Math.min(index, buttons.length - 1)]?.focus();
+    });
+  };
 
   const isDelivery = fulfillmentType === 'delivery';
   const deliveryPrice = useMemo(
@@ -192,10 +207,18 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                       <button
                         type="button"
                         className={styles.stepperButton}
-                        aria-label={`Уменьшить количество «${item.title}»`}
-                        aria-disabled={item.quantity <= 1 || undefined}
+                        data-cart-decrement
+                        aria-label={
+                          item.quantity <= 1
+                            ? `Удалить «${item.title}» из корзины`
+                            : `Уменьшить количество «${item.title}»`
+                        }
                         onClick={() => {
-                          if (item.quantity > 1) decrementItem(item.productId);
+                          if (item.quantity > 1) {
+                            decrementItem(item.productId);
+                          } else {
+                            handleRemoveLine(item.productId, index);
+                          }
                         }}
                       >
                         <span aria-hidden="true">−</span>
@@ -216,32 +239,12 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                       </button>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    className={styles.remove}
-                    data-cart-remove
-                    aria-label={`Удалить «${item.title}» из корзины`}
-                    onClick={() => {
-                      // items.length, не totalCount: сумма штук ≠ число позиций
-                      const wasLast = items.length <= 1;
-                      removeItem(item.productId);
-                      if (wasLast) {
-                        onOpenChange(false);
-                        return;
-                      }
-                      // Кнопка размонтируется — переводим фокус на соседнюю «Удалить»,
-                      // чтобы он не упал на body внутри focus-trap (SC 2.4.3).
-                      requestAnimationFrame(() => {
-                        const buttons = listRef.current?.querySelectorAll<HTMLButtonElement>(
-                          '[data-cart-remove]',
-                        );
-                        if (!buttons || buttons.length === 0) return;
-                        buttons[Math.min(index, buttons.length - 1)]?.focus();
-                      });
-                    }}
-                  >
-                    Удалить
-                  </button>
+                  <p className={styles.lineTotal} aria-live="polite">
+                    <span className="visually-hidden">
+                      Сумма за «{item.title}»:{' '}
+                    </span>
+                    {formatProductPrice(item.price * item.quantity)}
+                  </p>
                 </li>
               ))}
             </ul>
@@ -250,7 +253,8 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
               <p className={styles.formHeading}>Контакты</p>
               <div className={styles.field}>
                 <label htmlFor={`${fieldIdPrefix}-name`} className={styles.label}>
-                  Имя (обязательно)
+                  Имя
+                  <RequiredMark />
                 </label>
                 <input
                   id={`${fieldIdPrefix}-name`}
@@ -272,7 +276,8 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
               </div>
               <div className={styles.field}>
                 <label htmlFor={`${fieldIdPrefix}-phone`} className={styles.label}>
-                  Телефон (обязательно)
+                  Телефон
+                  <RequiredMark />
                 </label>
                 <input
                   id={`${fieldIdPrefix}-phone`}
@@ -349,7 +354,8 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                 <>
                   <div className={styles.field}>
                     <label htmlFor={`${fieldIdPrefix}-city`} className={styles.label}>
-                      Город (обязательно)
+                      Город
+                      <RequiredMark />
                     </label>
                     <input
                       id={`${fieldIdPrefix}-city`}
@@ -379,7 +385,8 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                   )}
                   <div className={styles.field}>
                     <label htmlFor={`${fieldIdPrefix}-address`} className={styles.label}>
-                      Адрес (обязательно)
+                      Адрес
+                      <RequiredMark />
                     </label>
                     <input
                       id={`${fieldIdPrefix}-address`}

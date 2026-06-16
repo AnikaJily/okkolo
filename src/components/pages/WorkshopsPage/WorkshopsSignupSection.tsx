@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
+import { RequiredMark } from '@/components/ui/RequiredMark';
 import { Radio } from '@/components/ui/Radio';
 import {
   CONTACT_EMAIL,
@@ -125,7 +126,6 @@ export function WorkshopsSignupSection() {
 
   const isSubmitting = submitStatus === 'submitting';
   const isPhoneContact = contactMethod === 'phone';
-  const contactLabel = isPhoneContact ? 'Телефон (обязательно)' : 'Почта (обязательно)';
   const contactPlaceholder = isPhoneContact ? '+7 918 123-45-67' : 'hello@example.com';
 
   const phoneDisplay = CONTACT_PHONE_DISPLAY || CONTACT_PHONE_PLACEHOLDER;
@@ -216,7 +216,8 @@ export function WorkshopsSignupSection() {
 
           <div className={styles.field}>
             <label htmlFor="workshops-signup-name" className={styles.fieldLabel}>
-              Имя (обязательно)
+              Имя
+              <RequiredMark />
             </label>
             <input
               id="workshops-signup-name"
@@ -238,7 +239,8 @@ export function WorkshopsSignupSection() {
 
           <fieldset className={styles.radioGroup}>
             <legend className={`${styles.fieldLabel} ${styles.fieldLabelStrong}`}>
-              Как с вами связаться? (обязательно)
+              Как с вами связаться?
+              <RequiredMark />
             </legend>
             <div className={styles.radioOptions}>
               <Radio
@@ -264,7 +266,8 @@ export function WorkshopsSignupSection() {
 
           <div className={styles.field}>
             <label htmlFor="workshops-signup-contact" className={styles.fieldLabel}>
-              {contactLabel}
+              {isPhoneContact ? 'Телефон' : 'Почта'}
+              <RequiredMark />
             </label>
             <input
               id="workshops-signup-contact"

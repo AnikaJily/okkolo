@@ -119,6 +119,10 @@ samp {
   border: 0;
 }
 
+.requiredMark {
+  color: var(--color-text);
+}
+
 /* Системные предупреждения (fallback CMS, недоступный каталог и т.п.) */
 .systemNotice {
   margin: 0;

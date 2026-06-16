@@ -48,7 +48,6 @@ export function toEvent(item: StrapiEventItem, index: number): OkkoloEvent {
     signupHref: SUPPORT_HREF,
     isPaid,
     price: item.price ?? undefined,
-    paymentUrl: item.paymentUrl ?? undefined,
     image: cover,
   };
 }

@@ -99,6 +99,16 @@
   color: var(--color-muted);
 }
 
+/* Подсказка про оплату на месте — мельче и серее цены. */
+.paymentNote {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  line-height: var(--leading-body);
+  color: var(--color-muted);
+}
+
 .form {
   display: flex;
   flex-direction: column;

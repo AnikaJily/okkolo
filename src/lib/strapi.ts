@@ -30,7 +30,6 @@ export interface StrapiEventItem {
   description?: string | null;
   isPaid?: boolean | null;
   price?: number | null;
-  paymentUrl?: string | null;
   /* enumeration в CMS: музыка | мастер-класс | лекция | стенд-ап (может быть null у старых записей) */
   type?: string | null;
   photo: StrapiImage | null;
@@ -191,7 +190,6 @@ export interface EventRegistrationInput {
   phone: string;
   email?: string;
   comment?: string;
-  paymentStatus?: 'pending' | 'not_required' | 'paid';
 }
 
 export interface OrderLineInput {

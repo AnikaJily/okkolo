@@ -14,6 +14,8 @@ import {
 } from 'react';
 import { A11Y_WIDGET_TRIGGER_LABEL } from '@/data/accessibility';
 import eyeIconSrc from '@/assets/images/icon-eye-a11y.svg';
+import { CloseIcon } from '@/components/ui/CloseIcon/CloseIcon';
+import { IconButton } from '@/components/ui/IconButton';
 import { cn } from '@/lib/utils';
 import {
   useAccessibility,
@@ -180,16 +182,19 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
     return () => observer.disconnect();
   }, []);
 
-  const handleExit = () => {
-    reset();
+  const dismissPanel = useCallback(() => {
     setOpen(false);
     floatingTriggerRef.current?.focus();
+  }, []);
+
+  const handleExit = () => {
+    reset();
+    dismissPanel();
   };
 
   const handlePanelKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Escape') {
-      setOpen(false);
-      floatingTriggerRef.current?.focus();
+      dismissPanel();
     }
   };
 
@@ -224,91 +229,106 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
             aria-label="Настройки версии для слабовидящих"
             onKeyDown={handlePanelKeyDown}
           >
+            <div className={styles.panelBar}>
+              <p className={styles.panelTitle}>Версия для слабовидящих</p>
+              <IconButton
+                label="Свернуть панель доступности"
+                className={styles.collapse}
+                onClick={dismissPanel}
+              >
+                <CloseIcon size="sheet" />
+              </IconButton>
+            </div>
+
             <div className={styles.inner}>
-              <div className={styles.group} role="group" aria-labelledby={fontLabelId}>
-                <span id={fontLabelId} className={styles.groupLabel}>
-                  Размер шрифта
-                </span>
-                <div className={styles.options}>
-                  {FONT_OPTIONS.map((opt, idx) => (
-                    <button
-                      key={opt.value}
-                      ref={idx === 0 ? firstControlRef : undefined}
-                      type="button"
-                      className={styles.option}
-                      aria-label={opt.label}
-                      aria-pressed={state.fontSize === opt.value}
-                      onClick={() => update({ fontSize: opt.value })}
-                    >
-                      <span className={`${styles.sample} ${opt.sampleClass}`}>A</span>
-                    </button>
-                  ))}
+              <div className={styles.settings}>
+                <div className={styles.group} role="group" aria-labelledby={fontLabelId}>
+                  <span id={fontLabelId} className={styles.groupLabel}>
+                    Размер шрифта
+                  </span>
+                  <div className={styles.options}>
+                    {FONT_OPTIONS.map((opt, idx) => (
+                      <button
+                        key={opt.value}
+                        ref={idx === 0 ? firstControlRef : undefined}
+                        type="button"
+                        className={styles.option}
+                        aria-label={opt.label}
+                        aria-pressed={state.fontSize === opt.value}
+                        onClick={() => update({ fontSize: opt.value })}
+                      >
+                        <span className={`${styles.sample} ${opt.sampleClass}`}>A</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className={styles.group} role="group" aria-labelledby={spacingLabelId}>
+                  <span id={spacingLabelId} className={styles.groupLabel}>
+                    Интервал
+                  </span>
+                  <div className={styles.options}>
+                    {SPACING_OPTIONS.map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        className={styles.option}
+                        aria-label={opt.label}
+                        aria-pressed={state.spacing === opt.value}
+                        onClick={() => update({ spacing: opt.value })}
+                      >
+                        <span className={`${styles.sample} ${opt.spacingClass}`}>Аа</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className={styles.group} role="group" aria-labelledby={themeLabelId}>
+                  <span id={themeLabelId} className={styles.groupLabel}>
+                    Цветовая схема
+                  </span>
+                  <div className={styles.options}>
+                    {THEME_OPTIONS.map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        className={`${styles.option} ${styles.optionSwatch} ${opt.swatchClass}`}
+                        aria-label={opt.label}
+                        aria-pressed={state.theme === opt.value}
+                        onClick={() => update({ theme: opt.value })}
+                      >
+                        <span className={styles.swatchLetter}>А</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className={styles.group} role="group" aria-labelledby={imagesLabelId}>
+                  <span id={imagesLabelId} className={styles.groupLabel}>
+                    Изображения
+                  </span>
+                  <div className={styles.options}>
+                    {IMAGE_OPTIONS.map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        className={styles.option}
+                        aria-label={opt.label}
+                        aria-pressed={state.images === opt.value}
+                        onClick={() => update({ images: opt.value })}
+                      >
+                        {opt.short}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <div className={styles.group} role="group" aria-labelledby={spacingLabelId}>
-                <span id={spacingLabelId} className={styles.groupLabel}>
-                  Интервал
-                </span>
-                <div className={styles.options}>
-                  {SPACING_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      className={styles.option}
-                      aria-label={opt.label}
-                      aria-pressed={state.spacing === opt.value}
-                      onClick={() => update({ spacing: opt.value })}
-                    >
-                      <span className={`${styles.sample} ${opt.spacingClass}`}>Аа</span>
-                    </button>
-                  ))}
-                </div>
+              <div className={styles.actions}>
+                <button type="button" className={styles.exit} onClick={handleExit}>
+                  Обычная версия
+                </button>
               </div>
-
-              <div className={styles.group} role="group" aria-labelledby={themeLabelId}>
-                <span id={themeLabelId} className={styles.groupLabel}>
-                  Цветовая схема
-                </span>
-                <div className={styles.options}>
-                  {THEME_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      className={`${styles.option} ${styles.optionSwatch} ${opt.swatchClass}`}
-                      aria-label={opt.label}
-                      aria-pressed={state.theme === opt.value}
-                      onClick={() => update({ theme: opt.value })}
-                    >
-                      <span className={styles.swatchLetter}>А</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className={styles.group} role="group" aria-labelledby={imagesLabelId}>
-                <span id={imagesLabelId} className={styles.groupLabel}>
-                  Изображения
-                </span>
-                <div className={styles.options}>
-                  {IMAGE_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      className={styles.option}
-                      aria-label={opt.label}
-                      aria-pressed={state.images === opt.value}
-                      onClick={() => update({ images: opt.value })}
-                    >
-                      {opt.short}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <button type="button" className={styles.exit} onClick={handleExit}>
-                Обычная версия
-              </button>
             </div>
           </div>
         )}
