@@ -64,6 +64,9 @@
 
 .filterButtonActive {
   background-color: var(--color-yellow);
+  /* Второй индикатор «выбрано» (не только цвет): рамка ≥3:1 + вес — SC 1.4.11 / 1.4.1. */
+  box-shadow: inset 0 0 0 2px var(--color-text);
+  font-weight: 600;
 }
 
 .filters > :nth-child(4) {
@@ -124,6 +127,9 @@
 
 .pageButtonActive {
   background-color: var(--color-yellow);
+  /* Текущая страница — не только цветом: рамка ≥3:1 + вес (есть и aria-current). SC 1.4.11 / 1.4.1. */
+  box-shadow: inset 0 0 0 2px var(--color-text);
+  font-weight: 600;
 }
 
 .empty {
