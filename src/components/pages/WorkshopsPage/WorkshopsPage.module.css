@@ -43,7 +43,8 @@
 
 .hero,
 .programs,
-.splitSection {
+.splitSection,
+.location {
   position: relative;
   z-index: 1;
 }
@@ -210,7 +211,7 @@
 
 @media (min-width: 640px) {
   .root {
-    gap: 64px;
+    gap: 80px;
     padding-top: 32px;
   }
 
@@ -227,7 +228,7 @@
 
 @media (min-width: 1024px) {
   .root {
-    gap: 80px;
+    gap: 120px;
     padding-top: 0;
   }
 
@@ -264,7 +265,12 @@
 
   .programGrid li {
     display: flex;
+    flex-direction: column;
     min-height: 0;
+  }
+
+  .programGrid li > * {
+    width: 100%;
   }
 
   .splitSection {
@@ -309,7 +315,8 @@
 
 @media (min-width: 1440px) {
   .root {
-    padding-inline: 100px;
+    padding-inline: max(var(--page-padding-x), env(safe-area-inset-left))
+      max(var(--page-padding-x), env(safe-area-inset-right));
   }
 }
 

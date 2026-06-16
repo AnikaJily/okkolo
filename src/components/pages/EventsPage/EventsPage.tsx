@@ -1,191 +1,307 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { events as fallbackEvents } from '@/data/events';
 import type { OkkoloEvent } from '@/data/events';
 import { loadEvents } from '@/lib/events';
+import { Checkbox } from '@/components/ui/Checkbox';
 import { EventCard } from '@/components/sections/EventsSection/EventCard';
 import { EventDetailsModal } from '@/components/sections/EventsSection/EventDetailsModal';
 import { EventSignupModal } from '@/components/sections/EventsSection/EventSignupModal';
-import arrowSrc from '@/assets/images/arrow.svg';
+import filtersIcon from '@/assets/images/filters.svg';
 import styles from './EventsPage.module.css';
 
 const monthFormatter = new Intl.DateTimeFormat('ru-RU', { month: 'long' });
-const weekdayFormatter = new Intl.DateTimeFormat('ru-RU', { weekday: 'short' });
+
+// Канонический порядок типов из CMS (enum); незнакомые типы добавляем после, по алфавиту.
+const TYPE_ORDER = ['музыка', 'мастер-класс', 'лекция', 'стенд-ап'];
+
+type TimeScope = 'this' | 'next';
+
+function startOfDay(date: Date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function getMonday(date: Date) {
+  const d = startOfDay(date);
+  const day = d.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  return d;
+}
 
 function getMonthKey(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-}
-
-function getDateKey(date: Date) {
-  return [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(2, '0'),
-    String(date.getDate()).padStart(2, '0'),
-  ].join('-');
 }
 
 function getEventDate(event: OkkoloEvent) {
   return new Date(event.date);
 }
 
-function formatMonthLabel(date: Date) {
-  const month = monthFormatter.format(date);
-  return month[0].toUpperCase() + month.slice(1);
+function capitalize(value: string) {
+  return value.length ? value[0].toUpperCase() + value.slice(1) : value;
 }
 
-function getInitialDate(events: OkkoloEvent[]) {
-  const today = new Date();
-  const todayKey = getDateKey(today);
-  const sorted = [...events].sort((a, b) => getEventDate(a).getTime() - getEventDate(b).getTime());
-  const todayEvent = sorted.find((event) => getDateKey(getEventDate(event)) === todayKey);
-  const upcomingEvent = sorted.find((event) => getEventDate(event) >= today);
-  return getEventDate(todayEvent ?? upcomingEvent ?? sorted[0] ?? fallbackEvents[0]);
+function formatMonthNominative(date: Date) {
+  return capitalize(monthFormatter.format(date));
 }
 
-function getAllDates(events: OkkoloEvent[]): Date[] {
-  const byDate = new Map<string, Date>();
-  events.forEach((event) => {
+type MonthGroup = {
+  monthKey: string;
+  label: string;
+  events: OkkoloEvent[];
+};
+
+function groupByMonth(events: OkkoloEvent[]): MonthGroup[] {
+  const sorted = [...events].sort(
+    (a, b) => getEventDate(a).getTime() - getEventDate(b).getTime(),
+  );
+  const months = new Map<string, MonthGroup>();
+  for (const event of sorted) {
     const date = getEventDate(event);
-    byDate.set(getDateKey(date), date);
-  });
-  return [...byDate.values()].sort((a, b) => a.getTime() - b.getTime());
-}
-
-type DateGroup = { monthKey: string; label: string; dates: Date[] };
-
-function groupDatesByMonth(dates: Date[]): DateGroup[] {
-  const groups: DateGroup[] = [];
-  for (const date of dates) {
     const monthKey = getMonthKey(date);
-    const last = groups[groups.length - 1];
-    if (last && last.monthKey === monthKey) {
-      last.dates.push(date);
-    } else {
-      groups.push({ monthKey, label: formatMonthLabel(date), dates: [date] });
+    let monthGroup = months.get(monthKey);
+    if (!monthGroup) {
+      monthGroup = { monthKey, label: formatMonthNominative(date), events: [] };
+      months.set(monthKey, monthGroup);
     }
+    monthGroup.events.push(event);
   }
-  return groups;
+  return [...months.values()];
 }
 
 export function EventsPage() {
   const [events, setEvents] = useState<OkkoloEvent[]>(fallbackEvents);
-  const [selectedDateKey, setSelectedDateKey] = useState<string | null>(
-    () => getDateKey(getInitialDate(fallbackEvents)),
-  );
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const [showArrow, setShowArrow] = useState(false);
+  const [timeScope, setTimeScope] = useState<TimeScope | null>('this');
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [typeMenuOpen, setTypeMenuOpen] = useState(false);
   const [detailsEvent, setDetailsEvent] = useState<OkkoloEvent | null>(null);
   const [signupEvent, setSignupEvent] = useState<OkkoloEvent | null>(null);
+  const typeMenuRef = useRef<HTMLDivElement>(null);
+  const typeMenuId = useId();
 
   useEffect(() => {
     loadEvents()
       .then((items) => {
         if (items.length === 0) return;
-        const initialDate = getInitialDate(items);
+        // Не трогаем выбранные фильтры — их валидность страхуют effective*-guard'ы ниже.
         setEvents(items);
-        setSelectedDateKey(getDateKey(initialDate));
       })
       .catch(() => {
         // fallback на статичные данные при ошибке сети
       });
   }, []);
 
-  const allDates = useMemo(() => getAllDates(events), [events]);
-  const dateGroups = useMemo(() => groupDatesByMonth(allDates), [allDates]);
-
-  const selectedEvents = useMemo(() => {
-    if (!selectedDateKey) return [];
-    return events.filter((event) => getDateKey(getEventDate(event)) === selectedDateKey);
-  }, [events, selectedDateKey]);
-
-  const checkArrow = useCallback(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
-    setShowArrow(el.scrollWidth > el.clientWidth && !atEnd);
-  }, []);
-
+  // Dropdown типа: закрываем по клику вне и по Escape, как ожидает обычный popover.
   useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    checkArrow();
-    el.addEventListener('scroll', checkArrow, { passive: true });
-    const ro = new ResizeObserver(checkArrow);
-    ro.observe(el);
-    return () => {
-      el.removeEventListener('scroll', checkArrow);
-      ro.disconnect();
+    if (!typeMenuOpen) return;
+    const handlePointer = (e: PointerEvent) => {
+      if (typeMenuRef.current && !typeMenuRef.current.contains(e.target as Node)) {
+        setTypeMenuOpen(false);
+      }
     };
-  }, [checkArrow, dateGroups]);
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setTypeMenuOpen(false);
+    };
+    document.addEventListener('pointerdown', handlePointer);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointer);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, [typeMenuOpen]);
 
-  const handleScrollArrow = () => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    el.scrollBy({ left: Math.round(el.clientWidth * 0.75), behavior: 'smooth' });
+  const today = useMemo(() => startOfDay(new Date()), []);
+  const thisMonthKey = useMemo(() => getMonthKey(today), [today]);
+  const nextMonthKey = useMemo(
+    () => getMonthKey(new Date(today.getFullYear(), today.getMonth() + 1, 1)),
+    [today],
+  );
+
+  // Фильтруем прошедшие: показываем всё, начиная с понедельника текущей недели —
+  // тогда «эта неделя» остаётся целой, а старые месяцы не висят над свежими.
+  const upcomingEvents = useMemo(() => {
+    const cutoff = getMonday(today);
+    return events.filter((e) => getEventDate(e) >= cutoff);
+  }, [events, today]);
+
+  // Типы, реально присутствующие в предстоящих событиях — в каноническом порядке.
+  const availableTypes = useMemo(() => {
+    const present = new Set(
+      upcomingEvents.map((e) => e.type).filter((t): t is string => Boolean(t)),
+    );
+    const ordered = TYPE_ORDER.filter((t) => present.has(t));
+    const extras = [...present].filter((t) => !TYPE_ORDER.includes(t)).sort();
+    return [...ordered, ...extras];
+  }, [upcomingEvents]);
+
+  const hasThisMonth = useMemo(
+    () => upcomingEvents.some((e) => getMonthKey(getEventDate(e)) === thisMonthKey),
+    [upcomingEvents, thisMonthKey],
+  );
+  const hasNextMonth = useMemo(
+    () => upcomingEvents.some((e) => getMonthKey(getEventDate(e)) === nextMonthKey),
+    [upcomingEvents, nextMonthKey],
+  );
+  const distinctMonths = useMemo(
+    () => new Set(upcomingEvents.map((e) => getMonthKey(getEventDate(e)))).size,
+    [upcomingEvents],
+  );
+
+  // После смены данных выбор мог стать невалидным — мягко чистим (без перетирания пользователя).
+  const effectiveTypes = useMemo(
+    () => selectedTypes.filter((t) => availableTypes.includes(t)),
+    [selectedTypes, availableTypes],
+  );
+  const effectiveTime: TimeScope | null =
+    (timeScope === 'this' && hasThisMonth) || (timeScope === 'next' && hasNextMonth)
+      ? timeScope
+      : null;
+
+  const filteredEvents = useMemo(
+    () =>
+      upcomingEvents.filter((event) => {
+        if (effectiveTypes.length > 0) {
+          if (!event.type || !effectiveTypes.includes(event.type)) return false;
+        }
+        const monthKey = getMonthKey(getEventDate(event));
+        if (effectiveTime === 'this' && monthKey !== thisMonthKey) return false;
+        if (effectiveTime === 'next' && monthKey !== nextMonthKey) return false;
+        return true;
+      }),
+    [upcomingEvents, effectiveTypes, effectiveTime, thisMonthKey, nextMonthKey],
+  );
+
+  const agenda = useMemo(() => groupByMonth(filteredEvents), [filteredEvents]);
+
+  const showTypeFilter = availableTypes.length >= 2;
+  const showTimeFilter = distinctMonths > 1;
+
+  const toggleType = (type: string) => {
+    setSelectedTypes((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
+    );
   };
+
+  const typeTriggerActive = effectiveTypes.length > 0 || typeMenuOpen;
+
+  const typeFilterAriaLabel =
+    effectiveTypes.length === 0
+      ? 'Фильтр по типу мероприятия'
+      : `Тип: ${effectiveTypes.map(capitalize).join(', ')}`;
+
+  // Toggle-поведение: повторный клик по активной кнопке сбрасывает фильтр времени.
+  const toggleTime = (scope: TimeScope) =>
+    setTimeScope((prev) => (prev === scope ? null : scope));
+
+  const renderTimeButton = (label: string, active: boolean, onClick: () => void) => (
+    <button
+      type="button"
+      aria-pressed={active}
+      className={active ? styles.filterButtonActive : styles.filterButton}
+      onClick={onClick}
+    >
+      {label}
+    </button>
+  );
 
   return (
     <main id="main" className={styles.root}>
       <h1 className={styles.heading}>Мероприятия</h1>
 
-      <section className={styles.calendar} aria-label="Календарь мероприятий">
-        {allDates.length > 0 ? (
-          <div className={styles.scrollWrapper}>
-            <div
-              className={styles.dateScroller}
-              ref={scrollerRef}
-              role="group"
-              aria-label="Выберите дату мероприятия"
-            >
-              {dateGroups.map((group) => (
-                <div key={group.monthKey} className={styles.monthGroup}>
-                  <div className={styles.monthLabel}>
-                    <span>{group.label}</span>
-                  </div>
+      {showTimeFilter || showTypeFilter ? (
+        <div className={styles.toolbar}>
+          {showTimeFilter ? (
+            <div className={styles.timeGroup} role="group" aria-label="Когда">
+              {hasThisMonth
+                ? renderTimeButton('Этот месяц', effectiveTime === 'this', () => toggleTime('this'))
+                : null}
+              {hasNextMonth
+                ? renderTimeButton('Следующий месяц', effectiveTime === 'next', () =>
+                    toggleTime('next'),
+                  )
+                : null}
+            </div>
+          ) : null}
 
-                  <div className={styles.monthDates}>
-                    {group.dates.map((date) => {
-                      const dateKey = getDateKey(date);
-                      const isSelected = dateKey === selectedDateKey;
+          {showTypeFilter ? (
+            <div className={styles.typeFilter} ref={typeMenuRef}>
+              <button
+                type="button"
+                aria-haspopup="true"
+                aria-expanded={typeMenuOpen}
+                aria-controls={typeMenuId}
+                aria-label={typeFilterAriaLabel}
+                className={typeTriggerActive ? styles.typeTriggerActive : styles.typeTrigger}
+                onClick={() => setTypeMenuOpen((open) => !open)}
+              >
+                <img src={filtersIcon} alt="" className={styles.typeTriggerIcon} />
+                {effectiveTypes.length > 0 ? (
+                  <span className={styles.typeTriggerBadge} aria-hidden="true">
+                    {effectiveTypes.length}
+                  </span>
+                ) : null}
+              </button>
+
+              {typeMenuOpen ? (
+                <div id={typeMenuId} className={styles.typeMenu}>
+                  <ul className={styles.typeMenuList}>
+                    {availableTypes.map((type) => {
+                      const checkboxId = `${typeMenuId}-${type}`;
                       return (
-                        <button
-                          key={dateKey}
-                          type="button"
-                          className={isSelected ? styles.dateButtonActive : styles.dateButton}
-                          onClick={() => setSelectedDateKey(dateKey)}
-                          aria-pressed={isSelected}
-                        >
-                          <span className={styles.dateDay}>{date.getDate()}</span>
-                          <span className={styles.dateWeekday}>
-                            {weekdayFormatter.format(date).replace('.', '')}
-                          </span>
-                        </button>
+                        <li key={type} className={styles.typeMenuItem}>
+                          <Checkbox
+                            id={checkboxId}
+                            checked={effectiveTypes.includes(type)}
+                            onChange={() => toggleType(type)}
+                          >
+                            {capitalize(type)}
+                          </Checkbox>
+                        </li>
                       );
                     })}
-                  </div>
+                  </ul>
+                  {effectiveTypes.length > 0 ? (
+                    <button
+                      type="button"
+                      className={styles.typeMenuReset}
+                      onClick={() => setSelectedTypes([])}
+                    >
+                      Сбросить
+                    </button>
+                  ) : null}
                 </div>
-              ))}
+              ) : null}
             </div>
-            <button
-              type="button"
-              className={`${styles.scrollArrow}${showArrow ? '' : ` ${styles.scrollArrowHidden}`}`}
-              onClick={handleScrollArrow}
-              aria-hidden="true"
-              tabIndex={-1}
-            >
-              <img src={arrowSrc} alt="" className={styles.scrollArrowIcon} />
-            </button>
-          </div>
-        ) : (
-          <p className={styles.empty}>Мероприятий пока нет.</p>
-        )}
-      </section>
+          ) : null}
+        </div>
+      ) : null}
 
-      <section className={styles.events} aria-label="Список мероприятий">
-        {selectedEvents.map((event) => (
-          <div key={event.id} className={styles.eventCardWrapper}>
-            <EventCard event={event} onSignup={setSignupEvent} onDetails={setDetailsEvent} />
-          </div>
-        ))}
+      <section className={styles.agenda} aria-label="Список мероприятий">
+        {agenda.length === 0 ? (
+          <p className={styles.empty}>
+            {upcomingEvents.length === 0
+              ? 'Мероприятий пока нет.'
+              : 'Под выбранные фильтры мероприятий нет.'}
+          </p>
+        ) : (
+          agenda.map((monthGroup) => (
+            <div key={monthGroup.monthKey} className={styles.monthSection}>
+              <h2 className={styles.monthHeading}>{monthGroup.label}</h2>
+              <div className={styles.monthEvents}>
+                {monthGroup.events.map((event) => (
+                  <div key={event.id} className={styles.eventCardWrapper}>
+                    <EventCard
+                      event={event}
+                      onSignup={setSignupEvent}
+                      onDetails={setDetailsEvent}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        )}
       </section>
 
       <EventDetailsModal

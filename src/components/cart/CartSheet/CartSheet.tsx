@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/Button';
 import { CloseIcon } from '@/components/ui/CloseIcon/CloseIcon';
 import { Checkbox } from '@/components/ui/Checkbox';
@@ -32,6 +32,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
   const [consent, setConsent] = useState(false);
   const [consentError, setConsentError] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
+  const listRef = useRef<HTMLUListElement>(null);
 
   const isDelivery = fulfillmentType === 'delivery';
   const deliveryPrice = useMemo(
@@ -97,7 +98,16 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent variant="center" aria-describedby={undefined}>
+      <SheetContent
+        variant="center"
+        aria-describedby={undefined}
+        onCloseAutoFocus={(event) => {
+          // Триггера-Radix нет (открывается из FloatingCartButton, который может
+          // размонтироваться при пустой корзине) — возвращаем фокус в контент.
+          event.preventDefault();
+          document.getElementById('main')?.focus();
+        }}
+      >
         <div className="flex items-center justify-between gap-4">
           <SheetTitle className={styles.headerTitle}>Корзина</SheetTitle>
           <SheetClose asChild>
@@ -121,8 +131,8 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
           </div>
         ) : (
           <>
-            <ul className={styles.list}>
-              {items.map((item) => (
+            <ul ref={listRef} className={styles.list}>
+              {items.map((item, index) => (
                 <li key={item.productId} className={styles.item}>
                   <img src={item.image} alt="" className={styles.thumb} loading="lazy" />
                   <div className={styles.info}>
@@ -134,11 +144,25 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                   <button
                     type="button"
                     className={styles.remove}
+                    data-cart-remove
                     aria-label={`Удалить «${item.title}» из корзины`}
                     onClick={() => {
-                      removeItem(item.productId);
                       // items.length, не totalCount: сумма штук ≠ число позиций
-                      if (items.length <= 1) onOpenChange(false);
+                      const wasLast = items.length <= 1;
+                      removeItem(item.productId);
+                      if (wasLast) {
+                        onOpenChange(false);
+                        return;
+                      }
+                      // Кнопка размонтируется — переводим фокус на соседнюю «Удалить»,
+                      // чтобы он не упал на body внутри focus-trap (SC 2.4.3).
+                      requestAnimationFrame(() => {
+                        const buttons = listRef.current?.querySelectorAll<HTMLButtonElement>(
+                          '[data-cart-remove]',
+                        );
+                        if (!buttons || buttons.length === 0) return;
+                        buttons[Math.min(index, buttons.length - 1)]?.focus();
+                      });
                     }}
                   >
                     Удалить
@@ -314,7 +338,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                   </p>
                 ) : null}
                 {orderingDisabled ? (
-                  <p className={styles.error} role="status">
+                  <p className="systemNotice" role="status">
                     Каталог временно недоступен, заказ оформить нельзя. Напишите
                     нам — поможем с покупкой
                   </p>

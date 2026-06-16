@@ -19,6 +19,8 @@ export const ACCESSIBILITY_CONTACTS = {
   whatsappHref: '',
   /** Публичный Telegram-канал Окколо */
   telegramHref: 'https://t.me/okkolokrd',
+  /** Группа ВКонтакте */
+  vkHref: 'https://vk.com/okkolokrd',
   email: 'hello@okkolo.ru',
   emailHref: 'mailto:hello@okkolo.ru',
 } as const;
@@ -55,3 +57,6 @@ export const ACCESSIBILITY_FACTS = [
 
 /** Дата последнего обновления страницы — меняй при правках содержания */
 export const ACCESSIBILITY_UPDATED = 'июнь 2026';
+
+/** Подпись кнопки «версия для слабовидящих» (плавающая, меню, футер). */
+export const A11Y_WIDGET_TRIGGER_LABEL = 'Версия для слабовидящих';

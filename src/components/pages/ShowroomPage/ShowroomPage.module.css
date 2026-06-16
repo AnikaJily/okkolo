@@ -16,19 +16,6 @@
   text-align: center;
 }
 
-/* Каталог на моках: предупреждение перед фильтрами */
-.fallbackNotice {
-  margin: 0;
-  padding: 14px 20px;
-  border-radius: var(--radius-md);
-  background-color: var(--color-yellow);
-  font-family: var(--font-body);
-  font-size: var(--text-caption);
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--color-text);
-}
-
 .hero {
   display: block;
   width: 100%;
@@ -136,7 +123,7 @@
 }
 
 .pageButtonActive {
-  background-color: var(--color-purple-subtle);
+  background-color: var(--color-yellow);
 }
 
 .empty {

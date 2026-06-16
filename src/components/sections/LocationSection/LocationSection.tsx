@@ -1,53 +1,62 @@
 import { Button } from '@/components/ui/Button';
-import { ACCESSIBILITY_CONTACTS } from '@/data/accessibility';
-import {
-  ACCESSIBILITY_HREF,
-  CONTACT_EMAIL,
-  OKKOLO_ADDRESS,
-  OKKOLO_HOURS,
-  OKKOLO_MAP_EMBED_URL,
-  OKKOLO_MAP_URL,
-} from '@/data/site';
+import { LOCATION_SECTION } from '@/data/location';
+import { cn } from '@/lib/utils';
 import styles from './LocationSection.module.css';
 
-export function LocationSection() {
+export interface LocationSectionProps {
+  className?: string;
+}
+
+export function LocationSection({ className }: LocationSectionProps) {
+  const {
+    id,
+    heading,
+    lead,
+    addressLabel,
+    hoursLabel,
+    mapButtonLabel,
+    accessibilityButtonLabel,
+    address,
+    hours,
+    mapUrl,
+    mapEmbedUrl,
+    accessibilityHref,
+  } = LOCATION_SECTION;
+
   return (
     <section
-      id="location"
-      className={styles.root}
+      id={id}
+      className={cn(styles.root, className)}
       aria-labelledby="location-heading"
     >
       <div className={styles.content}>
         <header className={`${styles.head} sectionHeadGap`}>
           <h2 id="location-heading" className={styles.heading}>
-            Как нас найти
+            {heading}
           </h2>
-          <p className={styles.lead}>
-            Заходите на чашку кофе или на мероприятие — мы на первом этаже,
-            пандус есть у входа
-          </p>
+          <p className={styles.lead}>{lead}</p>
         </header>
 
         <dl className={styles.facts}>
           <div className={styles.fact}>
-            <dt className={styles.factLabel}>Адрес</dt>
+            <dt className={styles.factLabel}>{addressLabel}</dt>
             <dd className={styles.factValue}>
               <a
-                href={OKKOLO_MAP_URL}
+                href={mapUrl}
                 target="_blank"
                 rel="noreferrer"
                 className={styles.link}
               >
-                {OKKOLO_ADDRESS}
+                {address}
               </a>
             </dd>
           </div>
 
           <div className={styles.fact}>
-            <dt className={styles.factLabel}>Часы работы</dt>
+            <dt className={styles.factLabel}>{hoursLabel}</dt>
             <dd className={styles.factValue}>
               <ul className={styles.hoursList}>
-                {OKKOLO_HOURS.map((slot) => (
+                {hours.map((slot) => (
                   <li key={slot.days} className={styles.hoursItem}>
                     <span className={styles.hoursDays}>{slot.days}</span>
                     <span className={styles.hoursTime}>{slot.time}</span>
@@ -56,59 +65,27 @@ export function LocationSection() {
               </ul>
             </dd>
           </div>
-
-          <div className={styles.fact}>
-            <dt className={styles.factLabel}>Связь</dt>
-            <dd className={styles.factValue}>
-              <ul className={styles.contactList}>
-                <li>
-                  <a
-                    href={ACCESSIBILITY_CONTACTS.telegramHref}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={styles.link}
-                  >
-                    Telegram-канал
-                  </a>
-                </li>
-                <li>
-                  <a href={`mailto:${CONTACT_EMAIL}`} className={styles.link}>
-                    {CONTACT_EMAIL}
-                  </a>
-                </li>
-              </ul>
-            </dd>
-          </div>
         </dl>
 
         <div className={styles.cta}>
-          <Button variant="primary" size="md" href={OKKOLO_MAP_URL}>
-            Открыть в Яндекс Картах
+          <Button variant="primary" size="md" href={mapUrl}>
+            {mapButtonLabel}
           </Button>
-          <Button variant="outline" size="md" href={ACCESSIBILITY_HREF}>
-            Подробнее о доступности
+          <Button variant="outline" size="md" href={accessibilityHref}>
+            {accessibilityButtonLabel}
           </Button>
         </div>
       </div>
 
       <div className={styles.mapWrap}>
         <iframe
-          src={OKKOLO_MAP_EMBED_URL}
-          title={`Карта: ${OKKOLO_ADDRESS}`}
+          src={mapEmbedUrl}
+          title={`Карта: ${address}`}
           className={styles.map}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           allowFullScreen
         />
-        <a
-          href={OKKOLO_MAP_URL}
-          target="_blank"
-          rel="noreferrer"
-          className={styles.mapOverlayLink}
-          aria-label={`Открыть «${OKKOLO_ADDRESS}» в Яндекс Картах`}
-        >
-          Открыть карту в Яндекс Картах
-        </a>
       </div>
     </section>
   );

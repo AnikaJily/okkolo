@@ -47,7 +47,7 @@
   font-size: var(--text-caption);
   font-weight: 500;
   line-height: var(--leading-body);
-  color: var(--color-muted);
+  color: var(--color-text);
 }
 
 @media (min-width: 640px) {

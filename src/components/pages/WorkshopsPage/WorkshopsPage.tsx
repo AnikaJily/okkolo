@@ -177,7 +177,7 @@ export function WorkshopsPage() {
 
       <WorkshopsSignupSection />
 
-      <LocationSection />
+      <LocationSection className={styles.location} />
     </main>
   );
 }

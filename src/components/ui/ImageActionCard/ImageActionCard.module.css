@@ -108,6 +108,7 @@
 .previewCard {
   container-type: inline-size;
   display: flex;
+  width: 100%;
   height: 100%;
   flex-direction: column;
   overflow: hidden;
@@ -153,12 +154,12 @@ a.previewMain:visited {
 
 .previewImageWrap {
   position: relative;
-  display: flex;
+  display: block;
   width: 100%;
   aspect-ratio: 4 / 3;
   flex-shrink: 0;
-  align-items: flex-start;
   overflow: hidden;
+  background-color: var(--color-bg);
 }
 
 @media (min-width: 640px) {
@@ -169,10 +170,13 @@ a.previewMain:visited {
 }
 
 .previewImage {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  height: auto;
-  flex-shrink: 0;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 /* Figma «Progress Tags»: желтая плашка без скругления, под фото */
@@ -298,8 +302,8 @@ a.previewMain:visited {
     gap: 12px;
   }
 
-  /* Figma Product: фото 245px, контент с отступом 20px */
+  /* Figma Product: фото 275px на ноутбуке, контент с отступом 20px */
   .previewImageWrap {
-    height: 245px;
+    height: 275px;
   }
 }

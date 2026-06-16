@@ -42,6 +42,7 @@ export function toEvent(item: StrapiEventItem, index: number): OkkoloEvent {
     date: item.date,
     dateLabel: formatEventDate(item.date),
     admission: formatEventAdmission(isPaid, item.price),
+    type: item.type?.trim() || undefined,
     description: item.description ?? undefined,
     href: item.href ?? `/events/${slug}`,
     signupHref: item.signupHref ?? SUPPORT_HREF,

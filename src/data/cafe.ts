@@ -1,4 +1,5 @@
 import type { PictureSource } from '@/components/ui/Picture';
+import cafeHeroPicture from '@/assets/images/cafe_interior_2.jpg?w=480;768;1200;1600&format=avif;webp;jpg&as=picture';
 import menuMainPicture from '@/assets/images/menu_photo_1.jpg?w=480;768;1200&format=avif;webp;jpg&as=picture';
 import menuSummerPicture from '@/assets/images/menu_photo_2.jpg?w=480;768;1200&format=avif;webp;jpg&as=picture';
 
@@ -122,3 +123,8 @@ export const cafeMenus: CafeMenu[] = [
     ],
   },
 ];
+
+export const CAFE_HERO = {
+  alt: 'Интерьер кофейни «Окколо»: барная стойка с подсветкой, меню на стене и гости',
+  picture: cafeHeroPicture,
+} as const;

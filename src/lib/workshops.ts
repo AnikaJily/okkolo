@@ -38,6 +38,8 @@ function toProgram(item: StrapiWorkshopProgram, index: number): WorkshopProgram 
     title,
     description,
     image: imageUrl,
+    picture: fallback?.picture,
+    imageAlt: fallback?.imageAlt ?? title,
   };
 }
 

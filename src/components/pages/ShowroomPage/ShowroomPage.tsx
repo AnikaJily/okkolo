@@ -74,11 +74,11 @@ export function ShowroomPage() {
 
   return (
     <>
-    <main id="main" className={styles.root}>
+    <main id="main" tabIndex={-1} className={styles.root}>
       <h1 className={styles.heading}>Наш шоурум</h1>
 
       {isFallback ? (
-        <p className={styles.fallbackNotice} role="status">
+        <p className="systemNotice" role="status">
           Каталог временно недоступен — показываем примеры товаров. Оформление
           заказа отключено, напишите нам, если что-то приглянулось
         </p>

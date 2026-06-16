@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { CloseIcon } from '@/components/ui/CloseIcon/CloseIcon';
 import { IconButton } from '@/components/ui/IconButton';
 import { Button } from '@/components/ui/Button';
@@ -10,6 +11,8 @@ import {
 } from '@/components/ui/Sheet';
 import { HEADER_NAV, NAV_ITEMS } from '@/data/site';
 import { getSupportAction } from '@/lib/support';
+import { cn } from '@/lib/utils';
+import { AccessibilityTriggerButton } from '@/components/accessibility/AccessibilityWidget';
 import logoSrc from '@/assets/images/logo.svg';
 import menuSrc from '@/assets/images/menu.svg';
 import styles from './Header.module.css';
@@ -19,8 +22,23 @@ interface HeaderProps {
   onSupport?: () => void;
 }
 
+function isNavLinkActive(pathname: string, href: string): boolean {
+  if (href === '/') return pathname === '/';
+  if (href === '/events') {
+    return pathname === '/events' || pathname.startsWith('/events/');
+  }
+  return pathname === href;
+}
+
 export function Header({ onMenuClick, onSupport }: HeaderProps) {
   const supportAction = getSupportAction(onSupport);
+  const [pathname, setPathname] = useState(() => window.location.pathname);
+
+  useEffect(() => {
+    const updatePathname = () => setPathname(window.location.pathname);
+    window.addEventListener('popstate', updatePathname);
+    return () => window.removeEventListener('popstate', updatePathname);
+  }, []);
 
   return (
     <header className={styles.header}>
@@ -50,7 +68,14 @@ export function Header({ onMenuClick, onSupport }: HeaderProps) {
                       ]
                 }
               >
-                <a href={item.href} className={styles.navLink}>
+                <a
+                  href={item.href}
+                  className={cn(
+                    styles.navLink,
+                    isNavLinkActive(pathname, item.href) && styles.navLinkActive,
+                  )}
+                  aria-current={isNavLinkActive(pathname, item.href) ? 'page' : undefined}
+                >
                   {item.label}
                 </a>
               </li>
@@ -75,22 +100,37 @@ export function Header({ onMenuClick, onSupport }: HeaderProps) {
                 <img src={menuSrc} alt="" aria-hidden="true" className={styles.menuIcon} />
               </IconButton>
             </SheetTrigger>
-            <SheetContent aria-describedby={undefined}>
+            <SheetContent
+              className={cn(styles.sheetContent, 'gap-0 p-0 !w-[min(92vw,420px)]')}
+              aria-describedby={undefined}
+            >
               <div className={styles.sheetHeader}>
+                <a href="/" className={styles.sheetLogoLink} aria-label="Окколо — на главную">
+                  <img src={logoSrc} alt="" className={styles.sheetLogo} decoding="async" />
+                </a>
                 <SheetTitle className={styles.sheetTitleHidden}>Меню</SheetTitle>
                 <SheetClose asChild>
-                  <IconButton label="Закрыть меню">
+                  <IconButton label="Закрыть меню" className={styles.sheetClose}>
                     <CloseIcon size="sheet" />
                   </IconButton>
                 </SheetClose>
               </div>
 
-              <nav aria-label="Навигация в меню">
+              <nav className={styles.sheetNav} aria-label="Навигация в меню">
                 <ul className={styles.sheetNavList}>
                   {NAV_ITEMS.map((item) => (
-                    <li key={item.href}>
+                    <li key={item.href} className={styles.sheetNavItem}>
                       <SheetClose asChild>
-                        <a href={item.href} className={styles.sheetNavLink}>
+                        <a
+                          href={item.href}
+                          className={cn(
+                            styles.sheetNavLink,
+                            isNavLinkActive(pathname, item.href) && styles.sheetNavLinkActive,
+                          )}
+                          aria-current={
+                            isNavLinkActive(pathname, item.href) ? 'page' : undefined
+                          }
+                        >
                           {item.label}
                         </a>
                       </SheetClose>
@@ -99,17 +139,22 @@ export function Header({ onMenuClick, onSupport }: HeaderProps) {
                 </ul>
               </nav>
 
-              <SheetClose asChild>
-                <Button
-                  variant="primary"
-                  size="md"
-                  fullWidth
-                  className={styles.sheetSupport}
-                  {...supportAction}
-                >
-                  Поддержать
-                </Button>
-              </SheetClose>
+              <div className={styles.sheetFooter}>
+                <SheetClose asChild>
+                  <AccessibilityTriggerButton fullWidth className={styles.sheetA11y} />
+                </SheetClose>
+                <SheetClose asChild>
+                  <Button
+                    variant="primary"
+                    size="md"
+                    fullWidth
+                    className={styles.sheetSupport}
+                    {...supportAction}
+                  >
+                    Поддержать проект
+                  </Button>
+                </SheetClose>
+              </div>
             </SheetContent>
           </Sheet>
         </div>

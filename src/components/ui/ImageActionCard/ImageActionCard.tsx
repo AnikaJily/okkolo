@@ -67,8 +67,9 @@ export function ImageActionCard({
     );
   }
 
-  /** Карточка ведёт на href, если единственное действие — ссылка «Подробнее» */
-  const cardNavHref = !action && !secondaryAction && href ? href : undefined;
+  /** Карточка-ссылка только если нет отдельной кнопки с actionLabel */
+  const cardNavHref =
+    !action && !secondaryAction && href && !actionLabel ? href : undefined;
   const cardMainInteractive = Boolean(secondaryAction) || Boolean(cardNavHref);
   const cardMainLabel = `${secondaryActionLabel ?? actionLabel}: ${title}`;
 

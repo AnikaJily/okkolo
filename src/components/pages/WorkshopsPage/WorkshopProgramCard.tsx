@@ -1,7 +1,5 @@
-import { Button } from '@/components/ui/Button';
-import { Picture } from '@/components/ui/Picture';
+import { ImageActionCard } from '@/components/ui/ImageActionCard/ImageActionCard';
 import type { PictureSource } from '@/components/ui/Picture';
-import styles from './WorkshopProgramCard.module.css';
 
 export interface WorkshopProgramCardProps {
   id: string;
@@ -16,7 +14,6 @@ export interface WorkshopProgramCardProps {
 }
 
 export function WorkshopProgramCard({
-  id,
   title,
   description,
   image,
@@ -27,47 +24,16 @@ export function WorkshopProgramCard({
   actionHref = '#workshops-signup',
 }: WorkshopProgramCardProps) {
   return (
-    <article className={styles.card} aria-labelledby={`program-${id}-title`}>
-      <div className={styles.media}>
-        {picture ? (
-          <Picture
-            picture={picture}
-            alt={imageAlt}
-            className={styles.image}
-            loading="lazy"
-            sizes="(min-width: 1024px) 33vw, 100vw"
-          />
-        ) : image ? (
-          <img
-            src={image}
-            alt={imageAlt}
-            className={styles.image}
-            loading="lazy"
-            decoding="async"
-          />
-        ) : null}
-      </div>
-
-      <div className={styles.body}>
-        <div className={styles.text}>
-          <h3 id={`program-${id}-title`} className={styles.title}>
-            {title}
-          </h3>
-          <p className={styles.description}>{description}</p>
-        </div>
-
-        {showAction ? (
-          <Button
-            variant="primary"
-            size="md"
-            href={actionHref}
-            className={styles.action}
-            fullWidth
-          >
-            {actionLabel}
-          </Button>
-        ) : null}
-      </div>
-    </article>
+    <ImageActionCard
+      variant="preview"
+      title={title}
+      description={description}
+      image={image}
+      picture={picture}
+      imageAlt={imageAlt}
+      imageSizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 90vw"
+      href={showAction ? actionHref : undefined}
+      actionLabel={showAction ? actionLabel : undefined}
+    />
   );
 }

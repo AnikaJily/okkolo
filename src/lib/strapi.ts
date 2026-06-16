@@ -33,6 +33,8 @@ export interface StrapiEventItem {
   isPaid?: boolean | null;
   price?: number | null;
   paymentUrl?: string | null;
+  /* enumeration в CMS: музыка | мастер-класс | лекция | стенд-ап (может быть null у старых записей) */
+  type?: string | null;
   photo: StrapiImage | null;
   gallery?: StrapiImage[] | null;
 }

@@ -16,6 +16,7 @@ import { CafePage } from '@/components/pages/CafePage';
 import { AccessibilityPage } from '@/components/pages/AccessibilityPage';
 import { ReportsPage } from '@/components/pages/ReportsPage';
 import { AboutPage } from '@/components/pages/AboutPage';
+import { AccessibilityWidgetProvider } from '@/components/accessibility/AccessibilityWidget';
 import { CartProvider } from '@/context/CartContext';
 import styles from './App.module.css';
 
@@ -38,13 +39,14 @@ export function App() {
 
   return (
     <CartProvider>
-      <div className={styles.viewport}>
-        {/* Первый tab-стоп на каждой странице: мимо 8 стопов шапки сразу к контенту (SC 2.4.1) */}
-        <a href="#main" className={styles.skipLink}>
-          К содержимому
-        </a>
-        <Header />
-        <div className={styles.page}>
+      <AccessibilityWidgetProvider>
+        <div className={styles.viewport}>
+          {/* Первый tab-стоп на каждой странице: мимо 8 стопов шапки сразу к контенту (SC 2.4.1) */}
+          <a href="#main" className={styles.skipLink}>
+            К содержимому
+          </a>
+          <Header />
+          <div className={styles.page}>
           {eventDetailId ? (
             <EventDetailPage eventId={eventDetailId} />
           ) : isEventsPage ? (
@@ -72,9 +74,10 @@ export function App() {
               <LocationSection />
             </main>
           )}
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </AccessibilityWidgetProvider>
     </CartProvider>
   );
 }

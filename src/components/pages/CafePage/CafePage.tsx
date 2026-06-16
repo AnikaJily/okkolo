@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Picture } from '@/components/ui/Picture';
+import { CAFE_HERO } from '@/data/cafe';
 import {
   cafeMenusFromFallback,
   loadCafeMenus,
   type CafeMenuView,
 } from '@/lib/cafe';
 import styles from './CafePage.module.css';
-
-const GALLERY_PLACEHOLDERS = ['Фото интерьера', 'Фото бара', 'Фото зала'];
 
 export function CafePage() {
   /* Стартуем со статичных меню — пока CMS не ответила, страница уже выглядит как обычно */
@@ -26,22 +25,35 @@ export function CafePage() {
 
   return (
     <main id="main" className={styles.root}>
-      <section className={`${styles.intro} sectionHeadGap`} aria-labelledby="cafe-heading">
-        <h1 id="cafe-heading" className={styles.heading}>
-          Кофейня
-        </h1>
-        <div className={styles.lead}>
-          <p>
-            Кофейня — сердце «Окколо». За стойкой работают бариста с
-            инвалидностью: они прошли обучение здесь же, в кластере, и варят
-            кофе наравне с любой городской кофейней — от классики до авторских
-            напитков.
-          </p>
-          <p>
-            Каждый купленный стакан помогает проекту жить: выручка кофейни идет
-            на обучение и трудоустройство новых ребят. Зайдите на чашку — это и
-            есть самый простой способ нас поддержать.
-          </p>
+      <section className={styles.hero} aria-labelledby="cafe-heading">
+        <div className={`${styles.heroContent} sectionHeadGap`}>
+          <h1 id="cafe-heading" className={styles.heading}>
+            Кофейня
+          </h1>
+          <div className={styles.lead}>
+            <p>
+              Кофейня — сердце «Окколо». За стойкой работают бариста с
+              инвалидностью: они прошли обучение здесь же, в кластере, и варят
+              кофе наравне с любой городской кофейней — от классики до авторских
+              напитков.
+            </p>
+            <p>
+              Каждый купленный стакан помогает проекту жить: выручка кофейни идет
+              на обучение и трудоустройство новых ребят. Зайдите на чашку — это и
+              есть самый простой способ нас поддержать.
+            </p>
+          </div>
+        </div>
+        <div className={styles.heroMedia}>
+          <Picture
+            picture={CAFE_HERO.picture}
+            alt={CAFE_HERO.alt}
+            className={styles.heroImage}
+            loading="eager"
+            // @ts-expect-error React typings lag behind the HTML spec
+            fetchpriority="high"
+            sizes="(min-width: 1024px) 620px, 100vw"
+          />
         </div>
       </section>
 
@@ -98,19 +110,6 @@ export function CafePage() {
             </details>
           </figure>
         ))}
-      </section>
-
-      <section className={styles.gallery} aria-label="Интерьер кофейни">
-        <h2 className={styles.galleryHeading}>Как у нас внутри</h2>
-        <div className={styles.galleryGrid}>
-          {GALLERY_PLACEHOLDERS.map((label) => (
-            <div key={label} className={styles.galleryPlaceholder}>
-              <span className={styles.galleryPlaceholderLabel}>
-                {label} — скоро
-              </span>
-            </div>
-          ))}
-        </div>
       </section>
     </main>
   );

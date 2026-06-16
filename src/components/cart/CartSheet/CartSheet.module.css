@@ -247,6 +247,9 @@
 
 .fulfillmentOptionActive {
   background-color: var(--color-yellow);
+  /* Второй индикатор «выбрано» (не только цвет): рамка ≥3:1 + вес — SC 1.4.11 / 1.4.1. */
+  box-shadow: inset 0 0 0 2px var(--color-text);
+  font-weight: 600;
 }
 
 .pickupHint {

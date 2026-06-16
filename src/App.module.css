@@ -42,9 +42,9 @@
   isolation: isolate;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 56px;
   padding-top: 20px;
-  padding-bottom: 40px;
+  padding-bottom: 56px;
   padding-inline: var(--page-padding-x);
   box-sizing: border-box;
   /* Фоновые «пятна» (::before/::after) шире вьюпорта на мобиле —
@@ -94,18 +94,18 @@
 
 @media (min-width: 640px) {
   .main {
-    gap: 56px;
+    gap: 80px;
     padding-top: 32px;
-    padding-bottom: 56px;
+    padding-bottom: 80px;
   }
 }
 
 @media (min-width: 1024px) {
   .main {
-    gap: 80px;
+    gap: 120px;
     padding-top: 0;
     padding-inline: 0;
-    padding-bottom: 80px;
+    padding-bottom: 120px;
   }
 
   /* HeroSection задаёт собственный padding-inline (макет Figma 1024+) — пропускаем */

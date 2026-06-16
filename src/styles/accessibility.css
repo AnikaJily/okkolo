@@ -1,0 +1,149 @@
+/*
+  Глобальные правила «версии для слабовидящих».
+  Активируются по data-атрибутам на <html>, выставляемым из useAccessibility().
+  Сам виджет помечен data-a11y-widget — правила его не задевают.
+
+  Это сложившаяся практика «версии для слабовидящих» (как на госсайтах),
+  а не отдельный пункт стандарта: ГОСТ Р 52872-2019 / WCAG 2.1 AA описывают
+  доступность всего сайта, а не конкретную панель-переключатель. Ориентир —
+  частичное соответствие этим документам. Набор переключателей:
+    - 3 шага размера шрифта (100 / 125 / 150 %)
+    - 3 шага межбуквенного интервала (0 / 0.1em / 0.2em)
+    - 5 цветовых схем
+    - 3 режима изображений (цвет / Ч-Б / скрыть)
+*/
+
+/* === Размер шрифта ===
+   Масштабируем КОРЕНЬ (:root = <html>), а не body: вся типографика и
+   spacing-токены заданы в rem (см. tokens.css), а rem считается от <html>.
+   Так растёт весь контент; layout-токены (container/padding/header) в px —
+   не «расползаются». */
+:root[data-a11y][data-a11y-font='md'] {
+  font-size: 100%;
+}
+
+:root[data-a11y][data-a11y-font='lg'] {
+  font-size: 125%;
+}
+
+:root[data-a11y][data-a11y-font='xl'] {
+  font-size: 150%;
+}
+
+/* === Межбуквенный интервал === */
+:root[data-a11y][data-a11y-spacing='normal'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
+  letter-spacing: 0;
+}
+
+:root[data-a11y][data-a11y-spacing='wide'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
+  letter-spacing: 0.1em;
+  word-spacing: 0.15em;
+  line-height: 1.6;
+}
+
+:root[data-a11y][data-a11y-spacing='wider'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
+  letter-spacing: 0.2em;
+  word-spacing: 0.3em;
+  line-height: 1.8;
+}
+
+/* === Цветовые схемы ===
+   Тема красит и сам <body>, и <html> (body — min-height:100dvh, иначе его
+   фон «светит» снизу; html — для overscroll/canvas). Виджет (data-a11y-widget)
+   задаёт свои цвета сам, поэтому исключён из перекраски потомков. */
+:root[data-a11y][data-a11y-theme='whiteBlack'] {
+  background-color: #ffffff !important;
+}
+:root[data-a11y][data-a11y-theme='whiteBlack'] body,
+:root[data-a11y][data-a11y-theme='whiteBlack'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+:root[data-a11y][data-a11y-theme='whiteBlack'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
+  color: #0000aa !important;
+  text-decoration: underline !important;
+}
+
+:root[data-a11y][data-a11y-theme='blackWhite'] {
+  background-color: #000000 !important;
+}
+:root[data-a11y][data-a11y-theme='blackWhite'] body,
+:root[data-a11y][data-a11y-theme='blackWhite'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+:root[data-a11y][data-a11y-theme='blackWhite'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
+  color: #ffd54a !important;
+  text-decoration: underline !important;
+}
+
+/* Каноническая «синяя» схема: тёмно-синий текст по голубому фону. */
+:root[data-a11y][data-a11y-theme='blueCyan'] {
+  background-color: #9dd1ff !important;
+}
+:root[data-a11y][data-a11y-theme='blueCyan'] body,
+:root[data-a11y][data-a11y-theme='blueCyan'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
+  background-color: #9dd1ff !important;
+  color: #003355 !important;
+  border-color: #003355 !important;
+}
+:root[data-a11y][data-a11y-theme='blueCyan'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
+  color: #5b2d8c !important;
+  text-decoration: underline !important;
+}
+
+:root[data-a11y][data-a11y-theme='beigeBrown'] {
+  background-color: #f5ecd1 !important;
+}
+:root[data-a11y][data-a11y-theme='beigeBrown'] body,
+:root[data-a11y][data-a11y-theme='beigeBrown'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
+  background-color: #f5ecd1 !important;
+  color: #4b3621 !important;
+  border-color: #4b3621 !important;
+}
+:root[data-a11y][data-a11y-theme='beigeBrown'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
+  color: #5b2d8c !important;
+  text-decoration: underline !important;
+}
+
+:root[data-a11y][data-a11y-theme='brownGreen'] {
+  background-color: #3b2a1a !important;
+}
+:root[data-a11y][data-a11y-theme='brownGreen'] body,
+:root[data-a11y][data-a11y-theme='brownGreen'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
+  background-color: #3b2a1a !important;
+  color: #a8d96b !important;
+  border-color: #a8d96b !important;
+}
+:root[data-a11y][data-a11y-theme='brownGreen'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
+  color: #ffd54a !important;
+  text-decoration: underline !important;
+}
+
+/* === Изображения === */
+/* color — без правил, картинки в исходном виде */
+:root[data-a11y][data-a11y-images='bw'] body img:not([data-a11y-keep]):not([data-a11y-widget] *),
+:root[data-a11y][data-a11y-images='bw'] body picture:not([data-a11y-keep]):not([data-a11y-widget] *),
+:root[data-a11y][data-a11y-images='bw'] body video:not([data-a11y-keep]):not([data-a11y-widget] *) {
+  filter: grayscale(100%);
+}
+
+:root[data-a11y][data-a11y-images='off'] body img:not([data-a11y-keep]):not([data-a11y-widget] *),
+:root[data-a11y][data-a11y-images='off'] body picture:not([data-a11y-keep]):not([data-a11y-widget] *),
+:root[data-a11y][data-a11y-images='off'] body svg:not([data-a11y-keep]):not([data-a11y-widget] *) {
+  display: none !important;
+}
+
+/*
+  Когда панель открыта — отодвигаем контент И sticky-хедер на высоту панели.
+  Высоту проставляет сам виджет через ResizeObserver в --a11y-panel-h.
+*/
+:root[data-a11y] body {
+  padding-top: var(--a11y-panel-h, 0px);
+}
+
+:root[data-a11y] header {
+  top: var(--a11y-panel-h, 0px) !important;
+}

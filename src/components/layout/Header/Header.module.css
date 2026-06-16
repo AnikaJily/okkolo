@@ -13,6 +13,8 @@
   position: relative;
   display: flex;
   width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -30,20 +32,6 @@
 @media (min-width: 1140px) {
   .inner {
     gap: 2rem;
-  }
-}
-
-/* Шапке не нужны такие большие боковые отступы, как контенту страницы:
-   ограничиваем, чтобы навигация и кнопка поддержки помещались без наложений. */
-@media (min-width: 1280px) {
-  .inner {
-    padding-inline: 48px;
-  }
-}
-
-@media (min-width: 1440px) {
-  .inner {
-    padding-inline: 56px;
   }
 }
 
@@ -108,9 +96,7 @@
 }
 
 .navLink {
-  position: relative;
   display: inline-block;
-  border-radius: var(--radius-sm);
   padding: 0.5rem 0.25rem;
   font-family: var(--font-display);
   font-size: var(--text-tag);
@@ -118,28 +104,12 @@
   color: var(--color-text-nav);
   text-decoration: none;
   white-space: nowrap;
-  transition: color 0.15s ease;
+  transition: background-color 0.15s ease;
 }
 
-.navLink::after {
-  content: '';
-  position: absolute;
-  inset-inline: 0.25rem;
-  bottom: 0.125rem;
-  height: 2px;
-  border-radius: var(--radius-sm);
-  background-color: var(--color-purple);
-  transform: scaleX(0);
-  transform-origin: center;
-  transition: transform 0.2s ease;
-}
-
-.navLink:hover {
-  color: var(--color-purple-dark);
-}
-
-.navLink:hover::after {
-  transform: scaleX(1);
+.navLink:hover,
+.navLinkActive {
+  background-color: var(--color-yellow);
 }
 
 .navLink:focus-visible {
@@ -199,26 +169,71 @@
   }
 }
 
-.sheetSupport {
-  display: block;
+.sheetContent {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
-@media (min-width: 768px) {
-  .sheetSupport {
-    display: none;
-  }
+.sheetHeader {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+.sheetLogoLink {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-sm);
+}
+
+.sheetLogoLink:focus-visible {
+  outline: 2px solid var(--color-purple-dark);
+  outline-offset: 4px;
+}
+
+.sheetLogo {
+  display: block;
+  width: 40px;
+  height: 38px;
+  object-fit: contain;
+}
+
+.sheetClose {
+  flex-shrink: 0;
+}
+
+.sheetNav {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px 16px;
+}
+
+.sheetFooter {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+  padding: 8px 20px calc(20px + env(safe-area-inset-bottom));
+}
+
+.sheetA11y {
+  margin-top: 0;
+}
+
+.sheetSupport {
+  margin-top: 0;
 }
 
 .menuIcon {
   width: 30px;
   height: 30px;
-}
-
-.sheetHeader {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
 }
 
 .sheetTitleHidden {
@@ -236,26 +251,34 @@
 .sheetNavList {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 4px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+.sheetNavItem {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+
 .sheetNavLink {
-  display: block;
-  border-radius: var(--radius-md);
-  padding: 0.75rem 1rem;
+  display: inline-block;
+  padding: 0.5rem 0.25rem;
   font-family: var(--font-display);
-  font-size: var(--text-card-title);
+  font-size: var(--text-body);
   font-weight: 500;
-  color: inherit;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
   text-decoration: none;
+  text-box: none;
   transition: background-color 0.15s ease;
 }
 
-.sheetNavLink:hover {
-  background-color: var(--color-purple-subtle);
+.sheetNavLink:hover,
+.sheetNavLinkActive {
+  background-color: var(--color-yellow);
 }
 
 .sheetNavLink:focus-visible {
