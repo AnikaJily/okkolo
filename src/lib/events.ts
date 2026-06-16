@@ -8,8 +8,8 @@ import {
 } from '@/lib/strapi';
 
 const eventDateFormatter = new Intl.DateTimeFormat('ru-RU', {
-  day: '2-digit',
-  month: 'short',
+  day: 'numeric',
+  month: 'long',
   hour: '2-digit',
   minute: '2-digit',
 });
@@ -21,7 +21,7 @@ const eventPriceFormatter = new Intl.NumberFormat('ru-RU', {
 });
 
 export function formatEventDate(date: string) {
-  return eventDateFormatter.format(new Date(date)).replace('.', '');
+  return eventDateFormatter.format(new Date(date));
 }
 
 function formatEventAdmission(isPaid: boolean, price?: number | null) {

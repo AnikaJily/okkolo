@@ -149,52 +149,50 @@ export function WorkshopsSignupSection() {
             </div>
 
             <div className={styles.channels}>
-            <div className={styles.channel}>
-              <div className={styles.channelText}>
-                <p className={styles.channelLabel}>Позвонить</p>
-                {CONTACT_PHONE ? (
-                  <a href={`tel:${CONTACT_PHONE}`} className={styles.channelValue}>
-                    {phoneDisplay}
-                  </a>
-                ) : (
-                  <span className={styles.channelValue}>{phoneDisplay}</span>
-                )}
-                <div className={styles.channelMeta}>
-                  {CONTACT_PHONE_HOURS.map((line) => (
-                    <p key={line}>{line}</p>
-                  ))}
+              <div className={styles.channel}>
+                <div className={styles.channelInfo}>
+                  <p className={styles.channelLabel}>Позвонить</p>
+                  {CONTACT_PHONE ? (
+                    <a href={`tel:${CONTACT_PHONE}`} className={styles.channelValue}>
+                      {phoneDisplay}
+                    </a>
+                  ) : (
+                    <span className={styles.channelValue}>{phoneDisplay}</span>
+                  )}
+                  <div className={styles.channelMeta}>
+                    {CONTACT_PHONE_HOURS.map((line) => (
+                      <p key={line}>{line}</p>
+                    ))}
+                  </div>
                 </div>
+                <Button
+                  variant="outline"
+                  size="md"
+                  className={styles.copyButton}
+                  onClick={() => handleCopy(phoneDisplay, 'Номер')}
+                >
+                  Скопировать
+                </Button>
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                fullWidth
-                className={styles.copyButton}
-                onClick={() => handleCopy(phoneDisplay, 'Номер')}
-              >
-                Скопировать
-              </Button>
-            </div>
 
-            <div className={styles.channel}>
-              <div className={styles.channelText}>
-                <p className={styles.channelLabel}>Написать на почту</p>
-                <a href={SUPPORT_HREF} className={styles.channelValue}>
-                  {CONTACT_EMAIL}
-                </a>
-                <p className={styles.channelMetaSingle}>Пишите в любое время</p>
+              <div className={styles.channel}>
+                <div className={styles.channelInfo}>
+                  <p className={styles.channelLabel}>Написать на почту</p>
+                  <a href={SUPPORT_HREF} className={styles.channelValue}>
+                    {CONTACT_EMAIL}
+                  </a>
+                  <p className={styles.channelMetaSingle}>Пишите в любое время</p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="md"
+                  className={styles.copyButton}
+                  onClick={() => handleCopy(CONTACT_EMAIL, 'Почта')}
+                >
+                  Скопировать
+                </Button>
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                fullWidth
-                className={styles.copyButton}
-                onClick={() => handleCopy(CONTACT_EMAIL, 'Почта')}
-              >
-                Скопировать
-              </Button>
             </div>
-          </div>
           </div>
 
           <p className={styles.directNote}>

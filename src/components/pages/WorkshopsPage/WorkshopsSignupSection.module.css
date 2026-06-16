@@ -2,9 +2,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
+  gap: 24px;
   width: 100%;
   scroll-margin-top: var(--header-offset);
+}
+
+@media (min-width: 640px) {
+  .root {
+    gap: 40px;
+  }
 }
 
 .heading {
@@ -20,8 +26,14 @@
 .panel {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 20px;
   width: 100%;
+}
+
+@media (min-width: 640px) {
+  .panel {
+    gap: 32px;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -37,10 +49,17 @@
 .form {
   box-sizing: border-box;
   width: 100%;
-  padding: 24px;
+  padding: 20px;
   border-radius: var(--radius-xl);
   background-color: var(--color-surface);
   box-shadow: var(--shadow-header);
+}
+
+@media (min-width: 640px) {
+  .direct,
+  .form {
+    padding: 24px;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -56,18 +75,29 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 32px;
+  gap: 20px;
   min-width: 0;
 }
 
 .directMain {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 20px;
+}
+
+@media (min-width: 640px) {
+  .direct {
+    gap: 24px;
+  }
+
+  .directMain {
+    gap: 28px;
+  }
 }
 
 @media (min-width: 1024px) {
   .direct {
+    gap: 32px;
     min-height: 509px;
   }
 
@@ -79,7 +109,13 @@
 .directIntro {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .directIntro {
+    gap: 20px;
+  }
 }
 
 .directTitle,
@@ -103,13 +139,21 @@
 }
 
 .channels {
-  display: grid;
-  gap: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 @media (min-width: 640px) {
   .channels {
+    display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .channels {
     gap: 50px;
   }
 }
@@ -117,33 +161,58 @@
 .channel {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   gap: 24px;
-  min-height: 212px;
+  min-width: 0;
 }
 
-.channelText {
+/* Инфо-блок: label → value → meta. Растягивается на всю свободную высоту канала,
+   чтобы в grid-сетке (640+) обе кнопки «Скопировать» прижались к низу и
+   выровнялись на одном уровне, независимо от высоты часов / подписи.
+   Текст внутри подрезан text-box-trim — поэтому гэпы тут «реальная» межстрочная
+   пустота, нужны крупнее обычного, иначе label/value/meta сливаются. */
+.channelInfo {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* Кнопка по ширине контента, а не на всю колонку — иначе flex-item
+   по умолчанию растягивается (align-self: stretch). */
+.copyButton {
+  align-self: flex-start;
 }
 
 .channelLabel {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--text-card-title);
+  font-size: var(--text-body);
   font-weight: 600;
   line-height: var(--leading-tight);
   color: var(--color-text);
 }
 
+@media (min-width: 640px) {
+  .channelLabel {
+    font-size: var(--text-card-title);
+  }
+}
+
 .channelValue {
   font-family: var(--font-display);
-  font-size: var(--text-card-title);
+  font-size: var(--text-body);
   font-weight: 600;
   line-height: var(--leading-tight);
   color: var(--color-purple-dark);
   text-decoration: none;
+  word-break: break-word;
+}
+
+@media (min-width: 640px) {
+  .channelValue {
+    font-size: var(--text-card-title);
+  }
 }
 
 .channelValue:hover {
@@ -168,11 +237,6 @@
 
 .channelMeta p {
   margin: 0;
-}
-
-.copyButton {
-  border-radius: var(--radius-pill-card);
-  width: 100%;
 }
 
 .directNote {

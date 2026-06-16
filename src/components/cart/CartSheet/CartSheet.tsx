@@ -14,6 +14,7 @@ import {
   getDeliveryZoneLabel,
 } from '@/lib/delivery';
 import { createOrder, type FulfillmentType } from '@/lib/strapi';
+import { cn } from '@/lib/utils';
 import styles from './CartSheet.module.css';
 
 interface CartSheetProps {
@@ -53,7 +54,6 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
   const [errors, setErrors] = useState<FormErrors>({});
   const [confirmClear, setConfirmClear] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
-  const [orderId, setOrderId] = useState<number | null>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
   const handleRemoveLine = (productId: string, index: number) => {
@@ -93,7 +93,6 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
       setErrors({});
       setConfirmClear(false);
       setSubmitStatus('idle');
-      setOrderId(null);
     }
   }, [open]);
 
@@ -131,7 +130,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
     setSubmitStatus('submitting');
 
     try {
-      const created = await createOrder({
+      await createOrder({
         customerName: customerName.trim(),
         phone: phone.trim(),
         email: email.trim() || undefined,
@@ -150,7 +149,6 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
         address: isDelivery ? address.trim() : undefined,
         deliveryComment: isDelivery ? deliveryComment.trim() || undefined : undefined,
       });
-      setOrderId(created?.data?.id ?? null);
       setSubmitStatus('success');
       clearCart();
     } catch (error) {
@@ -159,10 +157,13 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
     }
   };
 
+  const isSuccess = submitStatus === 'success';
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         variant="center"
+        className={cn(isSuccess && styles.successSheet, isSuccess && 'gap-4')}
         aria-describedby={undefined}
         onCloseAutoFocus={(event) => {
           // Триггера-Radix нет (открывается из FloatingCartButton, который может
@@ -171,8 +172,10 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
           document.getElementById('main')?.focus();
         }}
       >
-        <div className="flex items-center justify-between gap-4">
-          <SheetTitle className={styles.headerTitle}>Корзина</SheetTitle>
+        <div className={styles.header}>
+          <SheetTitle className={styles.headerTitle}>
+            {isSuccess ? 'Готово' : 'Корзина'}
+          </SheetTitle>
           <SheetClose asChild>
             <IconButton label="Закрыть корзину">
               <CloseIcon size="sheet" />
@@ -180,17 +183,21 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
           </SheetClose>
         </div>
 
-        {submitStatus === 'success' ? (
+        {isSuccess ? (
           <div className={styles.success} role="status">
-            <p className={styles.successTitle}>
-              Заказ оформлен{orderId ? ` №${orderId}` : ''}
-            </p>
+            <p className={styles.successLead}>Спасибо за заказ</p>
             <p className={styles.successText}>
               {isDelivery
-                ? 'Мы свяжемся с вами для уточнения доставки'
-                : 'Ждем вас в шоуруме — мы позвоним для подтверждения'}
+                ? 'Свяжемся с вами, чтобы уточнить доставку'
+                : 'Ждём вас в шоуруме «Окколо»'}
             </p>
-            <Button variant="primary" size="md" fullWidth onClick={() => onOpenChange(false)}>
+            <Button
+              variant="primary"
+              size="md"
+              fullWidth
+              className={styles.successButton}
+              onClick={() => onOpenChange(false)}
+            >
               Закрыть
             </Button>
           </div>
