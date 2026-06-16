@@ -19,7 +19,7 @@
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   filter: blur(48px);
   opacity: 0.85;
 }
@@ -126,6 +126,8 @@
 .sectionImage {
   display: block;
   width: 100%;
+  /* aspect-ratio резервирует место до загрузки (анти-CLS); min-height — пол */
+  aspect-ratio: 4 / 3;
   min-height: 240px;
   border-radius: var(--radius-lg);
   object-fit: cover;

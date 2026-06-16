@@ -1,6 +1,8 @@
 .root {
   display: inline-flex;
   align-items: center;
+  /* Клик-зона ≥44px по высоте (SC 2.5.8), визуал радиокнопки не меняется */
+  min-height: 44px;
   gap: 8px;
   cursor: pointer;
 }

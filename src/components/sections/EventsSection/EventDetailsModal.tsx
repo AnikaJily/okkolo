@@ -28,14 +28,14 @@ export function EventDetailsModal({
                 event.picture ? (
                   <Picture
                     picture={event.picture}
-                    alt={event.title}
+                    alt=""
                     className={styles.image}
                     sizes="(min-width: 1024px) 450px, 100vw"
                   />
                 ) : (
                   <img
                     src={event.image}
-                    alt={event.title}
+                    alt=""
                     className={styles.image}
                     loading="lazy"
                     decoding="async"

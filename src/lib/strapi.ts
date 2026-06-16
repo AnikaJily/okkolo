@@ -28,8 +28,6 @@ export interface StrapiEventItem {
   slug?: string | null;
   date: string;
   description?: string | null;
-  href?: string | null;
-  signupHref?: string | null;
   isPaid?: boolean | null;
   price?: number | null;
   paymentUrl?: string | null;

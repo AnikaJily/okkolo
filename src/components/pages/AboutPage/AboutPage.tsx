@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ABOUT_PARTNERS, ABOUT_TEAM } from '@/data/about';
 import { loadAboutTeamPhotos, type AboutPhotoView } from '@/lib/about';
 import { cn } from '@/lib/utils';
+import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import styles from './AboutPage.module.css';
 
 function PhotoPlaceholder({
@@ -42,6 +43,7 @@ function AboutImage({
 }
 
 export function AboutPage() {
+  useDocumentTitle('О нас');
   const [teamPhotos, setTeamPhotos] = useState<AboutPhotoView[]>([]);
 
   useEffect(() => {

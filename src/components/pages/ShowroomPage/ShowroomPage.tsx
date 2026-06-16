@@ -11,6 +11,7 @@ import { loadProducts } from '@/lib/products';
 import { useCart } from '@/context/CartContext';
 import { CartSheet } from '@/components/cart/CartSheet';
 import { FloatingCartButton } from '@/components/cart/FloatingCartButton';
+import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import styles from './ShowroomPage.module.css';
 
 // максимум 3 ряда товаров на страницу; колонок 2 (mobile) или 3 (от 640px) — см. .products в module.css
@@ -33,8 +34,10 @@ function useGridColumns() {
 }
 
 export function ShowroomPage() {
+  useDocumentTitle('Шоурум');
   const { addItem, totalCount } = useCart();
   const [cartOpen, setCartOpen] = useState(false);
+  const [cartAnnouncement, setCartAnnouncement] = useState('');
   const [products, setProducts] = useState<ShowroomProduct[]>(fallbackProducts);
   const [isFallback, setIsFallback] = useState(true);
   const [category, setCategory] = useState<ProductCategory>('all');
@@ -70,6 +73,8 @@ export function ShowroomPage() {
 
   const handleAddToCart = (product: ShowroomProduct) => {
     addItem(product);
+    // totalCount на этом рендере ещё старый — прибавляем +1 для корректного объявления
+    setCartAnnouncement(`«${product.title}» добавлен в корзину. Всего товаров: ${totalCount + 1}`);
   };
 
   return (
@@ -154,6 +159,10 @@ export function ShowroomPage() {
     {/* CartSheet монтируется всегда: иначе clearCart() при success размонтирует
         шторку до показа экрана «Заказ оформлен», а cartOpen зависает в true */}
     <CartSheet open={cartOpen} onOpenChange={setCartOpen} orderingDisabled={isFallback} />
+    {/* Постоянно смонтированный live-region: озвучивает добавление товара (SC 4.1.3) */}
+    <p role="status" aria-live="polite" className="visually-hidden">
+      {cartAnnouncement}
+    </p>
     </>
   );
 }

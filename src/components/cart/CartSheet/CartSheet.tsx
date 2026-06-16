@@ -6,7 +6,12 @@ import { IconButton } from '@/components/ui/IconButton';
 import { Sheet, SheetClose, SheetContent, SheetTitle } from '@/components/ui/Sheet';
 import { useCart } from '@/context/CartContext';
 import { formatProductPrice } from '@/data/products';
-import { getDeliveryPrice, getDeliveryZoneLabel } from '@/lib/delivery';
+import {
+  DELIVERY_PRICE_KRASNODAR,
+  DELIVERY_PRICE_RUSSIA,
+  getDeliveryPrice,
+  getDeliveryZoneLabel,
+} from '@/lib/delivery';
 import { createOrder, type FulfillmentType } from '@/lib/strapi';
 import styles from './CartSheet.module.css';
 
@@ -19,9 +24,22 @@ interface CartSheetProps {
 
 type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
 
+interface FormErrors {
+  name?: string;
+  phone?: string;
+  email?: string;
+  city?: string;
+  address?: string;
+}
+
+function isValidPhone(value: string) {
+  const digits = value.replace(/\D/g, '');
+  return digits.length >= 10 && digits.length <= 12;
+}
+
 export function CartSheet({ open, onOpenChange, orderingDisabled = false }: CartSheetProps) {
   const fieldIdPrefix = useId();
-  const { items, totalPrice, removeItem, clearCart } = useCart();
+  const { items, totalPrice, incrementItem, decrementItem, removeItem, clearCart } = useCart();
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -31,6 +49,8 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
   const [deliveryComment, setDeliveryComment] = useState('');
   const [consent, setConsent] = useState(false);
   const [consentError, setConsentError] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [confirmClear, setConfirmClear] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
   const listRef = useRef<HTMLUListElement>(null);
 
@@ -41,6 +61,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
   );
   const orderTotal = totalPrice + deliveryPrice;
   const deliveryHint = isDelivery && city.trim() ? getDeliveryZoneLabel(city) : '';
+  const isSubmitting = submitStatus === 'submitting';
 
   useEffect(() => {
     if (!open) {
@@ -53,18 +74,42 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
       setDeliveryComment('');
       setConsent(false);
       setConsentError(false);
+      setErrors({});
+      setConfirmClear(false);
       setSubmitStatus('idle');
     }
   }, [open]);
 
+  const focusById = (suffix: string) => {
+    document.getElementById(`${fieldIdPrefix}-${suffix}`)?.focus();
+  };
+
   const handleSubmit = async (formEvent: FormEvent<HTMLFormElement>) => {
     formEvent.preventDefault();
-    if (items.length === 0 || submitStatus === 'submitting' || orderingDisabled) return;
+    if (items.length === 0 || isSubmitting || orderingDisabled) return;
 
-    if (!consent) {
-      setConsentError(true);
-      return;
+    // Собираем все ошибки сразу; фокус — на первую в порядке DOM.
+    const nextErrors: FormErrors = {};
+    if (!customerName.trim()) nextErrors.name = 'Напишите, как вас зовут';
+    if (!phone.trim()) nextErrors.phone = 'Введите номер телефона';
+    else if (!isValidPhone(phone))
+      nextErrors.phone = 'Введите номер телефона, например +7 918 123-45-67';
+    if (email.trim() && !email.includes('@'))
+      nextErrors.email = 'Введите корректный email или оставьте поле пустым';
+    if (isDelivery) {
+      if (!city.trim()) nextErrors.city = 'Укажите город доставки';
+      if (!address.trim()) nextErrors.address = 'Укажите адрес доставки';
     }
+    setErrors(nextErrors);
+    const consentMissing = !consent;
+    setConsentError(consentMissing);
+
+    if (nextErrors.name) return focusById('name');
+    if (nextErrors.phone) return focusById('phone');
+    if (nextErrors.email) return focusById('email');
+    if (nextErrors.city) return focusById('city');
+    if (nextErrors.address) return focusById('address');
+    if (consentMissing) return focusById('consent');
 
     setSubmitStatus('submitting');
 
@@ -118,7 +163,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
         </div>
 
         {submitStatus === 'success' ? (
-          <div className={styles.success}>
+          <div className={styles.success} role="status">
             <p className={styles.successTitle}>Заказ оформлен</p>
             <p className={styles.successText}>
               {isDelivery
@@ -137,9 +182,34 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                   <img src={item.image} alt="" className={styles.thumb} loading="lazy" />
                   <div className={styles.info}>
                     <p className={styles.title}>{item.title}</p>
-                    <p className={styles.meta}>
-                      {item.quantity} × {formatProductPrice(item.price)}
-                    </p>
+                    <p className={styles.meta}>{formatProductPrice(item.price)} за шт.</p>
+                    <div className={styles.stepper}>
+                      <button
+                        type="button"
+                        className={styles.stepperButton}
+                        aria-label={`Уменьшить количество «${item.title}»`}
+                        aria-disabled={item.quantity <= 1 || undefined}
+                        onClick={() => {
+                          if (item.quantity > 1) decrementItem(item.productId);
+                        }}
+                      >
+                        <span aria-hidden="true">−</span>
+                      </button>
+                      <span className={styles.stepperValue} aria-live="polite">
+                        {item.quantity}{' '}
+                        <span className="visually-hidden">
+                          штук «{item.title}» в корзине
+                        </span>
+                      </span>
+                      <button
+                        type="button"
+                        className={styles.stepperButton}
+                        aria-label={`Увеличить количество «${item.title}»`}
+                        onClick={() => incrementItem(item.productId)}
+                      >
+                        <span aria-hidden="true">+</span>
+                      </button>
+                    </div>
                   </div>
                   <button
                     type="button"
@@ -175,7 +245,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
               <p className={styles.formHeading}>Контакты</p>
               <div className={styles.field}>
                 <label htmlFor={`${fieldIdPrefix}-name`} className={styles.label}>
-                  Имя*
+                  Имя (обязательно)
                 </label>
                 <input
                   id={`${fieldIdPrefix}-name`}
@@ -186,11 +256,18 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                   onChange={(event) => setCustomerName(event.target.value)}
                   required
                   autoComplete="name"
+                  aria-invalid={errors.name ? true : undefined}
+                  aria-describedby={errors.name ? `${fieldIdPrefix}-name-error` : undefined}
                 />
+                {errors.name ? (
+                  <p id={`${fieldIdPrefix}-name-error`} className={styles.fieldError} role="alert">
+                    {errors.name}
+                  </p>
+                ) : null}
               </div>
               <div className={styles.field}>
                 <label htmlFor={`${fieldIdPrefix}-phone`} className={styles.label}>
-                  Телефон*
+                  Телефон (обязательно)
                 </label>
                 <input
                   id={`${fieldIdPrefix}-phone`}
@@ -202,7 +279,15 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                   onChange={(event) => setPhone(event.target.value)}
                   required
                   autoComplete="tel"
+                  placeholder="+7 918 123-45-67"
+                  aria-invalid={errors.phone ? true : undefined}
+                  aria-describedby={errors.phone ? `${fieldIdPrefix}-phone-error` : undefined}
                 />
+                {errors.phone ? (
+                  <p id={`${fieldIdPrefix}-phone-error`} className={styles.fieldError} role="alert">
+                    {errors.phone}
+                  </p>
+                ) : null}
               </div>
               <div className={styles.field}>
                 <label htmlFor={`${fieldIdPrefix}-email`} className={styles.label}>
@@ -216,7 +301,14 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   autoComplete="email"
+                  aria-invalid={errors.email ? true : undefined}
+                  aria-describedby={errors.email ? `${fieldIdPrefix}-email-error` : undefined}
                 />
+                {errors.email ? (
+                  <p id={`${fieldIdPrefix}-email-error`} className={styles.fieldError} role="alert">
+                    {errors.email}
+                  </p>
+                ) : null}
               </div>
 
               <p className={styles.formHeading}>Способ получения</p>
@@ -252,7 +344,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                 <>
                   <div className={styles.field}>
                     <label htmlFor={`${fieldIdPrefix}-city`} className={styles.label}>
-                      Город*
+                      Город (обязательно)
                     </label>
                     <input
                       id={`${fieldIdPrefix}-city`}
@@ -263,14 +355,26 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                       onChange={(event) => setCity(event.target.value)}
                       required
                       autoComplete="address-level2"
+                      aria-invalid={errors.city ? true : undefined}
+                      aria-describedby={errors.city ? `${fieldIdPrefix}-city-error` : undefined}
                     />
+                    {errors.city ? (
+                      <p id={`${fieldIdPrefix}-city-error`} className={styles.fieldError} role="alert">
+                        {errors.city}
+                      </p>
+                    ) : null}
                   </div>
                   {deliveryHint ? (
                     <p className={styles.deliveryHint}>Доставка: {deliveryHint}</p>
-                  ) : null}
+                  ) : (
+                    <p className={styles.deliveryHint}>
+                      Доставка по Краснодару — {DELIVERY_PRICE_KRASNODAR} ₽, по России —{' '}
+                      {DELIVERY_PRICE_RUSSIA} ₽. Точная сумма — после ввода города.
+                    </p>
+                  )}
                   <div className={styles.field}>
                     <label htmlFor={`${fieldIdPrefix}-address`} className={styles.label}>
-                      Адрес*
+                      Адрес (обязательно)
                     </label>
                     <input
                       id={`${fieldIdPrefix}-address`}
@@ -281,7 +385,14 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                       onChange={(event) => setAddress(event.target.value)}
                       required
                       autoComplete="street-address"
+                      aria-invalid={errors.address ? true : undefined}
+                      aria-describedby={errors.address ? `${fieldIdPrefix}-address-error` : undefined}
                     />
+                    {errors.address ? (
+                      <p id={`${fieldIdPrefix}-address-error`} className={styles.fieldError} role="alert">
+                        {errors.address}
+                      </p>
+                    ) : null}
                   </div>
                   <div className={styles.field}>
                     <label htmlFor={`${fieldIdPrefix}-deliveryComment`} className={styles.label}>
@@ -306,6 +417,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                 id={`${fieldIdPrefix}-consent`}
                 checked={consent}
                 error={consentError}
+                errorMessage="Подтвердите согласие на обработку персональных данных"
                 onChange={(event) => {
                   setConsent(event.target.checked);
                   if (event.target.checked) {
@@ -322,16 +434,24 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                   <p className={styles.totalLabel}>Товары</p>
                   <p className={styles.totalValueSm}>{formatProductPrice(totalPrice)}</p>
                 </div>
-                {isDelivery && deliveryPrice > 0 ? (
+                {isDelivery ? (
                   <div className={styles.totalRow}>
                     <p className={styles.totalLabel}>Доставка</p>
-                    <p className={styles.totalValueSm}>{formatProductPrice(deliveryPrice)}</p>
+                    <p className={styles.totalValueSm}>
+                      {deliveryPrice > 0
+                        ? formatProductPrice(deliveryPrice)
+                        : 'после ввода города'}
+                    </p>
                   </div>
                 ) : null}
                 <div className={styles.totalRow}>
                   <p className={styles.totalLabel}>Итого</p>
                   <p className={styles.totalValue}>{formatProductPrice(orderTotal)}</p>
                 </div>
+                {/* Live-region статуса отправки: смонтирована заранее (SC 4.1.3) */}
+                <p className={styles.status} role="status" aria-live="polite">
+                  {isSubmitting ? 'Отправляем заказ…' : ''}
+                </p>
                 {submitStatus === 'error' ? (
                   <p className={styles.error} role="alert">
                     Не удалось отправить заказ. Попробуйте еще раз
@@ -349,25 +469,51 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                   fullWidth
                   type="submit"
                   className={styles.submitButton}
-                  disabled={
-                    submitStatus === 'submitting' || items.length === 0 || orderingDisabled
+                  aria-disabled={
+                    isSubmitting || items.length === 0 || orderingDisabled || undefined
                   }
+                  aria-busy={isSubmitting || undefined}
                 >
-                  {submitStatus === 'submitting' ? 'Отправляем…' : 'Оформить заказ'}
+                  {isSubmitting ? 'Отправляем…' : 'Оформить заказ'}
                 </Button>
-                <Button
-                  variant="outline"
-                  size="md"
-                  fullWidth
-                  type="button"
-                  className={styles.secondaryButton}
-                  onClick={() => {
-                    clearCart();
-                    onOpenChange(false);
-                  }}
-                >
-                  Очистить корзину
-                </Button>
+                {confirmClear ? (
+                  <div className={styles.confirmClear}>
+                    <Button
+                      variant="primary"
+                      size="md"
+                      fullWidth
+                      type="button"
+                      className={styles.secondaryButton}
+                      onClick={() => {
+                        clearCart();
+                        onOpenChange(false);
+                      }}
+                    >
+                      Да, очистить
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="md"
+                      fullWidth
+                      type="button"
+                      className={styles.secondaryButton}
+                      onClick={() => setConfirmClear(false)}
+                    >
+                      Отмена
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="md"
+                    fullWidth
+                    type="button"
+                    className={styles.secondaryButton}
+                    onClick={() => setConfirmClear(true)}
+                  >
+                    Очистить корзину
+                  </Button>
+                )}
               </div>
             </form>
           </>

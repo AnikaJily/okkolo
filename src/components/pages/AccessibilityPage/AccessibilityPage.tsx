@@ -10,6 +10,7 @@ import {
   loadAccessibilityPage,
   type AccessibilityPageView,
 } from '@/lib/accessibilityPage';
+import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import styles from './AccessibilityPage.module.css';
 
 function PhotoPlaceholder({ label = 'Фото пространства (скоро)' }: { label?: string }) {
@@ -36,6 +37,7 @@ function SectionPhoto({ photo }: { photo: AccessibilityPageView }) {
 }
 
 export function AccessibilityPage() {
+  useDocumentTitle('Доступность');
   const [page, setPage] = useState<AccessibilityPageView>(accessibilityPageFromFallback);
 
   useEffect(() => {
@@ -53,12 +55,12 @@ export function AccessibilityPage() {
       <div className={styles.heroRow}>
         <section className={styles.facts} aria-labelledby="facts-heading">
           <header className={`${styles.factsHead} sectionHeadGap`}>
-            <h2 id="facts-heading" className={styles.sectionTitle}>
+            <h1 id="facts-heading" className={styles.sectionTitle}>
               {page.title}
-            </h2>
+            </h1>
             {page.lead ? <p className={styles.leadText}>{page.lead}</p> : null}
           </header>
-          <h3 className={styles.subsectionTitle}>Коротко о главном</h3>
+          <h2 className={styles.subsectionTitle}>Коротко о главном</h2>
           <ul className={styles.factsGrid}>
             {ACCESSIBILITY_FACTS.map((fact) => (
               <li key={fact.id} className={styles.factItem}>

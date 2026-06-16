@@ -53,6 +53,7 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
 
     if (!consent) {
       setConsentError(true);
+      document.getElementById(`${fieldIdPrefix}-consent`)?.focus();
       return;
     }
 
@@ -84,7 +85,7 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className={styles.overlay} />
-        <Dialog.Content className={styles.content}>
+        <Dialog.Content className={styles.content} aria-describedby={undefined}>
           {event ? (
             <>
               <button
@@ -99,9 +100,8 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
               <div className={styles.summary}>
                 <span className={styles.tag}>{event.dateLabel}</span>
                 <Dialog.Title className={styles.heading}>Регистрация</Dialog.Title>
-                <Dialog.Description className={styles.eventTitle} asChild>
-                  <h3>{event.title}</h3>
-                </Dialog.Description>
+                {/* Название события — структурный заголовок, не «описание» диалога (SC 1.3.1) */}
+                <h3 className={styles.eventTitle}>{event.title}</h3>
                 {event.isPaid && event.price ? (
                   <p className={styles.price}>
                     Цена: {priceFormatter.format(event.price)}
@@ -112,7 +112,7 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
               <form className={styles.form} onSubmit={handleSubmit} noValidate>
                 <div className={styles.field}>
                   <label htmlFor={`${fieldIdPrefix}-name`} className={styles.label}>
-                    Имя*
+                    Имя (обязательно)
                   </label>
                   <input
                     id={`${fieldIdPrefix}-name`}
@@ -126,7 +126,7 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
 
                 <div className={styles.field}>
                   <label htmlFor={`${fieldIdPrefix}-phone`} className={styles.label}>
-                    Телефон*
+                    Телефон (обязательно)
                   </label>
                   <input
                     id={`${fieldIdPrefix}-phone`}
@@ -171,6 +171,7 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
                   id={`${fieldIdPrefix}-consent`}
                   checked={consent}
                   error={consentError}
+                  errorMessage="Подтвердите согласие на обработку персональных данных"
                   onChange={(changeEvent) => {
                     setConsent(changeEvent.target.checked);
                     if (changeEvent.target.checked) {

@@ -10,6 +10,7 @@ import {
   type ReportsTabId,
 } from '@/data/reports';
 import { loadReports } from '@/lib/reports';
+import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import styles from './ReportsPage.module.css';
 
 const VALID_TABS = REPORTS_TABS.map((tab) => tab.id) as ReportsTabId[];
@@ -110,9 +111,9 @@ function AnnualPanel({ groups }: { groups: readonly AnnualReportGroup[] }) {
           className={styles.group}
           aria-labelledby={`annual-${group.year}`}
         >
-          <h3 id={`annual-${group.year}`} className={styles.groupHeading}>
+          <h2 id={`annual-${group.year}`} className={styles.groupHeading}>
             {group.year}
-          </h3>
+          </h2>
           <ul className={styles.fileList}>
             {group.reports.map((report) => (
               <FileLink key={report.id} file={report} />
@@ -133,9 +134,9 @@ function DocumentsPanel({ groups }: { groups: readonly DocumentsGroup[] }) {
           className={styles.group}
           aria-labelledby={`docs-${group.id}`}
         >
-          <h3 id={`docs-${group.id}`} className={styles.groupHeading}>
+          <h2 id={`docs-${group.id}`} className={styles.groupHeading}>
             {group.title}
-          </h3>
+          </h2>
           <ul className={styles.fileList}>
             {group.documents.map((doc) => (
               <FileLink key={doc.id} file={doc} />
@@ -148,6 +149,7 @@ function DocumentsPanel({ groups }: { groups: readonly DocumentsGroup[] }) {
 }
 
 export function ReportsPage() {
+  useDocumentTitle('Отчёты');
   const [activeTab, setActiveTab] = useState<ReportsTabId>(() => getInitialTab());
   /* Стартуем с мок-каркаса (заглушки «скоро»), затем заменяем тем, что вернёт CMS */
   const [annual, setAnnual] = useState<readonly AnnualReportGroup[]>(ANNUAL_REPORTS);

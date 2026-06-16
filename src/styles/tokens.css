@@ -9,8 +9,10 @@
   --color-surface: #ffffff;
   --color-text: #000000;
   --color-text-nav: #292929;
-  /* Единый серый для второстепенного текста */
+  /* Единый серый для второстепенного текста (AA на --color-bg: 5.45:1) */
   --color-muted: #666666;
+  /* Усиленный серый для второстепенного текста, где нужен запас до AAA (≥7:1 на белом) */
+  --color-muted-strong: #595959;
   --color-border: rgba(0, 0, 0, 0.07);
   /* Рамки контролов (поля форм): ≥3:1 и к --color-bg, и к --color-surface (SC 1.4.11) */
   --color-border-strong: #8a8a8a;
@@ -19,6 +21,27 @@
   --color-hover-soft: rgba(0, 0, 0, 0.05);
   --color-purple-subtle: rgba(197, 148, 232, 0.12);
   --color-error: #b00020;
+
+  /*
+    Палитра «версии для слабовидящих» — единый источник для accessibility.css
+    (реальное применение) и AccessibilityWidget свотчей (превью). Все пары
+    fg/bg рассчитаны на AAA (≥7:1). border = fg во всех темах.
+  */
+  --a11y-whiteBlack-bg: #ffffff;
+  --a11y-whiteBlack-fg: #000000;
+  --a11y-whiteBlack-link: #0000aa;
+  --a11y-blackWhite-bg: #000000;
+  --a11y-blackWhite-fg: #ffffff;
+  --a11y-blackWhite-link: #ffd54a;
+  --a11y-blueCyan-bg: #9dd1ff;
+  --a11y-blueCyan-fg: #003355;
+  --a11y-blueCyan-link: #00205c;
+  --a11y-beigeBrown-bg: #f5ecd1;
+  --a11y-beigeBrown-fg: #4b3621;
+  --a11y-beigeBrown-link: #5b2d8c;
+  --a11y-brownGreen-bg: #3b2a1a;
+  --a11y-brownGreen-fg: #a8d96b;
+  --a11y-brownGreen-link: #ffd54a;
 
   /* Декоративные фоновые «пятна» (About, Workshops, Accessibility, Reports) */
   --gradient-blob-yellow: radial-gradient(
@@ -94,6 +117,7 @@
   --radius-xl: 20px;        /* карточки (Product) */
   --radius-pill: 40px;      /* отдельно стоящие кнопки */
   --radius-pill-card: 30px; /* кнопки внутри карточек */
+  --radius-full: 9999px;    /* «полностью круглый»: pill переменной ширины, круглые иконки */
 
   /* Elevation (Figma: тени без смещения) */
   --shadow-card: 0 0 4px rgba(0, 0, 0, 0.25);

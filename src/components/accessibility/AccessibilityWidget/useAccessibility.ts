@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-export type FontSize = 'md' | 'lg' | 'xl';
+export type FontSize = 'md' | 'lg' | 'xl' | 'xxl';
 export type Spacing = 'normal' | 'wide' | 'wider';
 export type Theme = 'whiteBlack' | 'blackWhite' | 'blueCyan' | 'beigeBrown' | 'brownGreen';
 export type Images = 'color' | 'bw' | 'off';
@@ -23,7 +23,7 @@ const DEFAULT_STATE: A11yState = {
   images: 'color',
 };
 
-const FONT_VALUES: FontSize[] = ['md', 'lg', 'xl'];
+const FONT_VALUES: FontSize[] = ['md', 'lg', 'xl', 'xxl'];
 const SPACING_VALUES: Spacing[] = ['normal', 'wide', 'wider'];
 const THEME_VALUES: Theme[] = ['whiteBlack', 'blackWhite', 'blueCyan', 'beigeBrown', 'brownGreen'];
 const IMAGE_VALUES: Images[] = ['color', 'bw', 'off'];

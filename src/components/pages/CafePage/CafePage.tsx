@@ -6,9 +6,11 @@ import {
   loadCafeMenus,
   type CafeMenuView,
 } from '@/lib/cafe';
+import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import styles from './CafePage.module.css';
 
 export function CafePage() {
+  useDocumentTitle('Кофейня');
   /* Стартуем со статичных меню — пока CMS не ответила, страница уже выглядит как обычно */
   const [menus, setMenus] = useState<CafeMenuView[]>(() => cafeMenusFromFallback());
 
@@ -85,7 +87,7 @@ export function CafePage() {
 
               {menu.sections.map((section) => (
                 <div key={section.title} className={styles.menuSection}>
-                  <h3 className={styles.menuSectionTitle}>{section.title}</h3>
+                  <h2 className={styles.menuSectionTitle}>{section.title}</h2>
                   <ul className={styles.menuList}>
                     {section.items.map((item) => (
                       <li key={item.name} className={styles.menuItem}>

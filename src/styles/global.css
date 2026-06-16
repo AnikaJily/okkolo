@@ -26,6 +26,10 @@ body {
   text-box-trim для всей типографики (как text-box-trim в Figma):
   гэпы считаются от cap-height / baseline, хвосты р/у/г не раздувают flex-gap.
   Не сочетать overflow: hidden / line-clamp на том же элементе — обрежет хвосты.
+
+  Поддержка (на 2025): Chrome/Edge 133+, Safari 18.2+. Firefox и Safari ≤18.1
+  свойство игнорируют — это осознанное прогрессивное улучшение: там текст
+  рендерится с обычным line-box (гэпы чуть крупнее), вёрстка не ломается.
 */
 :where(
   h1,
@@ -98,6 +102,23 @@ samp {
   }
 }
 
+/*
+  Визуально скрыто, но доступно скринридеру (sr-only / visually-hidden).
+  Для live-region'ов, скрытых заголовков и подписей. Глобальная утилита,
+  чтобы не дублировать клип-хак в каждом CSS-модуле.
+*/
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* Системные предупреждения (fallback CMS, недоступный каталог и т.п.) */
 .systemNotice {
   margin: 0;
@@ -114,7 +135,19 @@ samp {
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 88px;
+  scroll-padding-top: var(--header-offset);
+}
+
+/*
+  Глобальный fallback видимого индикатора фокуса (SC 2.4.7 / 2.4.11).
+  :where() даёт нулевую специфичность — индивидуальные :focus-visible в
+  CSS-модулях компонентов перекрывают его, а любой новый/нестилизованный
+  интерактив гарантированно получает видимое кольцо. Только клавиатурный
+  фокус (focus-visible), мышиный клик кольцо не рисует.
+*/
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--color-purple-dark);
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

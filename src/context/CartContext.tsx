@@ -23,6 +23,8 @@ interface CartContextValue {
   totalCount: number;
   totalPrice: number;
   addItem: (product: ShowroomProduct) => void;
+  incrementItem: (productId: string) => void;
+  decrementItem: (productId: string) => void;
   removeItem: (productId: string) => void;
   clearCart: () => void;
 }
@@ -103,6 +105,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const incrementItem = useCallback((productId: string) => {
+    setItems((current) =>
+      current.map((item) =>
+        item.productId === productId ? { ...item, quantity: item.quantity + 1 } : item,
+      ),
+    );
+  }, []);
+
+  // Уменьшает на 1; при quantity === 1 удаляет позицию (как removeItem).
+  const decrementItem = useCallback((productId: string) => {
+    setItems((current) =>
+      current.flatMap((item) =>
+        item.productId !== productId
+          ? [item]
+          : item.quantity <= 1
+            ? []
+            : [{ ...item, quantity: item.quantity - 1 }],
+      ),
+    );
+  }, []);
+
   const removeItem = useCallback((productId: string) => {
     setItems((current) => current.filter((item) => item.productId !== productId));
   }, []);
@@ -127,10 +150,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       totalCount,
       totalPrice,
       addItem,
+      incrementItem,
+      decrementItem,
       removeItem,
       clearCart,
     }),
-    [items, totalCount, totalPrice, addItem, removeItem, clearCart],
+    [items, totalCount, totalPrice, addItem, incrementItem, decrementItem, removeItem, clearCart],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

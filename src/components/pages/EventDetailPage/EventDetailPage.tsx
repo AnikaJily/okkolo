@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { Picture } from '@/components/ui/Picture';
 import { EventSignupModal } from '@/components/sections/EventsSection/EventSignupModal';
 import { events as fallbackEvents } from '@/data/events';
 import type { OkkoloEvent } from '@/data/events';
 import { loadEventById } from '@/lib/events';
+import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import styles from './EventDetailPage.module.css';
 
 interface EventDetailPageProps {
@@ -23,6 +25,7 @@ export function EventDetailPage({ eventId }: EventDetailPageProps) {
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [retryKey, setRetryKey] = useState(0);
   const [signupOpen, setSignupOpen] = useState(false);
+  useDocumentTitle(event?.title);
 
   useEffect(() => {
     setEvent(findFallbackEvent(eventId));
@@ -54,12 +57,28 @@ export function EventDetailPage({ eventId }: EventDetailPageProps) {
         <section className={styles.content} aria-label={event.title}>
           <article className={styles.card}>
             <div className={styles.imagePane}>
-              <img
-                src={event.image}
-                alt={event.title}
-                className={styles.image}
-                decoding="async"
-              />
+              {/* alt="" — смысл фото уже выражен соседним h1 (event.title), H67 */}
+              {event.picture ? (
+                <Picture
+                  picture={event.picture}
+                  alt=""
+                  className={styles.image}
+                  loading="eager"
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  // @ts-expect-error React typings lag behind the HTML spec
+                  fetchpriority="high"
+                />
+              ) : (
+                <img
+                  src={event.image}
+                  alt=""
+                  className={styles.image}
+                  loading="eager"
+                  decoding="async"
+                  // @ts-expect-error React typings lag behind the HTML spec
+                  fetchpriority="high"
+                />
+              )}
               <span className={styles.meta}>{event.dateLabel}</span>
             </div>
 

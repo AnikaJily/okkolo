@@ -72,6 +72,10 @@ export function ImageActionCard({
     !action && !secondaryAction && href && !actionLabel ? href : undefined;
   const cardMainInteractive = Boolean(secondaryAction) || Boolean(cardNavHref);
   const cardMainLabel = `${secondaryActionLabel ?? actionLabel}: ${title}`;
+  // Контекст для видимых кнопок: «Подробнее» вне строки списка непонятно (SC 2.4.4).
+  // Видимый текст остаётся подстрокой имени — SC 2.5.3 соблюдён.
+  const primaryAccLabel = actionLabel ? `${actionLabel}: ${title}` : undefined;
+  const secondaryAccLabel = secondaryActionLabel ? `${secondaryActionLabel}: ${title}` : undefined;
 
   const overlayMedia = picture ? (
     <Picture
@@ -132,11 +136,11 @@ export function ImageActionCard({
           </div>
 
           {action ? (
-            <Button variant="primary" size="sm" fullWidth onClick={action}>
+            <Button variant="primary" size="sm" fullWidth onClick={action} aria-label={primaryAccLabel}>
               {actionLabel}
             </Button>
           ) : (
-            <Button variant="primary" size="sm" fullWidth href={href}>
+            <Button variant="primary" size="sm" fullWidth href={href} aria-label={primaryAccLabel}>
               {actionLabel}
             </Button>
           )}
@@ -164,11 +168,11 @@ export function ImageActionCard({
       )}
     >
       {action ? (
-        <Button variant={actionVariant} size="md" fullWidth className="min-w-0 max-w-full" onClick={action}>
+        <Button variant={actionVariant} size="md" fullWidth className="min-w-0 max-w-full" onClick={action} aria-label={primaryAccLabel}>
           {actionLabel}
         </Button>
       ) : (
-        <Button variant={actionVariant} size="md" fullWidth className="min-w-0 max-w-full" href={href}>
+        <Button variant={actionVariant} size="md" fullWidth className="min-w-0 max-w-full" href={href} aria-label={primaryAccLabel}>
           {actionLabel}
         </Button>
       )}
@@ -180,6 +184,7 @@ export function ImageActionCard({
             fullWidth
             className="min-w-0 max-w-full"
             onClick={secondaryAction}
+            aria-label={secondaryAccLabel}
           >
             {secondaryActionLabel}
           </Button>
@@ -190,6 +195,7 @@ export function ImageActionCard({
             fullWidth
             className="min-w-0 max-w-full"
             href={secondaryHref ?? href}
+            aria-label={secondaryAccLabel}
           >
             {secondaryActionLabel}
           </Button>

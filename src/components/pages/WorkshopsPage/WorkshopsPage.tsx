@@ -6,8 +6,8 @@ import { Picture } from '@/components/ui/Picture';
 import type { PictureSource } from '@/components/ui/Picture';
 import { LocationSection } from '@/components/sections/LocationSection';
 import {
-  getFallbackWorkshopsDirectionImage,
-  loadWorkshopsDirectionImage,
+  getFallbackWorkshopsDirectionPicture,
+  loadWorkshopsDirectionImageUrl,
 } from '@/lib/directions';
 import {
   loadWorkshopPrograms,
@@ -18,6 +18,7 @@ import {
 } from '@/lib/workshops';
 import type { WorkshopProgram } from '@/data/workshopsPage';
 import { WORKSHOPS_AFTER_CALLOUT } from '@/data/workshopsPage';
+import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import { WorkshopProgramCard } from './WorkshopProgramCard';
 import { WorkshopsSignupSection } from './WorkshopsSignupSection';
 import styles from './WorkshopsPage.module.css';
@@ -87,14 +88,16 @@ function CalloutCard({
 }
 
 export function WorkshopsPage() {
-  const [heroImage, setHeroImage] = useState(getFallbackWorkshopsDirectionImage);
+  useDocumentTitle('Мастерские');
+  const heroPicture = getFallbackWorkshopsDirectionPicture();
+  const [heroUrl, setHeroUrl] = useState<string | null>(null);
   const [page, setPage] = useState(workshopsPageFromFallback);
   const [programs, setPrograms] = useState<WorkshopProgram[]>(workshopProgramsFromFallback);
 
   useEffect(() => {
     let cancelled = false;
-    loadWorkshopsDirectionImage().then((url) => {
-      if (!cancelled && url) setHeroImage(url);
+    loadWorkshopsDirectionImageUrl().then((url) => {
+      if (!cancelled) setHeroUrl(url);
     });
     return () => {
       cancelled = true;
@@ -131,19 +134,31 @@ export function WorkshopsPage() {
             </Button>
           </div>
         </div>
-        {heroImage ? (
-          <div className={styles.heroMedia}>
+        <div className={styles.heroMedia}>
+          {heroUrl ? (
             <img
-              src={heroImage}
+              src={heroUrl}
               alt="Мастерские «Окколо»"
               className={styles.heroImage}
               loading="eager"
               decoding="async"
+              // @ts-expect-error React typings lag behind the HTML spec
+              fetchpriority="high"
             />
-          </div>
-        ) : (
-          <PhotoPlaceholder />
-        )}
+          ) : heroPicture ? (
+            <Picture
+              picture={heroPicture}
+              alt="Мастерские «Окколо»"
+              className={styles.heroImage}
+              loading="eager"
+              sizes="(min-width: 1024px) 632px, 100vw"
+              // @ts-expect-error React typings lag behind the HTML spec
+              fetchpriority="high"
+            />
+          ) : (
+            <PhotoPlaceholder />
+          )}
+        </div>
       </section>
 
       <section className={styles.programs} aria-labelledby="workshops-programs-heading">

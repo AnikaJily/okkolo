@@ -28,6 +28,7 @@ const FONT_OPTIONS: { value: FontSize; label: string; sampleClass: string }[] = 
   { value: 'md', label: 'Обычный размер шрифта', sampleClass: styles.sampleFontSm },
   { value: 'lg', label: 'Крупный шрифт', sampleClass: styles.sampleFontMd },
   { value: 'xl', label: 'Очень крупный шрифт', sampleClass: styles.sampleFontLg },
+  { value: 'xxl', label: 'Максимально крупный шрифт', sampleClass: styles.sampleFontXl },
 ];
 
 const SPACING_OPTIONS: { value: Spacing; label: string; spacingClass: string }[] = [

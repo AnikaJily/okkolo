@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { HeroSection } from '@/components/sections/HeroSection';
@@ -8,16 +8,35 @@ import { DirectionsSection } from '@/components/sections/DirectionsSection';
 import { EventsSection } from '@/components/sections/EventsSection';
 import { ShowroomTeaser } from '@/components/sections/ShowroomTeaser';
 import { LocationSection } from '@/components/sections/LocationSection';
-import { EventsPage } from '@/components/pages/EventsPage';
-import { EventDetailPage } from '@/components/pages/EventDetailPage';
-import { ShowroomPage } from '@/components/pages/ShowroomPage';
-import { WorkshopsPage } from '@/components/pages/WorkshopsPage';
-import { CafePage } from '@/components/pages/CafePage';
-import { AccessibilityPage } from '@/components/pages/AccessibilityPage';
-import { ReportsPage } from '@/components/pages/ReportsPage';
-import { AboutPage } from '@/components/pages/AboutPage';
+// Подстраницы — lazy: главная (самый частый вход) не тянет код всех экранов.
+// Named export → default через .then (баррели именованные).
+const EventsPage = lazy(() =>
+  import('@/components/pages/EventsPage').then((m) => ({ default: m.EventsPage })),
+);
+const EventDetailPage = lazy(() =>
+  import('@/components/pages/EventDetailPage').then((m) => ({ default: m.EventDetailPage })),
+);
+const ShowroomPage = lazy(() =>
+  import('@/components/pages/ShowroomPage').then((m) => ({ default: m.ShowroomPage })),
+);
+const WorkshopsPage = lazy(() =>
+  import('@/components/pages/WorkshopsPage').then((m) => ({ default: m.WorkshopsPage })),
+);
+const CafePage = lazy(() =>
+  import('@/components/pages/CafePage').then((m) => ({ default: m.CafePage })),
+);
+const AccessibilityPage = lazy(() =>
+  import('@/components/pages/AccessibilityPage').then((m) => ({ default: m.AccessibilityPage })),
+);
+const ReportsPage = lazy(() =>
+  import('@/components/pages/ReportsPage').then((m) => ({ default: m.ReportsPage })),
+);
+const AboutPage = lazy(() =>
+  import('@/components/pages/AboutPage').then((m) => ({ default: m.AboutPage })),
+);
 import { AccessibilityWidgetProvider } from '@/components/accessibility/AccessibilityWidget';
 import { CartProvider } from '@/context/CartContext';
+import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import styles from './App.module.css';
 
 export function App() {
@@ -30,6 +49,19 @@ export function App() {
   const isReportsPage = pathname === '/reports';
   const isAboutPage = pathname === '/about';
   const eventDetailId = pathname.match(/^\/events\/([^/]+)$/)?.[1];
+
+  // Заголовки подстраниц ставят сами page-компоненты; здесь — только дефолт
+  // для главной (важно при возврате по popstate без перезагрузки).
+  const isHome =
+    !eventDetailId &&
+    !isEventsPage &&
+    !isShowroomPage &&
+    !isWorkshopsPage &&
+    !isCafePage &&
+    !isAccessibilityPage &&
+    !isReportsPage &&
+    !isAboutPage;
+  useDocumentTitle(isHome ? undefined : false);
 
   useEffect(() => {
     const updatePathname = () => setPathname(window.location.pathname);
@@ -47,6 +79,7 @@ export function App() {
           </a>
           <Header />
           <div className={styles.page}>
+          <Suspense fallback={<main id="main" className={styles.main} aria-busy="true" />}>
           {eventDetailId ? (
             <EventDetailPage eventId={eventDetailId} />
           ) : isEventsPage ? (
@@ -74,6 +107,7 @@ export function App() {
               <LocationSection />
             </main>
           )}
+          </Suspense>
           </div>
           <Footer />
         </div>

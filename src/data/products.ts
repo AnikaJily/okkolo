@@ -1,5 +1,5 @@
 import type { PictureSource } from '@/components/ui/Picture';
-import productPicture from '@/assets/images/showroom-product.png?w=320;640;960&format=avif;webp;jpg&as=picture';
+import productPicture from '@/assets/images/showroom-product.jpg?w=320;640;960&format=avif;webp;jpg&as=picture';
 
 const productImage = productPicture.img.src;
 

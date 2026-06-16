@@ -92,17 +92,19 @@ export function ProductDetailsModal({
                     </>
                   ) : null}
 
+                  {/* Заголовок несёт Dialog.Title — фото не дублирует его (H67);
+                      для галереи даём позиционный alt, чтобы различать кадры */}
                   {pictures[activeImageIndex] ? (
                     <Picture
                       picture={pictures[activeImageIndex]!}
-                      alt={product.title}
+                      alt={hasMultipleImages ? `Фото ${activeImageIndex + 1} из ${imageCount}` : ''}
                       className={styles.image}
                       sizes="(min-width: 1024px) 450px, 100vw"
                     />
                   ) : (
                     <img
                       src={images[activeImageIndex] ?? product.image}
-                      alt={product.title}
+                      alt={hasMultipleImages ? `Фото ${activeImageIndex + 1} из ${imageCount}` : ''}
                       className={styles.image}
                       loading="lazy"
                       decoding="async"

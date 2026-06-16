@@ -30,6 +30,10 @@
   font-size: 150%;
 }
 
+:root[data-a11y][data-a11y-font='xxl'] {
+  font-size: 200%;
+}
+
 /* === Межбуквенный интервал === */
 :root[data-a11y][data-a11y-spacing='normal'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
   letter-spacing: 0;
@@ -52,73 +56,73 @@
    фон «светит» снизу; html — для overscroll/canvas). Виджет (data-a11y-widget)
    задаёт свои цвета сам, поэтому исключён из перекраски потомков. */
 :root[data-a11y][data-a11y-theme='whiteBlack'] {
-  background-color: #ffffff !important;
+  background-color: var(--a11y-whiteBlack-bg) !important;
 }
 :root[data-a11y][data-a11y-theme='whiteBlack'] body,
 :root[data-a11y][data-a11y-theme='whiteBlack'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
-  background-color: #ffffff !important;
-  color: #000000 !important;
-  border-color: #000000 !important;
+  background-color: var(--a11y-whiteBlack-bg) !important;
+  color: var(--a11y-whiteBlack-fg) !important;
+  border-color: var(--a11y-whiteBlack-fg) !important;
 }
 :root[data-a11y][data-a11y-theme='whiteBlack'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
-  color: #0000aa !important;
+  color: var(--a11y-whiteBlack-link) !important;
   text-decoration: underline !important;
 }
 
 :root[data-a11y][data-a11y-theme='blackWhite'] {
-  background-color: #000000 !important;
+  background-color: var(--a11y-blackWhite-bg) !important;
 }
 :root[data-a11y][data-a11y-theme='blackWhite'] body,
 :root[data-a11y][data-a11y-theme='blackWhite'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-  border-color: #ffffff !important;
+  background-color: var(--a11y-blackWhite-bg) !important;
+  color: var(--a11y-blackWhite-fg) !important;
+  border-color: var(--a11y-blackWhite-fg) !important;
 }
 :root[data-a11y][data-a11y-theme='blackWhite'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
-  color: #ffd54a !important;
+  color: var(--a11y-blackWhite-link) !important;
   text-decoration: underline !important;
 }
 
 /* Каноническая «синяя» схема: тёмно-синий текст по голубому фону. */
 :root[data-a11y][data-a11y-theme='blueCyan'] {
-  background-color: #9dd1ff !important;
+  background-color: var(--a11y-blueCyan-bg) !important;
 }
 :root[data-a11y][data-a11y-theme='blueCyan'] body,
 :root[data-a11y][data-a11y-theme='blueCyan'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
-  background-color: #9dd1ff !important;
-  color: #003355 !important;
-  border-color: #003355 !important;
+  background-color: var(--a11y-blueCyan-bg) !important;
+  color: var(--a11y-blueCyan-fg) !important;
+  border-color: var(--a11y-blueCyan-fg) !important;
 }
 :root[data-a11y][data-a11y-theme='blueCyan'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
-  color: #5b2d8c !important;
+  color: var(--a11y-blueCyan-link) !important;
   text-decoration: underline !important;
 }
 
 :root[data-a11y][data-a11y-theme='beigeBrown'] {
-  background-color: #f5ecd1 !important;
+  background-color: var(--a11y-beigeBrown-bg) !important;
 }
 :root[data-a11y][data-a11y-theme='beigeBrown'] body,
 :root[data-a11y][data-a11y-theme='beigeBrown'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
-  background-color: #f5ecd1 !important;
-  color: #4b3621 !important;
-  border-color: #4b3621 !important;
+  background-color: var(--a11y-beigeBrown-bg) !important;
+  color: var(--a11y-beigeBrown-fg) !important;
+  border-color: var(--a11y-beigeBrown-fg) !important;
 }
 :root[data-a11y][data-a11y-theme='beigeBrown'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
-  color: #5b2d8c !important;
+  color: var(--a11y-beigeBrown-link) !important;
   text-decoration: underline !important;
 }
 
 :root[data-a11y][data-a11y-theme='brownGreen'] {
-  background-color: #3b2a1a !important;
+  background-color: var(--a11y-brownGreen-bg) !important;
 }
 :root[data-a11y][data-a11y-theme='brownGreen'] body,
 :root[data-a11y][data-a11y-theme='brownGreen'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
-  background-color: #3b2a1a !important;
-  color: #a8d96b !important;
-  border-color: #a8d96b !important;
+  background-color: var(--a11y-brownGreen-bg) !important;
+  color: var(--a11y-brownGreen-fg) !important;
+  border-color: var(--a11y-brownGreen-fg) !important;
 }
 :root[data-a11y][data-a11y-theme='brownGreen'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
-  color: #ffd54a !important;
+  color: var(--a11y-brownGreen-link) !important;
   text-decoration: underline !important;
 }
 

@@ -27,13 +27,21 @@
 
 .grid {
   display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
   grid-template-columns: repeat(auto-fit, minmax(var(--direction-card-min), 1fr));
   align-items: stretch;
   gap: var(--direction-gap);
 }
 
-.grid > * {
+.grid > li {
+  display: flex;
   min-width: 0;
+}
+
+.grid > li > * {
+  width: 100%;
 }
 
 @container directions (min-width: 1120px) {

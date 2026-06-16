@@ -109,7 +109,7 @@
   width: 18px;
   height: 18px;
   translate: 0 -50%;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background-color: var(--color-purple-text);
   text-box: none;
 }

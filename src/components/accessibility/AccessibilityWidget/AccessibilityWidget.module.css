@@ -108,7 +108,7 @@
 .groupLabel {
   font-size: var(--text-caption);
   font-weight: 500;
-  color: var(--color-muted);
+  color: var(--color-muted-strong);
   line-height: var(--leading-tight);
 }
 
@@ -157,7 +157,7 @@
   font-weight: 600;
 }
 
-/* Шаги размера шрифта: 100 / 125 / 150 % */
+/* Шаги размера шрифта: 100 / 125 / 150 / 200 % */
 .sampleFontSm {
   font-size: var(--text-caption);
 }
@@ -168,6 +168,10 @@
 
 .sampleFontLg {
   font-size: var(--text-feature-title);
+}
+
+.sampleFontXl {
+  font-size: var(--text-section-title);
 }
 
 /* Шаги межбуквенного интервала: 0 / 0.1em / 0.2em */
@@ -214,33 +218,33 @@
 }
 
 .swatchWhiteBlack {
-  --swatch-bg: #ffffff;
-  --swatch-fg: #000000;
-  --swatch-border: #000000;
+  --swatch-bg: var(--a11y-whiteBlack-bg);
+  --swatch-fg: var(--a11y-whiteBlack-fg);
+  --swatch-border: var(--a11y-whiteBlack-fg);
 }
 
 .swatchBlackWhite {
-  --swatch-bg: #000000;
-  --swatch-fg: #ffffff;
-  --swatch-border: #000000;
+  --swatch-bg: var(--a11y-blackWhite-bg);
+  --swatch-fg: var(--a11y-blackWhite-fg);
+  --swatch-border: var(--a11y-blackWhite-fg);
 }
 
 .swatchBlueCyan {
-  --swatch-bg: #9dd1ff;
-  --swatch-fg: #003355;
-  --swatch-border: #003355;
+  --swatch-bg: var(--a11y-blueCyan-bg);
+  --swatch-fg: var(--a11y-blueCyan-fg);
+  --swatch-border: var(--a11y-blueCyan-fg);
 }
 
 .swatchBeigeBrown {
-  --swatch-bg: #f5ecd1;
-  --swatch-fg: #4b3621;
-  --swatch-border: #4b3621;
+  --swatch-bg: var(--a11y-beigeBrown-bg);
+  --swatch-fg: var(--a11y-beigeBrown-fg);
+  --swatch-border: var(--a11y-beigeBrown-fg);
 }
 
 .swatchBrownGreen {
-  --swatch-bg: #3b2a1a;
-  --swatch-fg: #a8d96b;
-  --swatch-border: #3b2a1a;
+  --swatch-bg: var(--a11y-brownGreen-bg);
+  --swatch-fg: var(--a11y-brownGreen-fg);
+  --swatch-border: var(--a11y-brownGreen-fg);
 }
 
 .exit {

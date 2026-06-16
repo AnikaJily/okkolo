@@ -55,11 +55,13 @@ export function DirectionsSection() {
             <DirectionsCarousel items={directions} />
           </div>
 
-          <div className={styles.grid}>
+          <ul className={styles.grid}>
             {directions.map((item) => (
-              <DirectionCard key={item.id} direction={item} variant="preview" />
+              <li key={item.id}>
+                <DirectionCard direction={item} variant="preview" />
+              </li>
             ))}
-          </div>
+          </ul>
         </>
       )}
     </section>

@@ -11,4 +11,15 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Вынести тяжёлые зависимости в отдельный кешируемый чанк,
+        // который не сбрасывается при правках кода страниц.
+        manualChunks: {
+          vendor: ['@radix-ui/react-dialog', 'embla-carousel-react'],
+        },
+      },
+    },
+  },
 });

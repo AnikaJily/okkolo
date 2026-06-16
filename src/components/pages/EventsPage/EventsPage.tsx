@@ -7,6 +7,7 @@ import { EventCard } from '@/components/sections/EventsSection/EventCard';
 import { EventDetailsModal } from '@/components/sections/EventsSection/EventDetailsModal';
 import { EventSignupModal } from '@/components/sections/EventsSection/EventSignupModal';
 import filtersIcon from '@/assets/images/filters.svg';
+import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import styles from './EventsPage.module.css';
 
 const monthFormatter = new Intl.DateTimeFormat('ru-RU', { month: 'long' });
@@ -71,6 +72,7 @@ function groupByMonth(events: OkkoloEvent[]): MonthGroup[] {
 }
 
 export function EventsPage() {
+  useDocumentTitle('Мероприятия');
   const [events, setEvents] = useState<OkkoloEvent[]>(fallbackEvents);
   const [timeScope, setTimeScope] = useState<TimeScope | null>('this');
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
@@ -78,6 +80,7 @@ export function EventsPage() {
   const [detailsEvent, setDetailsEvent] = useState<OkkoloEvent | null>(null);
   const [signupEvent, setSignupEvent] = useState<OkkoloEvent | null>(null);
   const typeMenuRef = useRef<HTMLDivElement>(null);
+  const typeTriggerRef = useRef<HTMLButtonElement>(null);
   const typeMenuId = useId();
 
   useEffect(() => {
@@ -101,7 +104,10 @@ export function EventsPage() {
       }
     };
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setTypeMenuOpen(false);
+      if (e.key === 'Escape') {
+        setTypeMenuOpen(false);
+        typeTriggerRef.current?.focus();
+      }
     };
     document.addEventListener('pointerdown', handlePointer);
     document.addEventListener('keydown', handleKey);
@@ -228,7 +234,7 @@ export function EventsPage() {
             <div className={styles.typeFilter} ref={typeMenuRef}>
               <button
                 type="button"
-                aria-haspopup="true"
+                ref={typeTriggerRef}
                 aria-expanded={typeMenuOpen}
                 aria-controls={typeMenuId}
                 aria-label={typeFilterAriaLabel}

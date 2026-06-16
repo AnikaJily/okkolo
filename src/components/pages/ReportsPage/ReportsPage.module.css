@@ -20,7 +20,7 @@
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   filter: blur(56px);
   opacity: 0.85;
 }

@@ -92,7 +92,7 @@ import heroPicture from '@/assets/images/hero-team.jpg?w=480;768;1200;1600&forma
 
 Поле `picture?: PictureSource` хранится в типах `Direction`, `OkkoloEvent`, `ShowroomProduct` — рядом с обычным `image: string`. Компоненты, которые умеют, рендерят через `<Picture picture={...} sizes="..." />`; legacy-места — через обычный `<img src={image}>`.
 
-**Картинки в `src/assets/images/` НЕ оптимизированы:** `hero-team.jpg` 3.5 MB, `direction-cafe.png` 2.4 MB, `showroom-product.png` 1.5 MB. На дев-сервере это не больно (imagetools кеширует), но при добавлении нового исходника заранее сожми его (sharp/squoosh), иначе раздувается репа и медленнее идёт первый build.
+**Тяжёлые исходники пережаты (2026-06-16):** `hero-team.jpg` 3.5 MB→417 KB, `what_we_teach_pottery.jpg` 1.7 MB→164 KB, `direction-cafe.png`→`direction-cafe.jpg` 2.4 MB→174 KB, `showroom-product.png`→`showroom-product.jpg` 1.5 MB→223 KB (sips, JPEG q72–75, ширина ≤1024–1600). Рантайм не изменился (imagetools всё равно ресайзит из исходника). При добавлении нового исходника заранее сожми его (sips/sharp/squoosh), иначе раздувается репа и медленнее идёт первый build.
 
 ## Структура компонентов
 
@@ -188,10 +188,10 @@ Backend — Strapi 5 (`okkolo-cms`). Content-types и эндпоинты — с�
 - **API URL** из `VITE_STRAPI_URL`. Локально — `http://localhost:1337` (Strapi на SQLite, см. `okkolo-cms/.env`). Прод — `http://158.160.128.16` (через nginx-прокси на 1337).
 - **Публичные эндпоинты сейчас** (выставлены вручную в админке или через `okkolo-cms/src/index.ts`): GET `/api/directions`, GET `/api/events`, GET `/api/products`, GET `/api/showrooms`. POST `/api/event-registrations` и POST `/api/orders` могут вернуть 403 на свежем инстансе — нужно включить `create` для роли Public в админке.
 - **Любая ошибка fetch — silent fallback на `src/data/*`.** Это удобно для разработки, но прячет реальные баги: при отладке смотри Network и `console.error` (адаптеры в `src/lib/` логируют).
-- **Несоответствия со схемой CMS, о которых стоит знать** (на ~2026-05-28):
-  - `event.Price` в Strapi с заглавной `P`, фронт читает `price` (строчная) → у платных ивентов цена молча `undefined`. Чинить переименованием атрибута в CMS.
-  - `event-registration.paymentStatus` enum содержит значение `" not_required"` с **ведущим пробелом**, фронт шлёт `'not_required'` без пробела → значение сохраняется как `null`. Чинить в админке Strapi (Content-Type Builder).
-  - `Direction.href` фронт читает (`src/lib/directions.ts::resolveDirectionHref`), но в CMS-схеме поля нет. Сейчас работает за счёт автоопределения по заголовку (`isShowroomDirection`, `isEventsDirection`, …).
+- **Схема CMS ↔ фронт** (актуализировано на 2026-06-16 по аудиту):
+  - Ранее задокументированные баги ИСПРАВЛЕНЫ: `event.price` (строчная), `event-registration.paymentStatus` без ведущего пробела, `Direction.href` присутствует в схеме. Старые предупреждения сняты.
+  - `order` теперь хранит `itemsSubtotal` и `deliveryPrice` (добавлены в `schema.json`) — `createOrder` слал их и раньше, но они не сохранялись. После пулла CMS перезапустить Strapi, чтобы применилась миграция БД.
+  - `event.href`/`event.signupHref` убраны из контракта `StrapiEventItem` — этих полей в CMS нет, фронт формирует `href` из slug, `signupHref` = `SUPPORT_HREF`.
 
 ## Деплой
 
@@ -204,7 +204,7 @@ Backend — Strapi 5 (`okkolo-cms`). Content-types и эндпоинты — с�
 
 ## Подводные камни
 
-- **Картинки в `src/assets/images/` не оптимизированы** (3.5 MB hero, 2.4 MB direction-cafe). При добавлении нового исходника — сжимай заранее.
+- **Тяжёлые исходники пережаты (2026-06-16)** — hero/pottery/cafe/product теперь 164–417 KB вместо 1.5–3.5 MB. При добавлении нового исходника — сжимай заранее (sips/sharp/squoosh).
 - **`tsc -b` строгий**: неиспользуемая локальная переменная/параметр ломает билд. Если IDE подсветила «возможно неиспользовано» — почисти.
 - **Roуутинг ручной**: не зови `history.pushState` руками без `dispatchEvent(new PopStateEvent('popstate'))`, иначе `App.tsx` не пересоберёт state. Проще делать `<a href>` (full reload).
 - **State теряется при переходе**, корзина — нет (она в `localStorage`). Если положил данные в `useState` и хочешь их пережить — либо localStorage, либо вытаскивай в URL.
@@ -212,7 +212,7 @@ Backend — Strapi 5 (`okkolo-cms`). Content-types и эндпоинты — с�
 - **CartContext.removeItem удаляет всю позицию**, инкремент/декремент по 1 шт не реализованы — если бизнес попросит, нужно расширять контекст.
 - **Шрифт Onest** грузится с Google Fonts (`index.html`), весов только 500 и 600 — если в макете появится другой вес, добавь его в `<link>`, иначе браузер синтезирует фейковый.
 - **Меню кофейни двухслойное**: фото (`menu_photo_1/2.jpg`) + текстовая расшифровка в `src/data/cafe.ts` (доступность для скринридеров). При замене фото меню ОБЯЗАТЕЛЬНО обнови текстовую версию — иначе цены разъедутся.
-- **Страница «Мастерские» переделана по CJM/a11y-аудиту (2026-06)**: контент — только подтверждённые факты в `src/data/workshops.ts` (швейная, кофейное дело, звукорежиссура); НЕ добавляй цены/расписания/имена без подтверждения заказчицы. Форма «перезвоним» шлёт заявку через `createEventRegistration` (eventId `workshops-callback`) — отдельного content-type в CMS пока нет. Кнопка «Позвонить» появляется, когда заполнен `CONTACT_PHONE` в `src/data/site.ts` (E.164 + display-вариант). A11y-паттерны формы (не ломать): видимые label со словом «(обязательно)», `autocomplete`/`inputMode`, ошибки через `aria-describedby`+`aria-invalid`+фокус на поле, контейнеры `role="status"`/`role="alert"` смонтированы заранее, submit с `aria-disabled` (не `disabled`), рамки инпутов `#949494` (контраст 3:1).
+- **Страница «Мастерские» переделана по CJM/a11y-аудиту (2026-06)**: контент — только подтверждённые факты в `src/data/workshops.ts` (швейная, кофейное дело, звукорежиссура); НЕ добавляй цены/расписания/имена без подтверждения заказчицы. Форма «перезвоним» шлёт заявку через `createEventRegistration` (eventId `workshops-callback`) — отдельного content-type в CMS пока нет. Кнопка «Позвонить» появляется, когда заполнен `CONTACT_PHONE` в `src/data/site.ts` (E.164 + display-вариант). A11y-паттерны формы (не ломать): видимые label со словом «(обязательно)», `autocomplete`/`inputMode`, ошибки через `aria-describedby`+`aria-invalid`+фокус на поле, контейнеры `role="status"`/`role="alert"` смонтированы заранее, submit с `aria-disabled` (не `disabled`), рамки инпутов `--color-border-strong` `#8a8a8a` (контраст к белому 3.45:1, к фону `#f9f9f9` 3.28:1 — SC 1.4.11).
 - **MVP в работе**: вёрстка готова, интеграции (Strapi, платежи) дозаливаются. Фоллбэк на моки — фича, не баг.
 
 ## Что не делать без явного запроса

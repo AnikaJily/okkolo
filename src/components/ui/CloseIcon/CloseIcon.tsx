@@ -16,6 +16,7 @@ export function CloseIcon({ size = 'sheet', className }: CloseIconProps) {
       fill="none"
       aria-hidden="true"
       focusable="false"
+      data-a11y-keep
     >
       <path
         d="M6 6l12 12M18 6L6 18"

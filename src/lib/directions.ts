@@ -1,5 +1,6 @@
 import { directions as fallbackDirections } from '@/data/directions';
 import { fetchDirections, getStrapiImageUrl } from '@/lib/strapi';
+import type { PictureSource } from '@/components/ui/Picture';
 
 type DirectionLike = {
   title: string;
@@ -104,27 +105,31 @@ export function resolveDirectionHref(direction: DirectionLike): string {
   return '#';
 }
 
-/** Картинка карточки «Мастерские» из статичного fallback (как на главной без CMS). */
-export function getFallbackWorkshopsDirectionImage(): string {
+/** Responsive picture-набор карточки «Мастерские» из статичного fallback (AVIF/WebP/JPEG). */
+export function getFallbackWorkshopsDirectionPicture(): PictureSource | undefined {
   const workshops = fallbackDirections.find(
     (direction) =>
       direction.href === WORKSHOPS_PATH ||
       direction.id === 'workshops' ||
       isWorkshopsHubDirection(direction),
   );
-  return workshops?.image ?? '';
+  return workshops?.picture;
 }
 
-/** То же фото, что у карточки «Мастерские» на главной: Strapi → fallback. */
-export async function loadWorkshopsDirectionImage(): Promise<string> {
+/**
+ * CMS-URL фото мастерских или null. null означает «нет фото из Strapi» —
+ * тогда страница рендерит локальный picture-набор (AVIF) через <Picture>,
+ * а не тяжёлый JPEG-fallback.
+ */
+export async function loadWorkshopsDirectionImageUrl(): Promise<string | null> {
   try {
     const items = await fetchDirections();
     const workshops = items.find((item) => isWorkshopsHubDirection(item));
     const url = getStrapiImageUrl(workshops?.image ?? null);
     if (url) return url;
   } catch {
-    // сеть или CMS недоступны — покажем fallback
+    // сеть или CMS недоступны — отдадим null, страница покажет локальный набор
   }
 
-  return getFallbackWorkshopsDirectionImage();
+  return null;
 }

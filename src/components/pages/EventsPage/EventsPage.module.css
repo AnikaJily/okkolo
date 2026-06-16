@@ -140,11 +140,11 @@
   min-width: 18px;
   height: 18px;
   padding: 0 5px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background-color: var(--color-text);
   color: var(--color-surface);
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: var(--text-label);
   font-weight: 600;
   line-height: 1;
 }
@@ -163,8 +163,8 @@
   max-width: min(320px, calc(100vw - 2 * var(--page-padding-x)));
   padding: 16px 18px;
   background-color: var(--color-surface);
-  border-radius: var(--radius-md, var(--radius-lg));
-  box-shadow: var(--shadow-card-hover, 0 4px 16px rgba(0, 0, 0, 0.12));
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .typeMenuList {

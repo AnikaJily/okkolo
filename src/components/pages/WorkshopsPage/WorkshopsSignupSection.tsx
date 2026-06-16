@@ -72,11 +72,7 @@ export function WorkshopsSignupSection() {
     event.preventDefault();
     if (submitStatus === 'submitting') return;
 
-    if (!consent) {
-      setConsentError(true);
-      return;
-    }
-
+    // Собираем все ошибки сразу, фокус — на первую в порядке DOM (имя → контакт → согласие)
     const nextErrors: { name?: string; contact?: string } = {};
     if (!name.trim()) {
       nextErrors.name = 'Напишите, как вас зовут';
@@ -92,6 +88,8 @@ export function WorkshopsSignupSection() {
       nextErrors.contact = 'Введите адрес электронной почты';
     }
     setErrors(nextErrors);
+    const consentMissing = !consent;
+    setConsentError(consentMissing);
 
     if (nextErrors.name) {
       nameRef.current?.focus();
@@ -99,6 +97,10 @@ export function WorkshopsSignupSection() {
     }
     if (nextErrors.contact) {
       contactRef.current?.focus();
+      return;
+    }
+    if (consentMissing) {
+      document.getElementById('workshops-signup-consent')?.focus();
       return;
     }
 
@@ -123,7 +125,7 @@ export function WorkshopsSignupSection() {
 
   const isSubmitting = submitStatus === 'submitting';
   const isPhoneContact = contactMethod === 'phone';
-  const contactLabel = isPhoneContact ? 'Телефон*' : 'Почта*';
+  const contactLabel = isPhoneContact ? 'Телефон (обязательно)' : 'Почта (обязательно)';
   const contactPlaceholder = isPhoneContact ? '+7 918 123-45-67' : 'hello@example.com';
 
   const phoneDisplay = CONTACT_PHONE_DISPLAY || CONTACT_PHONE_PLACEHOLDER;
@@ -214,7 +216,7 @@ export function WorkshopsSignupSection() {
 
           <div className={styles.field}>
             <label htmlFor="workshops-signup-name" className={styles.fieldLabel}>
-              Имя*
+              Имя (обязательно)
             </label>
             <input
               id="workshops-signup-name"
@@ -236,7 +238,7 @@ export function WorkshopsSignupSection() {
 
           <fieldset className={styles.radioGroup}>
             <legend className={`${styles.fieldLabel} ${styles.fieldLabelStrong}`}>
-              Как с вами связаться?*
+              Как с вами связаться? (обязательно)
             </legend>
             <div className={styles.radioOptions}>
               <Radio
@@ -292,6 +294,7 @@ export function WorkshopsSignupSection() {
             id="workshops-signup-consent"
             checked={consent}
             error={consentError}
+            errorMessage="Подтвердите согласие на обработку персональных данных"
             onChange={(event) => {
               setConsent(event.target.checked);
               if (event.target.checked) {
