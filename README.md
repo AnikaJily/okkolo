@@ -30,7 +30,7 @@ VITE_STRAPI_URL=http://localhost:1337
 
 - React 18, TypeScript 5, Vite 5.
 - Tailwind 4 через `@tailwindcss/vite` (НЕ через PostCSS), CSS Modules — для именованных стилей компонента.
-- `@radix-ui/react-dialog` — модалки и bottom-sheet корзины.
+- `@radix-ui/react-dialog` — модалки и боковая шторка корзины.
 - `embla-carousel-react` — карусели секций.
 - `clsx` + `tailwind-merge` — утилита `cn()` в `src/lib/utils.ts`.
 - `vite-imagetools` + `sharp` — build-time генерация AVIF/WebP/JPEG (см. `src/components/ui/Picture`).
@@ -67,6 +67,10 @@ src/
 | `/events/:id` | EventDetailPage |
 | `/showroom` | ShowroomPage |
 | `/workshops` | WorkshopsPage |
+| `/cafe` | CafePage |
+| `/accessibility` | AccessibilityPage |
+| `/about` | AboutPage |
+| `/reports` | ReportsPage |
 
 Переходы — обычные `<a href>` (full reload). SPA-fallback на сервере — nginx `try_files`, на Vercel — `vercel.json`. Никакого роутера не добавлять без явного запроса.
 
@@ -95,7 +99,7 @@ src/
 
 ## Стили
 
-Все константы — CSS custom properties в `src/styles/tokens.css`: цвета, типографика (Gilroy/Gotham, Inter fallback), spacing (4-pt), радиусы, тени, layout (`--container-max`, `--page-padding-x`). **Не хардкодь HEX'ы и px-радиусы в компонентах.**
+Все константы — CSS custom properties в `src/styles/tokens.css`: цвета, типографика (Onest, Inter fallback), spacing (4-pt), радиусы, тени, layout (`--container-max`, `--page-padding-x`). **Не хардкодь HEX'ы и px-радиусы в компонентах.**
 
 Брейкпоинты (inline `@media`): 640 / 1024 / 1280 / 1440.
 
@@ -230,6 +234,6 @@ cat ~/.ssh/okkolo_gha_deploy_new | \
 - **Картинки в `src/assets/images/` не оптимизированы** (`hero-team.jpg` 3.5 MB, `direction-cafe.png` 2.4 MB). При добавлении новых исходников — сжимай.
 - **Strapi fallback маскирует 4xx/5xx** — при изменениях API сначала проверь Network, что fetch реально проходит.
 - **State теряется при переходах между подстраницами** (full reload). Корзина переживает релоад через localStorage; всё остальное in-memory — нет.
-- **Шрифты Gilroy/Gotham** в репе не лежат — подключаются извне.
+- **Шрифт Onest** в репе не лежит — подключается с Google Fonts (см. `index.html`).
 
 Подробнее по архитектуре и инвариантам — [`CLAUDE.md`](./CLAUDE.md).
