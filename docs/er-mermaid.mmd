@@ -1,0 +1,224 @@
+erDiagram
+    %% ============================================================
+    %% ER-диаграмма БД информационной системы «Окколо»
+    %% Нотация Crow's Foot (Мартина / IE), уровень — логический.
+    %% Идентификаторы латиницей (требование Mermaid); русские
+    %% подписи сущностей даны в комментариях и в тексте описания.
+    %% Медиа-поля показаны с реальными именами из schema.json (тип media)
+    %% и помечены FK — логическая связь с подсистемой файлов (см. описание).
+    %% ============================================================
+
+    %% ---------- ГРУППА 1. Каталог и контент ----------
+    DIRECTION {
+        int id PK "первичный ключ"
+        string title "название направления"
+        text description "описание"
+        string href "soft-ссылка на путь фронта (НЕ relation)"
+        media image FK "→ FILE (upload)"
+    }
+
+    EVENT {
+        int id PK "первичный ключ"
+        string title "название мероприятия"
+        uid slug UK "ЧПУ-идентификатор для /events/<slug>"
+        datetime date "дата и время"
+        enum type "музыка|мастер-класс|лекция|стенд-ап"
+        boolean isPaid "признак платности"
+        int price "цена, ₽"
+        string paymentUrl "ссылка на оплату"
+        int spotsTotal "всего мест"
+        int spotsTaken "занято мест"
+        media photo FK "обложка → FILE"
+        media gallery FK "галерея → FILE (multiple)"
+    }
+
+    PRODUCT {
+        int id PK "первичный ключ"
+        string title "название товара"
+        int price "цена, ₽"
+        enum category "ceramics|clothing|jewelry|textile"
+        boolean isAvailable "в наличии"
+        string cartUrl "внешняя ссылка корзины"
+        media image FK "фото → FILE (обязательно)"
+        media gallery FK "галерея → FILE (multiple)"
+    }
+
+    MENU_ITEM {
+        int id PK "первичный ключ"
+        string name "название позиции"
+        string volume "объём"
+        string price "цена строкой (вилка)"
+        string note "примечание"
+        enum category "coffee|tea|signature|topping|cold|lemonade"
+        enum season "main|summer|winter"
+        int order "порядок вывода"
+        boolean isAvailable "доступность"
+    }
+
+    WORKSHOP_PROGRAM {
+        int id PK "первичный ключ"
+        string title "название программы"
+        text description "описание"
+        int order "порядок вывода"
+        media image FK "фото → FILE"
+    }
+
+    %% ---------- ГРУППА 2. Отчётность и документы ----------
+    MONTHLY_REPORT {
+        int id PK "первичный ключ"
+        int month "месяц (1..12)"
+        int year "год (2020..2100)"
+        text summary "краткое содержание"
+        media pdf FK "PDF → FILE"
+    }
+
+    ANNUAL_REPORT {
+        int id PK "первичный ключ"
+        int year "год (2020..2100)"
+        enum kind "content|finance|nko-activity|spending"
+        text note "примечание"
+        media pdf FK "PDF → FILE"
+    }
+
+    LEGAL_DOCUMENT {
+        int id PK "первичный ключ"
+        string title "название документа"
+        enum category "requisites|foundation|privacy"
+        int order "порядок вывода"
+        media pdf FK "PDF → FILE"
+    }
+
+    %% ---------- ГРУППА 3. Страницы и фото (single types + фото-коллекции) ----------
+    ABOUT_PAGE {
+        int id PK "первичный ключ"
+        string eyebrow "надзаголовок"
+        string title "заголовок"
+        text lead "лид-абзац"
+        string tagline "слоган"
+        media heroPhoto FK "герой-фото → FILE"
+        string heroPhotoAlt "alt-текст"
+    }
+
+    ACCESSIBILITY_PAGE {
+        int id PK "первичный ключ"
+        string title "заголовок"
+        text lead "лид-абзац"
+        media heroPhoto FK "герой-фото → FILE"
+        string heroPhotoAlt "alt-текст"
+    }
+
+    CAFE_MENU_PAGE {
+        int id PK "первичный ключ"
+        media mainPosterImage FK "основной постер → FILE"
+        string mainPosterAlt "alt основного постера"
+        media summerPosterImage FK "летний постер → FILE"
+        string summerPosterAlt "alt летнего постера"
+        string footnote "сноска"
+    }
+
+    WORKSHOPS_PAGE {
+        int id PK "первичный ключ"
+        text intro "вступление"
+        text audienceText "для кого"
+        text audienceNote "уточнение по аудитории"
+        text afterIntro "после вступления"
+        media audiencePhoto FK "фото аудитории → FILE"
+        media afterLearningPhoto FK "фото «после» → FILE"
+    }
+
+    ABOUT_TEAM_PHOTO {
+        int id PK "первичный ключ"
+        string alt "alt-текст"
+        string caption "подпись"
+        int order "порядок"
+        media image FK "фото → FILE (обязательно)"
+    }
+
+    ABOUT_WORKPLACE_PHOTO {
+        int id PK "первичный ключ"
+        string alt "alt-текст"
+        string caption "подпись"
+        int order "порядок"
+        media image FK "фото → FILE (обязательно)"
+    }
+
+    SHOWROOM {
+        int id PK "первичный ключ"
+        media heroImage FK "герой-фото витрины → FILE"
+    }
+
+    %% ---------- ГРУППА 4. Заявки пользователей (транзакционные) ----------
+    EVENT_REGISTRATION {
+        int id PK "первичный ключ"
+        string eventId "SOFT-КЛЮЧ → EVENT (строка, не FK)"
+        string eventTitle "денормализованная копия заголовка"
+        string name "имя (обязательно)"
+        string phone "телефон (обязательно)"
+        email email "e-mail"
+        text comment "комментарий"
+        enum paymentStatus "pending|not_required|paid"
+    }
+
+    ORDER {
+        int id PK "первичный ключ"
+        string customerName "имя покупателя (обязательно)"
+        string phone "телефон (обязательно)"
+        email email "e-mail"
+        int itemsSubtotal "сумма товаров, ₽"
+        int deliveryPrice "стоимость доставки, ₽"
+        int totalPrice "итог, ₽"
+        json items "СОСТАВ-СНИМОК → PRODUCT (JSON, не FK)"
+        enum orderStatus "pending|completed"
+        enum fulfillmentType "pickup|delivery"
+        string city "город"
+        string address "адрес"
+        text deliveryComment "комментарий к доставке"
+    }
+
+    %% ---------- ПОДСИСТЕМА МЕДИА (Strapi Upload) ----------
+    FILE {
+        int id PK "первичный ключ"
+        string name "имя файла"
+        string url "URL в public/uploads"
+        string mime "MIME-тип"
+        json formats "адаптивные форматы"
+    }
+
+    FILES_RELATED_MORPH {
+        int id PK "первичный ключ"
+        int file_id FK "→ FILE"
+        int related_id "id связанной записи (полиморфно)"
+        string related_type "тип связанной сущности (полиморфно)"
+        string field "имя медиа-поля"
+        int order "порядок в multiple-поле"
+    }
+
+    %% ============================================================
+    %% СВЯЗИ
+    %% ============================================================
+
+    %% --- Единственная enforced-связь БД: полиморфная медиа-подсистема ---
+    FILE ||--o{ FILES_RELATED_MORPH : "связывается через"
+
+    %% Полиморфные (неидентифицирующие) медиа-связи контент-сущностей → FILE.
+    %% Реализованы upload-плагином через FILES_RELATED_MORPH (related_type/related_id),
+    %% поэтому это неидентифицирующие связи (пунктир ..).
+    DIRECTION             }o..o| FILE : "image"
+    EVENT                 }o..o{ FILE : "photo / gallery"
+    PRODUCT               }o..o{ FILE : "image / gallery"
+    WORKSHOP_PROGRAM      }o..o| FILE : "image"
+    MONTHLY_REPORT        }o..|| FILE : "pdf"
+    ANNUAL_REPORT         }o..|| FILE : "pdf"
+    LEGAL_DOCUMENT        }o..|| FILE : "pdf"
+    ABOUT_PAGE            }o..o| FILE : "heroPhoto"
+    ACCESSIBILITY_PAGE    }o..o| FILE : "heroPhoto"
+    CAFE_MENU_PAGE        }o..o{ FILE : "main / summer poster"
+    WORKSHOPS_PAGE        }o..o{ FILE : "audience / afterLearning photo"
+    ABOUT_TEAM_PHOTO      }o..|| FILE : "image"
+    ABOUT_WORKPLACE_PHOTO }o..|| FILE : "image"
+    SHOWROOM              }o..o| FILE : "heroImage"
+
+    %% --- Логические (soft) связи домена: НЕ закреплены внешним ключом ---
+    %% Неидентифицирующие (пунктир), реализованы строкой / JSON-снимком.
+    EVENT   ||..o{ EVENT_REGISTRATION : "eventId (soft-ключ, snapshot)"
+    PRODUCT ||..o{ ORDER : "items JSON (snapshot, не FK)"
