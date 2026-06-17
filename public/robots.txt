@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# Strapi backend (тот же origin через nginx-прокси) — индексировать не нужно
+Disallow: /admin
+Disallow: /api

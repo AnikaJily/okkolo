@@ -12,6 +12,10 @@ export interface ShowroomProduct {
   category: Exclude<ProductCategory, 'all'>;
   image: string;
   picture?: PictureSource;
+  /** Responsive-набор из форматов Strapi (для CMS-обложки без build-time picture). */
+  imageSrcSet?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   images: string[];
   pictures?: PictureSource[];
   description: string;

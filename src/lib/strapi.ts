@@ -1,14 +1,23 @@
 export const STRAPI_URL = import.meta.env.VITE_STRAPI_URL ?? 'http://localhost:1337';
 
+export interface StrapiImageFormat {
+  url: string;
+  width?: number;
+  height?: number;
+}
+
 export interface StrapiImage {
   id?: number;
   documentId?: string;
   url: string;
+  width?: number;
+  height?: number;
   alternativeText: string | null;
   formats: {
-    large?: { url: string };
-    medium?: { url: string };
-    small?: { url: string };
+    thumbnail?: StrapiImageFormat;
+    small?: StrapiImageFormat;
+    medium?: StrapiImageFormat;
+    large?: StrapiImageFormat;
   };
 }
 
@@ -233,6 +242,54 @@ export function getStrapiImageUrl(image: StrapiImage | null): string | null {
   if (!image) return null;
   const url = image.formats.large?.url ?? image.formats.medium?.url ?? image.url;
   return url.startsWith('http') ? url : `${STRAPI_URL}${url}`;
+}
+
+export interface StrapiResponsiveImage {
+  /** Fallback для <img src> — крупнейший готовый формат (не тяжёлый оригинал). */
+  src: string;
+  /** srcSet из форматов Strapi: "url 117w, url 375w, …" — браузер берёт размер под слот. */
+  srcSet: string;
+  /** Размеры оригинала для width/height на <img> (резервируют место — защита от CLS). */
+  width?: number;
+  height?: number;
+}
+
+/**
+ * Строит responsive-картинку из форматов Strapi (thumbnail/small/medium/large + оригинал).
+ * Раньше фронт через getStrapiImageUrl всегда брал `large` даже в маленькую карточку —
+ * лишний трафик (Lighthouse: «Improve image delivery»). srcSet даёт браузеру выбор.
+ */
+export function getStrapiResponsiveImage(image: StrapiImage | null): StrapiResponsiveImage | null {
+  if (!image) return null;
+  const toAbs = (u: string) => (u.startsWith('http') ? u : `${STRAPI_URL}${u}`);
+
+  const formats: { url: string; width: number }[] = [];
+  const f = image.formats ?? {};
+  (['thumbnail', 'small', 'medium', 'large'] as const).forEach((key) => {
+    const fmt = f[key];
+    if (fmt?.url && fmt.width) formats.push({ url: toAbs(fmt.url), width: fmt.width });
+  });
+
+  // Дедуп по ширине; оригинал добавляем лишь если он крупнее самого большого формата
+  const byWidth = new Map<number, string>();
+  formats.forEach((c) => byWidth.set(c.width, c.url));
+  if (image.url && image.width && !byWidth.has(image.width)) {
+    byWidth.set(image.width, toAbs(image.url));
+  }
+
+  const sorted = [...byWidth.entries()].sort((a, b) => a[0] - b[0]);
+  if (sorted.length === 0) {
+    const fallback = getStrapiImageUrl(image);
+    return fallback
+      ? { src: fallback, srcSet: '', width: image.width, height: image.height }
+      : null;
+  }
+
+  const srcSet = sorted.map(([w, url]) => `${url} ${w}w`).join(', ');
+  // src — крупнейший формат (а не оригинал-1920px), либо самый большой кандидат
+  const src = formats.length ? formats[formats.length - 1].url : sorted[sorted.length - 1][1];
+
+  return { src, srcSet, width: image.width, height: image.height };
 }
 
 /** Прямая ссылка на медиа-файл (PDF, doc и т.п.) с учётом базового адреса CMS. */

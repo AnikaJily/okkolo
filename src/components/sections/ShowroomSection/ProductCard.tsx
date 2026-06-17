@@ -15,6 +15,9 @@ export function ProductCard({ product, onAddToCart, onDetails }: ProductCardProp
       description={formatProductPrice(product.price)}
       image={product.image}
       picture={product.picture}
+      imageSrcSet={product.imageSrcSet}
+      imageWidth={product.imageWidth}
+      imageHeight={product.imageHeight}
       imageSizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 90vw"
       imageAlt={product.title}
       href="#"

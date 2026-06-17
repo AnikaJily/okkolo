@@ -4,6 +4,7 @@ import { SUPPORT_HREF } from '@/data/site';
 import {
   collectStrapiImageUrls,
   fetchEvents,
+  getStrapiResponsiveImage,
   type StrapiEventItem,
 } from '@/lib/strapi';
 
@@ -35,6 +36,8 @@ export function toEvent(item: StrapiEventItem, index: number): OkkoloEvent {
   const slug = item.slug?.trim() || item.documentId;
   const galleryUrls = collectStrapiImageUrls(item.photo, item.gallery);
   const cover = galleryUrls[0] ?? fallbackEvents[index]?.image ?? fallbackEvents[0].image;
+  /* обложку для карточки берём из того же первого изображения (photo → первый кадр галереи) */
+  const responsive = getStrapiResponsiveImage(item.photo ?? item.gallery?.[0] ?? null);
 
   return {
     id: slug,
@@ -49,6 +52,9 @@ export function toEvent(item: StrapiEventItem, index: number): OkkoloEvent {
     isPaid,
     price: item.price ?? undefined,
     image: cover,
+    imageSrcSet: responsive?.srcSet || undefined,
+    imageWidth: responsive?.width,
+    imageHeight: responsive?.height,
   };
 }
 

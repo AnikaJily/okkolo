@@ -18,6 +18,10 @@ export interface OkkoloEvent {
   price?: number;
   image: string;
   picture?: PictureSource;
+  /** Responsive-набор из форматов Strapi (для CMS-фото без build-time picture). */
+  imageSrcSet?: string;
+  imageWidth?: number;
+  imageHeight?: number;
 }
 
 export const events: OkkoloEvent[] = [

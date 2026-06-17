@@ -14,6 +14,10 @@ interface ImageActionCardProps {
   description: string;
   image?: string;
   picture?: PictureSource;
+  /** srcSet из форматов CMS (Strapi) для fallback-<img>, когда нет build-time picture. */
+  imageSrcSet?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   imageSizes?: string;
   href?: string;
   actionLabel?: string;
@@ -36,6 +40,9 @@ export function ImageActionCard({
   description,
   image,
   picture,
+  imageSrcSet,
+  imageWidth,
+  imageHeight,
   imageSizes,
   href,
   actionLabel,
@@ -87,6 +94,10 @@ export function ImageActionCard({
   ) : (
     <img
       src={image}
+      srcSet={imageSrcSet}
+      sizes={imageSrcSet ? imageSizes : undefined}
+      width={imageWidth}
+      height={imageHeight}
       alt={cardNavHref ? '' : imageAlt}
       className={styles.overlayImage}
       loading="lazy"
@@ -104,6 +115,10 @@ export function ImageActionCard({
   ) : (
     <img
       src={image}
+      srcSet={imageSrcSet}
+      sizes={imageSrcSet ? imageSizes : undefined}
+      width={imageWidth}
+      height={imageHeight}
       alt={cardMainInteractive ? '' : imageAlt}
       className={styles.previewImage}
       loading="lazy"

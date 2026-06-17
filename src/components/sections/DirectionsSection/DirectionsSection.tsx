@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { resolveDirectionHref } from '@/lib/directions';
-import { fetchDirections, getStrapiImageUrl } from '@/lib/strapi';
+import { fetchDirections, getStrapiImageUrl, getStrapiResponsiveImage } from '@/lib/strapi';
 import type { StrapiDirectionItem } from '@/lib/strapi';
 import type { Direction } from '@/data/directions';
 import { directions as fallbackDirections } from '@/data/directions';
@@ -9,6 +9,7 @@ import { DirectionsCarousel } from './DirectionsCarousel';
 import styles from './DirectionsSection.module.css';
 
 function toDirection(item: StrapiDirectionItem): Direction {
+  const responsive = getStrapiResponsiveImage(item.image);
   return {
     id: item.documentId,
     title: item.title,
@@ -18,7 +19,10 @@ function toDirection(item: StrapiDirectionItem): Direction {
       href: item.href,
       documentId: item.documentId,
     }),
-    image: getStrapiImageUrl(item.image) ?? '',
+    image: responsive?.src ?? getStrapiImageUrl(item.image) ?? '',
+    imageSrcSet: responsive?.srcSet || undefined,
+    imageWidth: responsive?.width,
+    imageHeight: responsive?.height,
   };
 }
 

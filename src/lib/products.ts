@@ -8,6 +8,7 @@ import {
   fetchProducts,
   fetchShowroomHeroUrl,
   getStrapiImageUrl,
+  getStrapiResponsiveImage,
   type StrapiProductItem,
 } from '@/lib/strapi';
 
@@ -27,6 +28,7 @@ export function toProduct(item: StrapiProductItem, index: number): ShowroomProdu
 
   const fallback = fallbackProducts[index] ?? fallbackProducts[0];
   const coverUrl = getStrapiImageUrl(item.image) ?? fallback.image;
+  const responsive = getStrapiResponsiveImage(item.image);
   const galleryUrls = collectStrapiImageUrls(null, item.gallery);
   // В попапе — только gallery; обложка image — для карточки в каталоге
   const images =
@@ -38,6 +40,9 @@ export function toProduct(item: StrapiProductItem, index: number): ShowroomProdu
     price: item.price,
     category: item.category,
     image: coverUrl,
+    imageSrcSet: responsive?.srcSet || undefined,
+    imageWidth: responsive?.width,
+    imageHeight: responsive?.height,
     images,
     description: item.description?.trim() || fallback.description,
     cartUrl: item.cartUrl ?? undefined,

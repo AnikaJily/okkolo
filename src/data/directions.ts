@@ -11,6 +11,10 @@ export interface Direction {
   description: string;
   image: string;
   picture?: PictureSource;
+  /** Responsive-набор из форматов Strapi (для CMS-картинок без build-time picture). */
+  imageSrcSet?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   href: string;
 }
 
