@@ -192,6 +192,13 @@ export interface EventRegistrationInput {
   comment?: string;
 }
 
+export interface WorkshopApplicationInput {
+  name: string;
+  contactMethod: 'phone' | 'email';
+  phone?: string;
+  email?: string;
+}
+
 export interface OrderLineInput {
   productId: string;
   title: string;
@@ -411,6 +418,24 @@ export async function fetchAccessibilityPage(): Promise<StrapiAccessibilityPage 
 
 export async function createEventRegistration(input: EventRegistrationInput) {
   const res = await fetch(`${STRAPI_URL}/api/event-registrations`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      data: input,
+    }),
+  });
+
+  if (!res.ok) {
+    const details = await res.text();
+    throw new Error(`Strapi error: ${res.status} ${details}`);
+  }
+  return res.json();
+}
+
+export async function createWorkshopApplication(input: WorkshopApplicationInput) {
+  const res = await fetch(`${STRAPI_URL}/api/workshop-applications`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

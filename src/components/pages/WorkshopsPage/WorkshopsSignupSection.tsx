@@ -12,7 +12,7 @@ import {
   CONTACT_PHONE_PLACEHOLDER,
   SUPPORT_HREF,
 } from '@/data/site';
-import { createEventRegistration } from '@/lib/strapi';
+import { createWorkshopApplication } from '@/lib/strapi';
 import styles from './WorkshopsSignupSection.module.css';
 
 type ContactMethod = 'phone' | 'email';
@@ -107,11 +107,10 @@ export function WorkshopsSignupSection() {
 
     setSubmitStatus('submitting');
     try {
-      await createEventRegistration({
-        eventId: 'workshops-callback',
-        eventTitle: 'Мастерские: заявка на обратный звонок',
+      await createWorkshopApplication({
         name: name.trim(),
-        phone: contactMethod === 'phone' ? contactValue.trim() : '',
+        contactMethod,
+        phone: contactMethod === 'phone' ? contactValue.trim() : undefined,
         email: contactMethod === 'email' ? contactValue.trim() : undefined,
       });
       setSubmitStatus('success');
