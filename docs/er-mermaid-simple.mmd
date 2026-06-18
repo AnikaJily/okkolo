@@ -1,11 +1,10 @@
 erDiagram
     %% ============================================================
-    %% ER-диаграмма БД информационной системы «Окколо»
+    %% ER-диаграмма БД ИС «Окколо» — упрощённая (логическая) версия.
+    %% Медиа-связи показаны как прямые FK от сущностей контента к
+    %% таблице FILE (как в классической реляционной модели).
+    %% Полиморфная связующая таблица скрыта — см. полную версию.
     %% Нотация Crow's Foot (Мартина / IE), уровень — логический.
-    %% Идентификаторы латиницей (требование Mermaid); русские
-    %% подписи сущностей даны в комментариях и в тексте описания.
-    %% Медиа-поля показаны с реальными именами из schema.json (тип media)
-    %% и помечены FK — логическая связь с подсистемой файлов (см. описание).
     %% ============================================================
 
     %% ---------- ГРУППА 1. Каталог и контент ----------
@@ -13,8 +12,8 @@ erDiagram
         int id PK "первичный ключ"
         string title "название направления"
         text description "описание"
-        string href "soft-ссылка на путь фронта (НЕ relation)"
-        media image FK "→ FILE (upload)"
+        string href "soft-ссылка на путь фронта"
+        int image_id FK "→ FILE"
     }
 
     EVENT {
@@ -28,8 +27,8 @@ erDiagram
         string paymentUrl "ссылка на оплату"
         int spotsTotal "всего мест"
         int spotsTaken "занято мест"
-        media photo FK "обложка → FILE"
-        media gallery FK "галерея → FILE (multiple)"
+        int photo_id FK "обложка → FILE"
+        int gallery_ids FK "галерея → FILE (multiple)"
     }
 
     PRODUCT {
@@ -39,8 +38,8 @@ erDiagram
         enum category "ceramics|clothing|jewelry|textile"
         boolean isAvailable "в наличии"
         string cartUrl "внешняя ссылка корзины"
-        media image FK "фото → FILE (обязательно)"
-        media gallery FK "галерея → FILE (multiple)"
+        int image_id FK "фото → FILE (обязательно)"
+        int gallery_ids FK "галерея → FILE (multiple)"
     }
 
     MENU_ITEM {
@@ -60,7 +59,7 @@ erDiagram
         string title "название программы"
         text description "описание"
         int order "порядок вывода"
-        media image FK "фото → FILE"
+        int image_id FK "фото → FILE"
     }
 
     %% ---------- ГРУППА 2. Отчётность и документы ----------
@@ -69,7 +68,7 @@ erDiagram
         int month "месяц (1..12)"
         int year "год (2020..2100)"
         text summary "краткое содержание"
-        media pdf FK "PDF → FILE"
+        int pdf_id FK "PDF → FILE"
     }
 
     ANNUAL_REPORT {
@@ -77,7 +76,7 @@ erDiagram
         int year "год (2020..2100)"
         enum kind "content|finance|nko-activity|spending"
         text note "примечание"
-        media pdf FK "PDF → FILE"
+        int pdf_id FK "PDF → FILE"
     }
 
     LEGAL_DOCUMENT {
@@ -85,17 +84,17 @@ erDiagram
         string title "название документа"
         enum category "requisites|foundation|privacy"
         int order "порядок вывода"
-        media pdf FK "PDF → FILE"
+        int pdf_id FK "PDF → FILE"
     }
 
-    %% ---------- ГРУППА 3. Страницы и фото (single types + фото-коллекции) ----------
+    %% ---------- ГРУППА 3. Страницы и фото ----------
     ABOUT_PAGE {
         int id PK "первичный ключ"
         string eyebrow "надзаголовок"
         string title "заголовок"
         text lead "лид-абзац"
         string tagline "слоган"
-        media heroPhoto FK "герой-фото → FILE"
+        int heroPhoto_id FK "герой-фото → FILE"
         string heroPhotoAlt "alt-текст"
     }
 
@@ -103,15 +102,15 @@ erDiagram
         int id PK "первичный ключ"
         string title "заголовок"
         text lead "лид-абзац"
-        media heroPhoto FK "герой-фото → FILE"
+        int heroPhoto_id FK "герой-фото → FILE"
         string heroPhotoAlt "alt-текст"
     }
 
     CAFE_MENU_PAGE {
         int id PK "первичный ключ"
-        media mainPosterImage FK "основной постер → FILE"
+        int mainPosterImage_id FK "основной постер → FILE"
         string mainPosterAlt "alt основного постера"
-        media summerPosterImage FK "летний постер → FILE"
+        int summerPosterImage_id FK "летний постер → FILE"
         string summerPosterAlt "alt летнего постера"
         string footnote "сноска"
     }
@@ -122,8 +121,8 @@ erDiagram
         text audienceText "для кого"
         text audienceNote "уточнение по аудитории"
         text afterIntro "после вступления"
-        media audiencePhoto FK "фото аудитории → FILE"
-        media afterLearningPhoto FK "фото «после» → FILE"
+        int audiencePhoto_id FK "фото аудитории → FILE"
+        int afterLearningPhoto_id FK "фото «после» → FILE"
     }
 
     ABOUT_TEAM_PHOTO {
@@ -131,7 +130,7 @@ erDiagram
         string alt "alt-текст"
         string caption "подпись"
         int order "порядок"
-        media image FK "фото → FILE (обязательно)"
+        int image_id FK "фото → FILE (обязательно)"
     }
 
     ABOUT_WORKPLACE_PHOTO {
@@ -139,12 +138,12 @@ erDiagram
         string alt "alt-текст"
         string caption "подпись"
         int order "порядок"
-        media image FK "фото → FILE (обязательно)"
+        int image_id FK "фото → FILE (обязательно)"
     }
 
     SHOWROOM {
         int id PK "первичный ключ"
-        media heroImage FK "герой-фото витрины → FILE"
+        int heroImage_id FK "герой-фото витрины → FILE"
     }
 
     %% ---------- ГРУППА 4. Заявки пользователей (транзакционные) ----------
@@ -184,7 +183,7 @@ erDiagram
         text deliveryComment "комментарий к доставке"
     }
 
-    %% ---------- ПОДСИСТЕМА МЕДИА (Strapi Upload) ----------
+    %% ---------- ТАБЛИЦА ФАЙЛОВ ----------
     FILE {
         int id PK "первичный ключ"
         string name "имя файла"
@@ -193,41 +192,32 @@ erDiagram
         json formats "адаптивные форматы"
     }
 
-    FILES_RELATED_MORPH {
-        int id PK "первичный ключ"
-        int file_id FK "→ FILE"
-        int related_id "id связанной записи (полиморфно)"
-        string related_type "тип связанной сущности (полиморфно)"
-        string field "имя медиа-поля"
-        int order "порядок в multiple-поле"
-    }
-
     %% ============================================================
     %% СВЯЗИ
     %% ============================================================
 
-    %% --- Единственная enforced-связь БД: полиморфная медиа-подсистема ---
-    FILE ||--o{ FILES_RELATED_MORPH : "связывается через"
+    %% Прямые медиа-связи (FK к таблице FILE).
+    %% Физически реализованы через системную полиморфную таблицу
+    %% files_related_morphs — см. полную версию диаграммы.
+    DIRECTION             }o--o| FILE : "image"
+    EVENT                 }o--o| FILE : "photo"
+    EVENT                 }o--o{ FILE : "gallery"
+    PRODUCT               }o--|| FILE : "image"
+    PRODUCT               }o--o{ FILE : "gallery"
+    WORKSHOP_PROGRAM      }o--o| FILE : "image"
+    MONTHLY_REPORT        }o--|| FILE : "pdf"
+    ANNUAL_REPORT         }o--|| FILE : "pdf"
+    LEGAL_DOCUMENT        }o--|| FILE : "pdf"
+    ABOUT_PAGE            }o--o| FILE : "heroPhoto"
+    ACCESSIBILITY_PAGE    }o--o| FILE : "heroPhoto"
+    CAFE_MENU_PAGE        }o--o| FILE : "mainPosterImage"
+    CAFE_MENU_PAGE        }o--o| FILE : "summerPosterImage"
+    WORKSHOPS_PAGE        }o--o| FILE : "audiencePhoto"
+    WORKSHOPS_PAGE        }o--o| FILE : "afterLearningPhoto"
+    ABOUT_TEAM_PHOTO      }o--|| FILE : "image"
+    ABOUT_WORKPLACE_PHOTO }o--|| FILE : "image"
+    SHOWROOM              }o--o| FILE : "heroImage"
 
-    %% Полиморфные (неидентифицирующие) медиа-связи контент-сущностей → FILE.
-    %% Реализованы upload-плагином через FILES_RELATED_MORPH (related_type/related_id),
-    %% поэтому это неидентифицирующие связи (пунктир ..).
-    DIRECTION             }o..o| FILE : "image"
-    EVENT                 }o..o{ FILE : "photo / gallery"
-    PRODUCT               }o..o{ FILE : "image / gallery"
-    WORKSHOP_PROGRAM      }o..o| FILE : "image"
-    MONTHLY_REPORT        }o..|| FILE : "pdf"
-    ANNUAL_REPORT         }o..|| FILE : "pdf"
-    LEGAL_DOCUMENT        }o..|| FILE : "pdf"
-    ABOUT_PAGE            }o..o| FILE : "heroPhoto"
-    ACCESSIBILITY_PAGE    }o..o| FILE : "heroPhoto"
-    CAFE_MENU_PAGE        }o..o{ FILE : "main / summer poster"
-    WORKSHOPS_PAGE        }o..o{ FILE : "audience / afterLearning photo"
-    ABOUT_TEAM_PHOTO      }o..|| FILE : "image"
-    ABOUT_WORKPLACE_PHOTO }o..|| FILE : "image"
-    SHOWROOM              }o..o| FILE : "heroImage"
-
-    %% --- Логические (soft) связи домена: НЕ закреплены внешним ключом ---
-    %% Неидентифицирующие (пунктир), реализованы строкой / JSON-снимком.
+    %% Логические (soft) связи домена: НЕ закреплены внешним ключом.
     EVENT   ||..o{ EVENT_REGISTRATION : "eventId (soft-ключ, snapshot)"
     PRODUCT ||..o{ ORDER : "items JSON (snapshot, не FK)"
