@@ -1,0 +1,182 @@
+%% ER-модель БД ИС «Окколо» — логическая модель.
+%% Нотация с текстовыми метками кардинальности (1 / N / 0..1) на концах связей,
+%% как в логических моделях draw.io (без «вороньих лапок» Crow's Foot).
+%% Рисуется как Mermaid classDiagram: сущность = прямоугольник с полями,
+%% связь = линия с подписью кратности у каждого конца.
+%% Сплошная линия (--) — «жёсткая» связь через внешний ключ (контент → файлы).
+%% Пунктирная линия (..) — «мягкая» связь без внешнего ключа (по строке / JSON).
+classDiagram
+    direction LR
+
+    class Direction {
+        int id PK
+        string title
+        text description
+        string href
+        media image FK
+    }
+    class Event {
+        int id PK
+        string title
+        uid slug UK
+        datetime date
+        enum type
+        boolean isPaid
+        int price
+        int spotsTotal
+        int spotsTaken
+        media photo FK
+        media gallery FK
+    }
+    class Product {
+        int id PK
+        string title
+        int price
+        enum category
+        boolean isAvailable
+        string cartUrl
+        media image FK
+        media gallery FK
+    }
+    class MenuItem {
+        int id PK
+        string name
+        string volume
+        string price
+        enum category
+        enum season
+        int order
+        boolean isAvailable
+    }
+    class WorkshopProgram {
+        int id PK
+        string title
+        text description
+        int order
+        media image FK
+    }
+    class MonthlyReport {
+        int id PK
+        int month
+        int year
+        text summary
+        media pdf FK
+    }
+    class AnnualReport {
+        int id PK
+        int year
+        enum kind
+        text note
+        media pdf FK
+    }
+    class LegalDocument {
+        int id PK
+        string title
+        enum category
+        int order
+        media pdf FK
+    }
+    class AboutPage {
+        int id PK
+        string title
+        text lead
+        media heroPhoto FK
+    }
+    class AccessibilityPage {
+        int id PK
+        string title
+        text lead
+        media heroPhoto FK
+    }
+    class CafeMenuPage {
+        int id PK
+        media mainPosterImage FK
+        media summerPosterImage FK
+        string footnote
+    }
+    class WorkshopsPage {
+        int id PK
+        text intro
+        media audiencePhoto FK
+        media afterLearningPhoto FK
+    }
+    class AboutTeamPhoto {
+        int id PK
+        string alt
+        string caption
+        int order
+        media image FK
+    }
+    class AboutWorkplacePhoto {
+        int id PK
+        string alt
+        string caption
+        int order
+        media image FK
+    }
+    class Showroom {
+        int id PK
+        media heroImage FK
+    }
+    class EventRegistration {
+        int id PK
+        string eventId
+        string eventTitle
+        string name
+        string phone
+        email email
+        text comment
+        enum paymentStatus
+    }
+    class WorkshopApplication {
+        int id PK
+        string name
+        enum contactMethod
+        string phone
+        email email
+        enum status
+    }
+    class Order {
+        int id PK
+        string customerName
+        string phone
+        email email
+        int itemsSubtotal
+        int deliveryPrice
+        int totalPrice
+        json items
+        enum orderStatus
+        enum fulfillmentType
+        string city
+        string address
+        text deliveryComment
+    }
+    class File {
+        int id PK
+        string name
+        string url
+        string mime
+        json formats
+    }
+
+    %% --- Жёсткие связи через внешний ключ (контент → файлы), сплошная линия ---
+    Direction "0..N" -- "0..1" File : image
+    Event "0..N" -- "0..1" File : photo
+    Event "0..N" -- "0..N" File : gallery
+    Product "0..N" -- "1" File : image
+    Product "0..N" -- "0..N" File : gallery
+    WorkshopProgram "0..N" -- "0..1" File : image
+    MonthlyReport "0..N" -- "1" File : pdf
+    AnnualReport "0..N" -- "1" File : pdf
+    LegalDocument "0..N" -- "1" File : pdf
+    AboutPage "0..N" -- "0..1" File : heroPhoto
+    AccessibilityPage "0..N" -- "0..1" File : heroPhoto
+    CafeMenuPage "0..N" -- "0..N" File : posters
+    WorkshopsPage "0..N" -- "0..N" File : photos
+    AboutTeamPhoto "0..N" -- "1" File : image
+    AboutWorkplacePhoto "0..N" -- "1" File : image
+    Showroom "0..N" -- "0..1" File : heroImage
+
+    %% --- Мягкие связи без внешнего ключа (по строке / JSON), пунктирная линия ---
+    Event "1" .. "0..N" EventRegistration : eventId snapshot
+    Product "1" .. "0..N" Order : items JSON snapshot
