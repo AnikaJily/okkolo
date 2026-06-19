@@ -66,3 +66,29 @@
     filter: none;
   }
 }
+
+/*
+  Высокий контраст / forced-colors (напр. Windows High Contrast Mode):
+  система выкидывает кастомный background-color, а нативный input скрыт через
+  clip — из-за этого фиолетовый кружок выбранного radio пропадает и выбор
+  выглядит «не переключается». Рисуем индикатор разрешёнными системными
+  цветами, которые forced-colors не отбрасывает.
+*/
+@media (forced-colors: active) {
+  .control {
+    border-color: CanvasText;
+  }
+
+  .input:checked + .control {
+    background-color: Highlight;
+    border-color: Highlight;
+  }
+
+  .input:checked + .control::after {
+    background-color: HighlightText;
+  }
+
+  .root:has(.input:focus-visible) .control {
+    outline-color: CanvasText;
+  }
+}

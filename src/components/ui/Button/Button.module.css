@@ -20,8 +20,11 @@
     transform 0.15s ease;
 }
 
+/* Заметный отклик на нажатие — единственный фидбек на тач-устройствах,
+   где :hover не срабатывает, а системная подсветка тапа убрана глобально
+   (-webkit-tap-highlight-color: transparent в global.css). */
 .root:active {
-  transform: translateY(1px);
+  transform: translateY(1px) scale(0.98);
 }
 
 .root:focus-visible {
@@ -42,9 +45,16 @@
 }
 
 .primary:hover {
-  background-color: var(--color-purple);
-  border-color: var(--color-purple);
+  background-color: var(--color-purple-dark);
+  border-color: var(--color-purple-dark);
   color: var(--color-text);
+}
+
+/* Тач/клик: без :hover сразу даём затемнение заливки (чёрный текст на
+   #b078dc = 6.52:1, AA с запасом). */
+.primary:active {
+  background-color: var(--color-purple-dark);
+  border-color: var(--color-purple-dark);
 }
 
 .outline {
@@ -54,9 +64,19 @@
 }
 
 .outline:hover {
+  /* fallback для браузеров без color-mix() (Safari <16.2, Chrome <111):
+     без него вся декларация невалидна и hover-фон вообще не появляется */
   background-color: var(--color-purple-subtle);
+  background-color: color-mix(in srgb, var(--color-purple) 18%, transparent);
   border-color: var(--color-purple-dark);
   color: var(--color-text);
+}
+
+/* Тач/клик: подложка плотнее hover, чтобы тап по «Подробнее» давал отклик. */
+.outline:active {
+  background-color: var(--color-purple-subtle);
+  background-color: color-mix(in srgb, var(--color-purple) 24%, transparent);
+  border-color: var(--color-purple-dark);
 }
 
 /* Самый компактный вариант — для шапки и плотных мест,
@@ -93,4 +113,24 @@
 
 .fullWidth {
   width: 100%;
+}
+
+/*
+  Высокий контраст / forced-colors: система переопределяет кастомные цвета,
+  из-за чего hover/active заливки (var(--color-purple-*) и color-mix) гаснут и
+  кнопка не даёт отклика. Возвращаем видимый фидбэк системными цветами.
+*/
+@media (forced-colors: active) {
+  .primary:hover,
+  .outline:hover,
+  .primary:active,
+  .outline:active {
+    background-color: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+
+  .root:focus-visible {
+    outline-color: CanvasText;
+  }
 }

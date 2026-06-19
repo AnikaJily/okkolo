@@ -90,6 +90,8 @@
   z-index: 2;
   transform: translateX(-50%);
   border-radius: var(--radius-lg);
+  /* fallback для браузеров без color-mix(): иначе подложка счётчика прозрачная */
+  background: var(--color-surface);
   background: color-mix(in srgb, var(--color-surface) 92%, transparent);
   padding: 4px 12px;
   font-family: var(--font-display);

@@ -91,3 +91,28 @@
     filter: none;
   }
 }
+
+/*
+  Высокий контраст / forced-colors (напр. Windows High Contrast Mode):
+  система выкидывает кастомный background-color, а нативный input скрыт через
+  clip — из-за этого галочка выбранного чекбокса пропадает. Рисуем индикатор
+  разрешёнными системными цветами, которые forced-colors не отбрасывает.
+*/
+@media (forced-colors: active) {
+  .box {
+    border-color: CanvasText;
+  }
+
+  .input:checked + .box {
+    background-color: Highlight;
+    border-color: Highlight;
+  }
+
+  .input:checked + .box::after {
+    border-color: HighlightText;
+  }
+
+  .root:has(.input:focus-visible) .box {
+    outline-color: CanvasText;
+  }
+}

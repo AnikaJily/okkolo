@@ -37,6 +37,14 @@
   outline-offset: 2px;
 }
 
+/* Высокий контраст: hover-цвет (var) система может сравнять с базовым —
+   даём системный акцент, чтобы наведение на крестик было заметно. */
+@media (forced-colors: active) {
+  .close:hover {
+    color: Highlight;
+  }
+}
+
 .media {
   position: relative;
   flex-shrink: 0;

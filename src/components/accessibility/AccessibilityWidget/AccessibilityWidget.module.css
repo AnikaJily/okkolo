@@ -42,6 +42,7 @@
 }
 
 .trigger:hover {
+  background: var(--color-hover-soft);
   background: color-mix(in srgb, var(--color-text) 5%, var(--color-surface));
 }
 
@@ -131,6 +132,7 @@
 }
 
 .collapse:hover {
+  background: var(--color-hover-soft);
   background: color-mix(in srgb, var(--color-text) 5%, var(--color-surface));
 }
 
@@ -177,6 +179,7 @@
 }
 
 .option:hover {
+  background: var(--color-hover-soft);
   background: color-mix(in srgb, var(--color-text) 5%, var(--color-surface));
 }
 
@@ -359,5 +362,33 @@
   .inner {
     padding: var(--space-3);
     gap: var(--space-3);
+  }
+}
+
+/*
+  Высокий контраст / forced-colors: hover-подложки (color-mix) и «нажатость»
+  опций (инверсия фона + box-shadow) система выкидывает — возвращаем отклик и
+  индикацию выбора системными цветами. Виджет доступности обязан оставаться
+  рабочим в этом режиме в первую очередь.
+*/
+@media (forced-colors: active) {
+  .trigger:hover,
+  .collapse:hover,
+  .option:hover,
+  .exit:hover {
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+  }
+
+  .option[aria-pressed='true'] {
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+  }
+
+  .optionSwatch[aria-pressed='true'] {
+    outline: 3px solid Highlight;
+    outline-offset: 2px;
   }
 }
