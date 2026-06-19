@@ -109,11 +109,11 @@
 }
 
 .menuText[open] .menuTextSummary {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .menuSection {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .menuSection:last-of-type {
@@ -122,7 +122,7 @@
 
 /* tag */
 .menuSectionTitle {
-  margin: 0 0 12px;
+  margin: 0 0 14px;
   font-family: var(--font-display);
   font-size: var(--text-tag);
   font-weight: 600;
@@ -135,7 +135,7 @@
 .menuList {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 18px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -177,7 +177,7 @@
 }
 
 .menuFootnote {
-  margin: 20px 0 0;
+  margin: 24px 0 0;
   font-family: var(--font-body);
   font-size: var(--text-tag);
   font-weight: 500;
