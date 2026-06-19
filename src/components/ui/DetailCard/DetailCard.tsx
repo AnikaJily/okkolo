@@ -63,9 +63,6 @@ export function DetailCard({
             <Button variant="primary" size="md" fullWidth onClick={onPrimaryAction}>
               {primaryActionLabel}
             </Button>
-            <Button variant="outline" size="md" fullWidth onClick={onClose}>
-              Закрыть
-            </Button>
           </div>
         </div>
       </div>

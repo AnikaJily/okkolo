@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/Button';
 import { ACCESSIBILITY_CONTACTS } from '@/data/accessibility';
+import { LEGAL_NAV } from '@/data/legal';
 import { LOCATION_SECTION } from '@/data/location';
 import { NAV_ITEMS, OKKOLO_ADDRESS, OKKOLO_HOURS, OKKOLO_MAP_URL, SUPPORT_HREF } from '@/data/site';
 import { getSupportAction } from '@/lib/support';
@@ -108,7 +109,16 @@ export function Footer() {
         </div>
 
         <div className={styles.bar}>
-          <p className={styles.copy}>© {year} «Окколо». Все права защищены.</p>
+          <div className={styles.barInfo}>
+            <p className={styles.copy}>© {year} «Окколо». Все права защищены.</p>
+            <nav className={styles.legal} aria-label="Правовая информация">
+              {LEGAL_NAV.map((item) => (
+                <a key={item.href} href={item.href} className={styles.legalLink}>
+                  {item.navLabel}
+                </a>
+              ))}
+            </nav>
+          </div>
           <div className={styles.barActions}>
             <AccessibilityTriggerButton
               id="footer-a11y-trigger"

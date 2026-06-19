@@ -123,6 +123,23 @@ samp {
   color: var(--color-text);
 }
 
+/*
+  Ссылка на политику внутри подписи чекбокса согласия (корзина, запись на
+  событие, запись в мастерскую). Глобальный класс, чтобы не дублировать стиль
+  в трёх CSS-модулях. В JSX вешаем target="_blank" + stopPropagation на клик,
+  чтобы переход на политику не переключал сам чекбокс и не терял данные формы.
+*/
+.consentLink {
+  color: var(--color-purple-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.consentLink:hover {
+  text-decoration-thickness: 2px;
+}
+
 /* Системные предупреждения (fallback CMS, недоступный каталог и т.п.) */
 .systemNotice {
   margin: 0;

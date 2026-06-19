@@ -98,6 +98,13 @@
   color: var(--color-muted);
 }
 
+.lineEnd {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
 .lineTotal {
   margin: 0;
   padding-top: 2px;
@@ -107,6 +114,31 @@
   line-height: var(--leading-tight);
   color: var(--color-text);
   white-space: nowrap;
+}
+
+/* Явное удаление позиции — в пару к степперу, который теперь стопорится на 1 */
+.removeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.removeButton:hover {
+  background: var(--color-hover-soft);
+  color: var(--color-text);
+}
+
+.removeButton:focus-visible {
+  outline: 2px solid var(--color-purple-dark);
+  outline-offset: 2px;
 }
 
 .footer {
@@ -284,12 +316,6 @@
   color: var(--color-muted);
 }
 
-.confirmClear {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .fulfillmentToggle {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -338,6 +364,22 @@
   color: var(--color-muted);
 }
 
+.legalNote {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-muted);
+}
+
+.legalNote a {
+  color: var(--color-purple-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .textarea {
   box-sizing: border-box;
   width: 100%;
@@ -359,7 +401,6 @@
   outline-offset: 2px;
 }
 
-.submitButton,
-.secondaryButton {
+.submitButton {
   border-radius: var(--radius-pill-card);
 }

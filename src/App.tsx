@@ -34,6 +34,9 @@ const ReportsPage = lazy(() =>
 const AboutPage = lazy(() =>
   import('@/components/pages/AboutPage').then((m) => ({ default: m.AboutPage })),
 );
+const LegalPage = lazy(() =>
+  import('@/components/pages/LegalPage').then((m) => ({ default: m.LegalPage })),
+);
 import { AccessibilityWidgetProvider } from '@/components/accessibility/AccessibilityWidget';
 import { CartProvider } from '@/context/CartContext';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
@@ -48,6 +51,8 @@ export function App() {
   const isAccessibilityPage = pathname === '/accessibility';
   const isReportsPage = pathname === '/reports';
   const isAboutPage = pathname === '/about';
+  const isTermsPage = pathname === '/terms';
+  const isPrivacyPage = pathname === '/privacy';
   const eventDetailId = pathname.match(/^\/events\/([^/]+)$/)?.[1];
 
   // Заголовки подстраниц ставят сами page-компоненты; здесь — только дефолт
@@ -60,7 +65,9 @@ export function App() {
     !isCafePage &&
     !isAccessibilityPage &&
     !isReportsPage &&
-    !isAboutPage;
+    !isAboutPage &&
+    !isTermsPage &&
+    !isPrivacyPage;
   useDocumentTitle(isHome ? undefined : false);
 
   useEffect(() => {
@@ -96,6 +103,10 @@ export function App() {
             <ReportsPage />
           ) : isAboutPage ? (
             <AboutPage />
+          ) : isTermsPage ? (
+            <LegalPage doc="terms" />
+          ) : isPrivacyPage ? (
+            <LegalPage doc="privacy" />
           ) : (
             <main id="main" className={styles.main}>
               <HeroSection />

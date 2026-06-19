@@ -303,7 +303,16 @@ export function WorkshopsSignupSection() {
             }}
             required
           >
-            Согласие на обработку персональных данных
+            Согласие на обработку{' '}
+            <a
+              href="/privacy"
+              target="_blank"
+              rel="noreferrer"
+              className="consentLink"
+              onClick={(event) => event.stopPropagation()}
+            >
+              персональных данных
+            </a>
           </Checkbox>
 
           <Button

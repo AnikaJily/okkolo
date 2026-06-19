@@ -1,6 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/Button';
 import { CloseIcon } from '@/components/ui/CloseIcon/CloseIcon';
+import { TrashIcon } from '@/components/ui/TrashIcon';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { RequiredMark } from '@/components/ui/RequiredMark';
 import { IconButton } from '@/components/ui/IconButton';
@@ -52,7 +53,6 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
   const [consent, setConsent] = useState(false);
   const [consentError, setConsentError] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
-  const [confirmClear, setConfirmClear] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
   const listRef = useRef<HTMLUListElement>(null);
 
@@ -64,7 +64,7 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
       return;
     }
     requestAnimationFrame(() => {
-      const buttons = listRef.current?.querySelectorAll<HTMLButtonElement>('[data-cart-decrement]');
+      const buttons = listRef.current?.querySelectorAll<HTMLButtonElement>('[data-cart-remove]');
       if (!buttons || buttons.length === 0) return;
       buttons[Math.min(index, buttons.length - 1)]?.focus();
     });
@@ -91,7 +91,6 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
       setConsent(false);
       setConsentError(false);
       setErrors({});
-      setConfirmClear(false);
       setSubmitStatus('idle');
     }
   }, [open]);
@@ -214,18 +213,10 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                       <button
                         type="button"
                         className={styles.stepperButton}
-                        data-cart-decrement
-                        aria-label={
-                          item.quantity <= 1
-                            ? `Удалить «${item.title}» из корзины`
-                            : `Уменьшить количество «${item.title}»`
-                        }
+                        aria-label={`Уменьшить количество «${item.title}»`}
+                        aria-disabled={item.quantity <= 1 || undefined}
                         onClick={() => {
-                          if (item.quantity > 1) {
-                            decrementItem(item.productId);
-                          } else {
-                            handleRemoveLine(item.productId, index);
-                          }
+                          if (item.quantity > 1) decrementItem(item.productId);
                         }}
                       >
                         <span aria-hidden="true">−</span>
@@ -246,12 +237,23 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                       </button>
                     </div>
                   </div>
-                  <p className={styles.lineTotal} aria-live="polite">
-                    <span className="visually-hidden">
-                      Сумма за «{item.title}»:{' '}
-                    </span>
-                    {formatProductPrice(item.price * item.quantity)}
-                  </p>
+                  <div className={styles.lineEnd}>
+                    <p className={styles.lineTotal} aria-live="polite">
+                      <span className="visually-hidden">
+                        Сумма за «{item.title}»:{' '}
+                      </span>
+                      {formatProductPrice(item.price * item.quantity)}
+                    </p>
+                    <button
+                      type="button"
+                      className={styles.removeButton}
+                      data-cart-remove
+                      aria-label={`Удалить «${item.title}» из корзины`}
+                      onClick={() => handleRemoveLine(item.productId, index)}
+                    >
+                      <TrashIcon />
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -445,8 +447,25 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                 }}
                 required
               >
-                Согласие на обработку персональных данных
+                Согласие на обработку{' '}
+                <a
+                  href="/privacy"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="consentLink"
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  персональных данных
+                </a>
               </Checkbox>
+
+              <p className={styles.legalNote}>
+                Оформляя заказ, вы принимаете{' '}
+                <a href="/terms" target="_blank" rel="noreferrer">
+                  условия покупки и возврата
+                </a>
+                .
+              </p>
 
               <div className={styles.footer}>
                 <div className={styles.totalRow}>
@@ -495,44 +514,6 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
                 >
                   {isSubmitting ? 'Отправляем…' : 'Оформить заказ'}
                 </Button>
-                {confirmClear ? (
-                  <div className={styles.confirmClear}>
-                    <Button
-                      variant="primary"
-                      size="md"
-                      fullWidth
-                      type="button"
-                      className={styles.secondaryButton}
-                      onClick={() => {
-                        clearCart();
-                        onOpenChange(false);
-                      }}
-                    >
-                      Да, очистить
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="md"
-                      fullWidth
-                      type="button"
-                      className={styles.secondaryButton}
-                      onClick={() => setConfirmClear(false)}
-                    >
-                      Отмена
-                    </Button>
-                  </div>
-                ) : (
-                  <Button
-                    variant="outline"
-                    size="md"
-                    fullWidth
-                    type="button"
-                    className={styles.secondaryButton}
-                    onClick={() => setConfirmClear(true)}
-                  >
-                    Очистить корзину
-                  </Button>
-                )}
               </div>
             </form>
           </>

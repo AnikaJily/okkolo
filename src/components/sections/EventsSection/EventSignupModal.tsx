@@ -187,7 +187,16 @@ export function EventSignupModal({ event, open, onOpenChange }: EventSignupModal
                   }}
                   required
                 >
-                  Согласие на обработку персональных данных
+                  Согласие на обработку{' '}
+                  <a
+                    href="/privacy"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="consentLink"
+                    onClick={(changeEvent) => changeEvent.stopPropagation()}
+                  >
+                    персональных данных
+                  </a>
                 </Checkbox>
 
                 <Button

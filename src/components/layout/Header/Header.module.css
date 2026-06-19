@@ -98,15 +98,13 @@
   list-style: none;
 }
 
-@media (min-width: 1280px) {
-  .navList {
-    gap: 20px;
-  }
-}
-
+/* Ритм навигации утолщаем только с 1440px. На 1280 --page-padding-x прыгает
+   48→72px, а --container-max (1320) ещё не достигнут — полезная ширина резко
+   падает. Рост gap/padding именно там (вместе с 6-м пунктом «Шоурум» с 1200)
+   схлопывал зазор до лого и кнопки «Поддержать» в ~0px. С ≥1440 места хватает. */
 @media (min-width: 1440px) {
   .navList {
-    gap: 25px;
+    gap: 20px;
   }
 }
 
@@ -131,7 +129,8 @@
   transition: background-color 0.15s ease;
 }
 
-@media (min-width: 1280px) {
+/* padding ссылок тоже растёт только с 1440px — см. комментарий у .navList. */
+@media (min-width: 1440px) {
   .navLink {
     padding: 8px 12px;
   }

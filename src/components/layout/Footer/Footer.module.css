@@ -194,6 +194,13 @@
   border-top: 1px solid var(--color-border);
 }
 
+.barInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
 .copy {
   margin: 0;
   font-family: var(--font-body);
@@ -201,6 +208,34 @@
   font-weight: 500;
   line-height: 1.45;
   color: var(--color-muted);
+}
+
+.legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+
+.legalLink {
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--color-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-border-strong);
+  transition: color 0.15s ease;
+}
+
+.legalLink:hover {
+  color: var(--color-purple-text);
+}
+
+.legalLink:focus-visible {
+  outline: 2px solid var(--color-purple-dark);
+  outline-offset: 3px;
 }
 
 .barActions {
