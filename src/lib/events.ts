@@ -30,6 +30,35 @@ function formatEventAdmission(isPaid: boolean, price?: number | null) {
   return price ? eventPriceFormatter.format(price) : 'Платное мероприятие';
 }
 
+/** Склонение слова «место» по числу: 1 место, 2 места, 5 мест. */
+function pluralPlaces(n: number): string {
+  const m10 = n % 10;
+  const m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return 'место';
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'места';
+  return 'мест';
+}
+
+/**
+ * Информация о местах для мероприятия. null — если учёт мест не ведётся
+ * (spotsTotal не задан или ≤ 0). `label` — для отдельной строки, `short` — для подписи в карточке.
+ */
+export function getEventSpots(
+  event: OkkoloEvent,
+): { left: number; isFull: boolean; label: string; short: string } | null {
+  const total = event.spotsTotal;
+  if (typeof total !== 'number' || total <= 0) return null;
+  const taken = typeof event.spotsTaken === 'number' ? event.spotsTaken : 0;
+  const left = Math.max(0, total - taken);
+  const isFull = left <= 0;
+  return {
+    left,
+    isFull,
+    label: isFull ? 'Мест нет' : `Осталось ${left} ${pluralPlaces(left)}`,
+    short: isFull ? 'мест нет' : `осталось ${left} ${pluralPlaces(left)}`,
+  };
+}
+
 export function toEvent(item: StrapiEventItem, index: number): OkkoloEvent {
   const isPaid = item.isPaid ?? false;
   /* slug — приоритетный идентификатор в URL; documentId — фоллбэк до миграции */
@@ -45,12 +74,14 @@ export function toEvent(item: StrapiEventItem, index: number): OkkoloEvent {
     date: item.date,
     dateLabel: formatEventDate(item.date),
     admission: formatEventAdmission(isPaid, item.price),
-    type: item.type?.trim() || undefined,
+    type: item.type?.name?.trim() || undefined,
     description: item.description ?? undefined,
     href: `/events/${slug}`,
     signupHref: SUPPORT_HREF,
     isPaid,
     price: item.price ?? undefined,
+    spotsTotal: item.spotsTotal ?? undefined,
+    spotsTaken: item.spotsTaken ?? undefined,
     image: cover,
     imageSrcSet: responsive?.srcSet || undefined,
     imageWidth: responsive?.width,

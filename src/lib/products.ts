@@ -1,10 +1,11 @@
 import {
+  PRODUCT_CATEGORIES as FALLBACK_CATEGORIES,
   products as fallbackProducts,
-  type ProductCategory,
   type ShowroomProduct,
 } from '@/data/products';
 import {
   collectStrapiImageUrls,
+  fetchCategories,
   fetchProducts,
   fetchShowroomHeroUrl,
   getStrapiImageUrl,
@@ -12,20 +13,13 @@ import {
   type StrapiProductItem,
 } from '@/lib/strapi';
 
-const PRODUCT_CATEGORIES = new Set<Exclude<ProductCategory, 'all'>>([
-  'ceramics',
-  'jewelry',
-  'clothing',
-  'textile',
-]);
-
-function isProductCategory(value: string): value is Exclude<ProductCategory, 'all'> {
-  return PRODUCT_CATEGORIES.has(value as Exclude<ProductCategory, 'all'>);
+/** Пункт фильтра категорий: 'all' либо slug категории из CMS. */
+export interface CategoryOption {
+  id: string;
+  label: string;
 }
 
-export function toProduct(item: StrapiProductItem, index: number): ShowroomProduct | null {
-  if (!isProductCategory(item.category)) return null;
-
+export function toProduct(item: StrapiProductItem, index: number): ShowroomProduct {
   const fallback = fallbackProducts[index] ?? fallbackProducts[0];
   const coverUrl = getStrapiImageUrl(item.image) ?? fallback.image;
   const responsive = getStrapiResponsiveImage(item.image);
@@ -38,7 +32,9 @@ export function toProduct(item: StrapiProductItem, index: number): ShowroomProdu
     id: item.documentId,
     title: item.title,
     price: item.price,
-    category: item.category,
+    // категория теперь связь-справочник: slug — для фильтра, name — для ярлыка
+    category: item.category?.slug ?? '',
+    categoryLabel: item.category?.name ?? undefined,
     image: coverUrl,
     imageSrcSet: responsive?.srcSet || undefined,
     imageWidth: responsive?.width,
@@ -60,14 +56,29 @@ export async function loadProducts(): Promise<LoadProductsResult> {
     const items = await fetchProducts();
     /* На случай, если CMS вернёт записи с isAvailable=false без серверной фильтрации */
     const visible = items.filter((item) => item.isAvailable !== false);
-    const products = visible
-      .map((item, index) => toProduct(item, index))
-      .filter((product): product is ShowroomProduct => product !== null);
+    const products = visible.map((item, index) => toProduct(item, index));
     if (products.length > 0) return { products, isFallback: false };
   } catch (error) {
     console.error('loadProducts: fallback на статичные данные', error);
   }
   return { products: fallbackProducts, isFallback: true };
+}
+
+/**
+ * Список категорий для чипов-фильтров. Грузится из CMS (справочник Category);
+ * при ошибке/пустоте — статичный fallback. Всегда с пунктом «Все товары» в начале.
+ */
+export async function loadCategories(): Promise<CategoryOption[]> {
+  try {
+    const cats = await fetchCategories();
+    if (cats.length > 0) {
+      const options = cats.map((c) => ({ id: c.slug, label: c.name }));
+      return [{ id: 'all', label: 'Все товары' }, ...options];
+    }
+  } catch (error) {
+    console.error('loadCategories: fallback на статичный список', error);
+  }
+  return FALLBACK_CATEGORIES.map((c) => ({ id: c.id, label: c.label }));
 }
 
 export async function loadShowroomHeroUrl(): Promise<string | null> {

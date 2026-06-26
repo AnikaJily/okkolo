@@ -143,13 +143,19 @@
 /*
   Когда панель открыта — отодвигаем контент И sticky-хедер на высоту панели.
   Высоту проставляет сам виджет через ResizeObserver в --a11y-panel-h.
+  Атрибут data-a11y-panel-open ставится при открытой панели, даже если фильтры
+  ещё не включены (пользователь не выбрал настройку).
 */
-:root[data-a11y] body {
+:root[data-a11y-panel-open] body {
   padding-top: var(--a11y-panel-h, 0px);
 }
 
-:root[data-a11y] header {
+:root[data-a11y-panel-open] header {
   top: var(--a11y-panel-h, 0px) !important;
+}
+
+:root[data-a11y-panel-open] {
+  scroll-padding-top: calc(var(--header-offset) + var(--a11y-panel-h, 0px));
 }
 
 /*

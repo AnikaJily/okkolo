@@ -7,7 +7,8 @@ import {
   type ProductCategory,
   type ShowroomProduct,
 } from '@/data/products';
-import { loadProducts } from '@/lib/products';
+import { loadCategories, loadProducts, type CategoryOption } from '@/lib/products';
+import { FilterChip } from '@/components/ui/FilterChip';
 import { useCart } from '@/context/CartContext';
 import { CartSheet } from '@/components/cart/CartSheet';
 import { FloatingCartButton } from '@/components/cart/FloatingCartButton';
@@ -41,6 +42,8 @@ export function ShowroomPage() {
   const [products, setProducts] = useState<ShowroomProduct[]>(fallbackProducts);
   const [isFallback, setIsFallback] = useState(true);
   const [category, setCategory] = useState<ProductCategory>('all');
+  // Чипы-фильтры: стартуют со статичного fallback, затем подменяются справочником из CMS
+  const [categories, setCategories] = useState<CategoryOption[]>(PRODUCT_CATEGORIES);
   const [page, setPage] = useState(1);
   const [detailsProduct, setDetailsProduct] = useState<ShowroomProduct | null>(null);
   const pageSize = useGridColumns() * ROWS_PER_PAGE;
@@ -50,6 +53,10 @@ export function ShowroomPage() {
       setProducts(result.products);
       setIsFallback(result.isFallback);
     });
+  }, []);
+
+  useEffect(() => {
+    loadCategories().then(setCategories);
   }, []);
 
   const filteredProducts = useMemo(() => {
@@ -91,18 +98,17 @@ export function ShowroomPage() {
 
       {/* Не ARIA-табы: переключатели-фильтры с aria-pressed, как даты в EventsPage */}
       <div className={styles.filters} role="group" aria-label="Категории товаров">
-        {PRODUCT_CATEGORIES.map((item) => {
+        {categories.map((item) => {
           const isActive = category === item.id;
           return (
-            <button
+            <FilterChip
               key={item.id}
-              type="button"
+              active={isActive}
               aria-pressed={isActive}
-              className={isActive ? styles.filterButtonActive : styles.filterButton}
               onClick={() => handleCategoryChange(item.id)}
             >
               {item.label}
-            </button>
+            </FilterChip>
           );
         })}
       </div>

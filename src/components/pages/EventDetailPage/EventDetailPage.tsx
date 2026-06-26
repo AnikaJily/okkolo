@@ -4,7 +4,7 @@ import { Picture } from '@/components/ui/Picture';
 import { EventSignupModal } from '@/components/sections/EventsSection/EventSignupModal';
 import { events as fallbackEvents } from '@/data/events';
 import type { OkkoloEvent } from '@/data/events';
-import { loadEventById } from '@/lib/events';
+import { getEventSpots, loadEventById } from '@/lib/events';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import styles from './EventDetailPage.module.css';
 
@@ -46,6 +46,8 @@ export function EventDetailPage({ eventId }: EventDetailPageProps) {
     };
   }, [eventId, retryKey]);
 
+  const spots = event ? getEventSpots(event) : null;
+
   return (
     <main id="main" className={styles.root}>
       <a href="/events" className={styles.backLink}>
@@ -86,17 +88,24 @@ export function EventDetailPage({ eventId }: EventDetailPageProps) {
               <div className={styles.summary}>
                 <h1 className={styles.heading}>{event.title}</h1>
                 <p className={styles.admission}>{event.admission}</p>
+                {spots ? <p className={styles.spots}>{spots.label}</p> : null}
               </div>
 
-              <Button
-                variant="primary"
-                size="sm"
-                fullWidth
-                type="button"
-                onClick={() => setSignupOpen(true)}
-              >
-                Записаться
-              </Button>
+              {spots?.isFull ? (
+                <Button variant="outline" size="sm" fullWidth type="button" disabled>
+                  Мест нет
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  fullWidth
+                  type="button"
+                  onClick={() => setSignupOpen(true)}
+                >
+                  Записаться
+                </Button>
+              )}
 
               {event.description ? (
                 <p className={styles.description}>{event.description}</p>

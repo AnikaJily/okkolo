@@ -52,7 +52,10 @@ export function ProductDetailsModal({
     setActiveImageIndex((index) => (index === imageCount - 1 ? 0 : index + 1));
   }, [imageCount]);
 
-  const categoryLabel = PRODUCT_CATEGORIES.find((item) => item.id === product?.category)?.label;
+  // Ярлык: название из CMS (product.categoryLabel), иначе — статичный fallback по slug
+  const categoryLabel =
+    product?.categoryLabel ??
+    PRODUCT_CATEGORIES.find((item) => item.id === product?.category)?.label;
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>

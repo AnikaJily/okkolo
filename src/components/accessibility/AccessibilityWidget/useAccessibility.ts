@@ -15,7 +15,7 @@ export interface A11yState {
 
 const STORAGE_KEY = 'okkolo-a11y-v1';
 
-const DEFAULT_STATE: A11yState = {
+export const DEFAULT_STATE: A11yState = {
   enabled: false,
   fontSize: 'md',
   spacing: 'normal',

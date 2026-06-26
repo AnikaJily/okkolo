@@ -21,7 +21,8 @@ export interface AboutPhotoView {
   id: string;
   imageUrl: string;
   alt: string;
-  caption?: string;
+  name?: string; // фото команды
+  role?: string; // фото команды
 }
 
 function toPhotoView(item: StrapiAboutPhoto): AboutPhotoView | null {
@@ -31,7 +32,8 @@ function toPhotoView(item: StrapiAboutPhoto): AboutPhotoView | null {
     id: item.documentId,
     imageUrl,
     alt: item.alt?.trim() || '',
-    caption: item.caption?.trim() || undefined,
+    name: item.name?.trim() || undefined,
+    role: item.role?.trim() || undefined,
   };
 }
 

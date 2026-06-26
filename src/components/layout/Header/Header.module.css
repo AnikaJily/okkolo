@@ -136,14 +136,19 @@
   }
 }
 
-.navLink:hover,
-.navLinkActive {
-  background-color: var(--color-yellow);
+/* Наведение — серый, как у фильтров и корзины; жёлтый оставляем за текущей страницей. */
+.navLink:hover {
+  background-color: var(--color-hover-soft);
   border-radius: var(--radius-tag);
 }
 
-/* Текущая страница — не только цветом: жирность как второй сигнал (SC 1.4.1). */
-.navLinkActive {
+/* Текущая страница — жёлтая (и остаётся жёлтой при наведении); жирность — второй сигнал (SC 1.4.1). */
+.navLinkActive,
+.navLinkActive:hover {
+  background-color: var(--color-yellow);
+  /* Обводка 2px inside */
+  box-shadow: inset 0 0 0 2px var(--color-yellow-stroke);
+  border-radius: var(--radius-tag);
   font-weight: 600;
 }
 
@@ -307,14 +312,19 @@
   transition: background-color 0.15s ease;
 }
 
-.sheetNavLink:hover,
-.sheetNavLinkActive {
-  background-color: var(--color-yellow);
+/* Наведение — серый, как у фильтров и корзины; жёлтый оставляем за текущей страницей. */
+.sheetNavLink:hover {
+  background-color: var(--color-hover-soft);
   border-radius: var(--radius-tag);
 }
 
-/* Текущая страница — не только цветом: жирность как второй сигнал (SC 1.4.1). */
-.sheetNavLinkActive {
+/* Текущая страница — жёлтая (и остаётся жёлтой при наведении); жирность — второй сигнал (SC 1.4.1). */
+.sheetNavLinkActive,
+.sheetNavLinkActive:hover {
+  background-color: var(--color-yellow);
+  /* Обводка 2px inside */
+  box-shadow: inset 0 0 0 2px var(--color-yellow-stroke);
+  border-radius: var(--radius-tag);
   font-weight: 600;
 }
 

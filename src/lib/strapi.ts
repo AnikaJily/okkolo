@@ -30,6 +30,14 @@ export interface StrapiDirectionItem {
   image: StrapiImage | null;
 }
 
+export interface StrapiEventType {
+  id: number;
+  documentId: string;
+  name: string;
+  slug: string;
+  order?: number | null;
+}
+
 export interface StrapiEventItem {
   id: number;
   documentId: string;
@@ -39,20 +47,31 @@ export interface StrapiEventItem {
   description?: string | null;
   isPaid?: boolean | null;
   price?: number | null;
-  /* enumeration в CMS: музыка | мастер-класс | лекция | стенд-ап (может быть null у старых записей) */
-  type?: string | null;
+  spotsTotal?: number | null;
+  spotsTaken?: number | null;
+  /** Связь-справочник (manyToOne). null, если тип у мероприятия не выбран. */
+  type?: StrapiEventType | null;
   photo: StrapiImage | null;
   gallery?: StrapiImage[] | null;
 }
 
 export type StrapiProductCategory = 'ceramics' | 'jewelry' | 'clothing' | 'textile';
 
+export interface StrapiCategory {
+  id: number;
+  documentId: string;
+  name: string;
+  slug: string;
+  order?: number | null;
+}
+
 export interface StrapiProductItem {
   id: number;
   documentId: string;
   title: string;
   price: number;
-  category: StrapiProductCategory | string;
+  /** Связь-справочник (manyToOne). null, если у товара категория не выбрана. */
+  category: StrapiCategory | null;
   description?: string | null;
   cartUrl?: string | null;
   image: StrapiImage | null;
@@ -100,7 +119,6 @@ export interface StrapiMenuItem {
   category: StrapiMenuCategory | string;
   season: StrapiMenuSeason | string;
   order?: number | null;
-  isAvailable?: boolean | null;
 }
 
 export type StrapiAnnualReportKind = 'content' | 'finance' | 'nko-activity' | 'spending';
@@ -174,8 +192,9 @@ export interface StrapiAboutPhoto {
   id: number;
   documentId: string;
   image: StrapiImage;
-  alt?: string | null;
-  caption?: string | null;
+  alt?: string | null; // фото пространства: описание для скринридера
+  name?: string | null; // фото команды: имя
+  role?: string | null; // фото команды: должность
   order?: number | null;
 }
 
@@ -345,7 +364,7 @@ export async function fetchDirections(): Promise<StrapiDirectionItem[]> {
 
 export async function fetchEvents(): Promise<StrapiEventItem[]> {
   const res = await fetch(
-    `${STRAPI_URL}/api/events?populate[photo]=true&populate[gallery]=true&sort=date:asc`,
+    `${STRAPI_URL}/api/events?populate[photo]=true&populate[gallery]=true&populate[type]=true&sort=date:asc`,
   );
   if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
   const json: StrapiListResponse<StrapiEventItem> = await res.json();
@@ -355,10 +374,19 @@ export async function fetchEvents(): Promise<StrapiEventItem[]> {
 export async function fetchProducts(): Promise<StrapiProductItem[]> {
   /* isAvailable=null/undefined у старых записей до миграции — пропустим, если не false */
   const res = await fetch(
-    `${STRAPI_URL}/api/products?populate[image]=true&populate[gallery]=true&sort=title:asc&filters[isAvailable][$ne]=false`,
+    `${STRAPI_URL}/api/products?populate[image]=true&populate[gallery]=true&populate[category]=true&sort=title:asc&filters[isAvailable][$ne]=false`,
   );
   if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
   const json: StrapiListResponse<StrapiProductItem> = await res.json();
+  return json.data;
+}
+
+export async function fetchCategories(): Promise<StrapiCategory[]> {
+  const res = await fetch(
+    `${STRAPI_URL}/api/categories?sort=order:asc&pagination[pageSize]=100`,
+  );
+  if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
+  const json: StrapiListResponse<StrapiCategory> = await res.json();
   return json.data;
 }
 
@@ -371,7 +399,7 @@ export async function fetchCafeMenuPage(): Promise<StrapiCafeMenuPage | null> {
 
 export async function fetchMenuItems(): Promise<StrapiMenuItem[]> {
   const res = await fetch(
-    `${STRAPI_URL}/api/menu-items?filters[isAvailable][$ne]=false&sort[0]=order:asc&sort[1]=name:asc&pagination[pageSize]=200`,
+    `${STRAPI_URL}/api/menu-items?sort[0]=order:asc&sort[1]=name:asc&pagination[pageSize]=200`,
   );
   if (!res.ok) throw new Error(`Strapi error: ${res.status}`);
   const json: StrapiListResponse<StrapiMenuItem> = await res.json();

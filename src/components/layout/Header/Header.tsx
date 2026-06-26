@@ -10,6 +10,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/Sheet';
 import { HEADER_NAV, NAV_ITEMS } from '@/data/site';
+import { useSupportModal } from '@/components/support/SupportModal';
 import { getSupportAction } from '@/lib/support';
 import { cn } from '@/lib/utils';
 import { AccessibilityTriggerButton } from '@/components/accessibility/AccessibilityWidget';
@@ -19,7 +20,6 @@ import styles from './Header.module.css';
 
 interface HeaderProps {
   onMenuClick?: () => void;
-  onSupport?: () => void;
 }
 
 function isNavLinkActive(pathname: string, href: string): boolean {
@@ -30,8 +30,9 @@ function isNavLinkActive(pathname: string, href: string): boolean {
   return pathname === href;
 }
 
-export function Header({ onMenuClick, onSupport }: HeaderProps) {
-  const supportAction = getSupportAction(onSupport);
+export function Header({ onMenuClick }: HeaderProps) {
+  const { openSupport } = useSupportModal();
+  const supportAction = getSupportAction(openSupport);
   const [pathname, setPathname] = useState(() => window.location.pathname);
 
   useEffect(() => {

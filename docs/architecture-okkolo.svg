@@ -17,7 +17,7 @@
     <text x="180" y="118" text-anchor="middle" font-family="Times New Roman, serif" font-size="15" font-weight="700" fill="#000000">Веб-приложение</text>
     <line x1="40" y1="132" x2="320" y2="132" stroke="#1a1a1a" stroke-width="1"/>
     <rect x="70" y="220" width="220" height="100" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.5"/>
-    <text x="180" y="262" text-anchor="middle" font-family="Times New Roman, serif" font-size="16" font-weight="700" fill="#000000">React SPA</text>
+    <text x="180" y="262" text-anchor="middle" font-family="Times New Roman, serif" font-size="16" font-weight="700" fill="#000000">React (CSR)</text>
     <text x="180" y="286" text-anchor="middle" font-family="Times New Roman, serif" font-size="13" fill="#000000">(клиент, Vite)</text>
   </g>
 

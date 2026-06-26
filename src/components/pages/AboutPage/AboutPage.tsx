@@ -56,6 +56,14 @@ export function AboutPage() {
     };
   }, []);
 
+  // Команда из CMS (имя/должность/фото — одна запись about-team-photo);
+  // если CMS пуста — фоллбэк на статичный состав из data/about.
+  type TeamMember = { id: string; name: string; role: string; photo?: AboutPhotoView };
+  const team: TeamMember[] =
+    teamPhotos.length > 0
+      ? teamPhotos.map((p) => ({ id: p.id, name: p.name ?? '', role: p.role ?? '', photo: p }))
+      : ABOUT_TEAM.map((m) => ({ id: m.id, name: m.name, role: m.role }));
+
   return (
     <main id="main" className={styles.root}>
       <h1 className={styles.srOnly}>О проекте</h1>
@@ -65,15 +73,15 @@ export function AboutPage() {
           Наша команда
         </h2>
         <ul className={styles.teamGrid}>
-          {ABOUT_TEAM.map((member, index) => (
+          {team.map((member) => (
             <li key={member.id} className={styles.teamCard}>
               <AboutImage
                 className={styles.teamPhoto}
-                photo={teamPhotos[index]}
+                photo={member.photo}
                 label="Фото (скоро)"
               />
               <p className={styles.teamName}>{member.name}</p>
-              <p className={styles.teamRole}>{member.role}</p>
+              {member.role ? <p className={styles.teamRole}>{member.role}</p> : null}
             </li>
           ))}
         </ul>

@@ -5,6 +5,7 @@ import { TrashIcon } from '@/components/ui/TrashIcon';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { RequiredMark } from '@/components/ui/RequiredMark';
 import { IconButton } from '@/components/ui/IconButton';
+import { FilterChip } from '@/components/ui/FilterChip';
 import { Sheet, SheetClose, SheetContent, SheetTitle } from '@/components/ui/Sheet';
 import { useCart } from '@/context/CartContext';
 import { formatProductPrice } from '@/data/products';
@@ -333,30 +334,20 @@ export function CartSheet({ open, onOpenChange, orderingDisabled = false }: Cart
               <p className={styles.formHeading}>Способ получения</p>
               {/* Не полу-ARIA radio: кнопки-переключатели с aria-pressed (паттерн дат EventsPage) */}
               <div className={styles.fulfillmentToggle} role="group" aria-label="Способ получения">
-                <button
-                  type="button"
+                <FilterChip
+                  active={fulfillmentType === 'pickup'}
                   aria-pressed={fulfillmentType === 'pickup'}
-                  className={
-                    fulfillmentType === 'pickup'
-                      ? styles.fulfillmentOptionActive
-                      : styles.fulfillmentOption
-                  }
                   onClick={() => setFulfillmentType('pickup')}
                 >
                   Самовывоз
-                </button>
-                <button
-                  type="button"
+                </FilterChip>
+                <FilterChip
+                  active={fulfillmentType === 'delivery'}
                   aria-pressed={fulfillmentType === 'delivery'}
-                  className={
-                    fulfillmentType === 'delivery'
-                      ? styles.fulfillmentOptionActive
-                      : styles.fulfillmentOption
-                  }
                   onClick={() => setFulfillmentType('delivery')}
                 >
                   Доставка
-                </button>
+                </FilterChip>
               </div>
 
               {isDelivery ? (

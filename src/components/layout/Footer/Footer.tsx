@@ -6,8 +6,9 @@ import { NAV_ITEMS, OKKOLO_ADDRESS, OKKOLO_HOURS, OKKOLO_MAP_URL, SUPPORT_HREF }
 import { getSupportAction } from '@/lib/support';
 import { cn } from '@/lib/utils';
 import { AccessibilityTriggerButton } from '@/components/accessibility/AccessibilityWidget';
-import telegramIcon from '@/assets/images/icon-telegram.svg';
-import vkIcon from '@/assets/images/icon-vk.svg';
+import { useSupportModal } from '@/components/support/SupportModal';
+import telegramIcon from '@/assets/images/telegram.svg';
+import vkIcon from '@/assets/images/vkontakte.svg';
 import logoSrc from '@/assets/images/logo.svg';
 import styles from './Footer.module.css';
 
@@ -29,8 +30,9 @@ const SOCIAL_LINKS = [
 const NAV_SPLIT = Math.ceil(NAV_ITEMS.length / 2);
 
 export function Footer() {
+  const { openSupport } = useSupportModal();
   const year = new Date().getFullYear();
-  const supportAction = getSupportAction();
+  const supportAction = getSupportAction(openSupport);
   const navPrimary = NAV_ITEMS.slice(0, NAV_SPLIT);
   const navSecondary = NAV_ITEMS.slice(NAV_SPLIT);
 
@@ -105,6 +107,21 @@ export function Footer() {
                 </p>
               ))}
             </div>
+            <ul className={styles.social} aria-label="Соцсети">
+              {SOCIAL_LINKS.map((social) => (
+                <li key={social.href}>
+                  <a
+                    href={social.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={styles.socialLink}
+                    aria-label={social.ariaLabel}
+                  >
+                    <img src={social.icon} alt="" className={styles.socialIcon} decoding="async" />
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
@@ -132,21 +149,6 @@ export function Footer() {
             >
               Поддержать проект
             </Button>
-            <ul className={styles.social} aria-label="Соцсети">
-              {SOCIAL_LINKS.map((social) => (
-                <li key={social.href}>
-                  <a
-                    href={social.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={styles.socialLink}
-                    aria-label={social.ariaLabel}
-                  >
-                    <img src={social.icon} alt="" className={styles.socialIcon} decoding="async" />
-                  </a>
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
       </div>

@@ -34,43 +34,7 @@
   gap: 4px;
 }
 
-.filterButton,
-.filterButtonActive {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: fit-content;
-  padding: 8px 12px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  font-family: var(--font-display);
-  font-size: var(--text-body);
-  font-weight: 500;
-  line-height: 1.1;
-  text-align: center;
-  white-space: nowrap;
-  color: var(--color-text);
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-}
-
-.filterButton:hover {
-  background-color: var(--color-hover-soft);
-}
-
-.filterButton:focus-visible,
-.filterButtonActive:focus-visible {
-  outline: 2px solid var(--color-purple-dark);
-  outline-offset: 2px;
-}
-
-.filterButtonActive {
-  background-color: var(--color-yellow);
-  border-radius: var(--radius-tag);
-  /* Второй индикатор «выбрано» (не только цвет): жирность (SC 1.4.1). */
-  font-weight: 600;
-}
+/* Чипы времени («Этот месяц» / «Следующий месяц») — общий компонент ui/FilterChip. */
 
 /* Dropdown типа — кастомный popover, триггер — иконка-кнопка.
  * inline-flex, чтобы обёртка растянулась до 44×44 кнопки и встала на одну линию с timeGroup. */
@@ -104,7 +68,10 @@
 .typeTriggerActive {
   background-color: var(--color-yellow);
   border-radius: var(--radius-tag);
-  /* Активный фильтр — не только цветом: рамка ≥3:1 + вес (SC 1.4.11 / 1.4.1). */
+  /* Иконочная кнопка без текста: «выбрано» нельзя показать жирностью, поэтому
+     индикатор — тёмная рамка 2px inside с контрастом ≥3:1 к жёлтой заливке
+     (15.7:1), SC 1.4.11. Оливковую #A58A2E тут не используем — она даёт лишь
+     2.5:1 и не годится как индикатор состояния. */
   box-shadow: inset 0 0 0 2px var(--color-text);
 }
 

@@ -2,15 +2,13 @@ import heroPicture from '@/assets/images/hero-team.jpg?w=480;768;1200;1600&forma
 import { Button } from '@/components/ui/Button';
 import { Picture } from '@/components/ui/Picture';
 import { ABOUT_INTRO } from '@/data/about';
+import { useSupportModal } from '@/components/support/SupportModal';
 import { getSupportAction } from '@/lib/support';
 import styles from './HeroSection.module.css';
 
-interface HeroSectionProps {
-  onSupport?: () => void;
-}
-
-export function HeroSection({ onSupport }: HeroSectionProps) {
-  const supportAction = getSupportAction(onSupport);
+export function HeroSection() {
+  const { openSupport } = useSupportModal();
+  const supportAction = getSupportAction(openSupport);
 
   return (
     <section id="about" className={styles.root} aria-labelledby="hero-heading">

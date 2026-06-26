@@ -38,6 +38,7 @@ const LegalPage = lazy(() =>
   import('@/components/pages/LegalPage').then((m) => ({ default: m.LegalPage })),
 );
 import { AccessibilityWidgetProvider } from '@/components/accessibility/AccessibilityWidget';
+import { SupportModalProvider } from '@/components/support/SupportModal';
 import { CartProvider } from '@/context/CartContext';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import styles from './App.module.css';
@@ -79,6 +80,7 @@ export function App() {
   return (
     <CartProvider>
       <AccessibilityWidgetProvider>
+        <SupportModalProvider>
         <div className={styles.viewport}>
           {/* Первый tab-стоп на каждой странице: мимо 8 стопов шапки сразу к контенту (SC 2.4.1) */}
           <a href="#main" className={styles.skipLink}>
@@ -122,6 +124,7 @@ export function App() {
           </div>
           <Footer />
         </div>
+        </SupportModalProvider>
       </AccessibilityWidgetProvider>
     </CartProvider>
   );

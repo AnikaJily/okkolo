@@ -48,6 +48,12 @@
   transform: translate(-50%, -50%);
 }
 
+/* Отклик на наведение (курсор уже pointer на .root): лёгкая подложка
+   у невыбранного контрола. Выбранный — со своим фиолетовым фоном. */
+.root:hover .input:not(:checked) + .control {
+  background-color: var(--color-purple-subtle);
+}
+
 .label {
   font-family: var(--font-body);
   font-size: var(--text-body);

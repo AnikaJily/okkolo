@@ -42,6 +42,10 @@ function isCartItem(value: unknown): value is CartItem {
     typeof item.price === 'number' &&
     Number.isFinite(item.price) &&
     typeof item.image === 'string' &&
+    // Старые корзины могли сохранить session-volatile URL imagetools
+    // (`/@imagetools/<hash>`): после пережатия исходника он протухает и роняет
+    // dev-сервер при рендере. Отбрасываем такие позиции при загрузке.
+    !item.image.startsWith('/@imagetools/') &&
     typeof item.quantity === 'number' &&
     item.quantity > 0 &&
     Number.isInteger(item.quantity)

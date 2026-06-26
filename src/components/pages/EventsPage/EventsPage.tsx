@@ -3,6 +3,7 @@ import { events as fallbackEvents } from '@/data/events';
 import type { OkkoloEvent } from '@/data/events';
 import { loadEvents } from '@/lib/events';
 import { Checkbox } from '@/components/ui/Checkbox';
+import { FilterChip } from '@/components/ui/FilterChip';
 import { EventCard } from '@/components/sections/EventsSection/EventCard';
 import { EventDetailsModal } from '@/components/sections/EventsSection/EventDetailsModal';
 import { EventSignupModal } from '@/components/sections/EventsSection/EventSignupModal';
@@ -201,14 +202,9 @@ export function EventsPage() {
     setTimeScope((prev) => (prev === scope ? null : scope));
 
   const renderTimeButton = (label: string, active: boolean, onClick: () => void) => (
-    <button
-      type="button"
-      aria-pressed={active}
-      className={active ? styles.filterButtonActive : styles.filterButton}
-      onClick={onClick}
-    >
+    <FilterChip active={active} aria-pressed={active} onClick={onClick}>
       {label}
-    </button>
+    </FilterChip>
   );
 
   return (

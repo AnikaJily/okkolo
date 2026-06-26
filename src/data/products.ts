@@ -1,15 +1,22 @@
 import type { PictureSource } from '@/components/ui/Picture';
 import productPicture from '@/assets/images/showroom-product.jpg?w=320;640;960&format=avif;webp;jpg&as=picture';
+// Стабильный URL ассета — именно он кладётся в корзину/localStorage. URL imagetools
+// (`/@imagetools/<hash>`) живёт только в текущей dev-сессии и меняется при пережатии
+// исходника, поэтому в персистентном сторадже протухает и роняет dev-сервер.
+import productImage from '@/assets/images/showroom-product.jpg';
 
-const productImage = productPicture.img.src;
-
-export type ProductCategory = 'all' | 'ceramics' | 'jewelry' | 'clothing' | 'textile';
+// id категории-фильтра: 'all' либо slug категории из CMS.
+// Раньше был фиксированный union; теперь категории — справочник в CMS, поэтому string.
+export type ProductCategory = string;
 
 export interface ShowroomProduct {
   id: string;
   title: string;
   price: number;
-  category: Exclude<ProductCategory, 'all'>;
+  /** slug категории (из CMS), '' если не задана. */
+  category: string;
+  /** Человекочитаемое название категории из CMS (для ярлыка). */
+  categoryLabel?: string;
   image: string;
   picture?: PictureSource;
   /** Responsive-набор из форматов Strapi (для CMS-обложки без build-time picture). */

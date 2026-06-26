@@ -19,6 +19,8 @@ import { IconButton } from '@/components/ui/IconButton';
 import { cn } from '@/lib/utils';
 import {
   useAccessibility,
+  DEFAULT_STATE,
+  type A11yState,
   type FontSize,
   type Images,
   type Spacing,
@@ -53,6 +55,9 @@ const IMAGE_OPTIONS: { value: Images; label: string; short: string }[] = [
   { value: 'off', label: 'Скрыть изображения', short: 'Выкл' },
 ];
 
+// Группы-переключатели, у которых активную кнопку можно отжать (вернуть к дефолту).
+const TOGGLEABLE_KEYS = ['fontSize', 'spacing', 'theme', 'images'] as const;
+
 interface AccessibilityWidgetContextValue {
   panelId: string;
   open: boolean;
@@ -85,7 +90,7 @@ export function AccessibilityTriggerButton({
   buttonRef,
   ...props
 }: AccessibilityTriggerButtonProps) {
-  const { panelId, open, enabled, triggerAriaLabel, togglePanel } = useAccessibilityWidget();
+  const { panelId, open, triggerAriaLabel, togglePanel } = useAccessibilityWidget();
 
   return (
     <button
@@ -99,8 +104,8 @@ export function AccessibilityTriggerButton({
         className,
       )}
       aria-label={triggerAriaLabel}
-      aria-expanded={enabled ? open : undefined}
-      aria-controls={enabled ? panelId : undefined}
+      aria-expanded={open}
+      aria-controls={panelId}
       onClick={togglePanel}
       {...props}
     >
@@ -125,37 +130,48 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
   const themeLabelId = useId();
   const imagesLabelId = useId();
   const floatingTriggerRef = useRef<HTMLButtonElement>(null);
-  const firstControlRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const [hideFloatingTrigger, setHideFloatingTrigger] = useState(false);
 
   const togglePanel = useCallback(() => {
-    if (!state.enabled) {
-      update({ enabled: true });
-      setOpen(true);
-      return;
-    }
     setOpen((prev) => !prev);
-  }, [state.enabled, update]);
+  }, []);
 
-  const triggerAriaLabel = !state.enabled
-    ? 'Включить версию для слабовидящих'
-    : open
-      ? 'Скрыть панель настроек доступности'
-      : 'Открыть панель настроек доступности';
+  // Кнопка считается нажатой, когда параметр равен её значению — в том числе
+  // дефолтному: при выключенном режиме нажаты «стандартные» опции (масштаб 100%,
+  // цвет, обычный интервал). Клик по нажатой опции отжимает её (возврат к
+  // дефолту), по другой — выбирает. Режим включён, пока хоть один параметр
+  // не дефолтный; как только все вернулись к норме — выходим из режима.
+  const toggleSetting = useCallback(
+    <K extends (typeof TOGGLEABLE_KEYS)[number]>(key: K, value: A11yState[K]) => {
+      const nextValue = state[key] === value ? DEFAULT_STATE[key] : value;
+      const allDefault =
+        nextValue === DEFAULT_STATE[key] &&
+        TOGGLEABLE_KEYS.every((k) => k === key || state[k] === DEFAULT_STATE[k]);
+      update({ [key]: nextValue, enabled: !allDefault } as Partial<A11yState>);
+    },
+    [state, update],
+  );
+
+  const triggerAriaLabel = open
+    ? 'Скрыть панель настроек доступности'
+    : 'Открыть панель настроек доступности';
 
   useEffect(() => {
-    if (open && state.enabled) {
-      firstControlRef.current?.focus();
-    }
-  }, [open, state.enabled]);
+    if (!open) return;
+    requestAnimationFrame(() => {
+      panelRef.current?.focus();
+    });
+  }, [open]);
 
   useEffect(() => {
     const root = document.documentElement;
-    if (!(open && state.enabled)) {
+    if (!open) {
+      root.removeAttribute('data-a11y-panel-open');
       root.style.removeProperty('--a11y-panel-h');
       return;
     }
+    root.setAttribute('data-a11y-panel-open', '');
     const el = panelRef.current;
     if (!el) return;
     const sync = () => {
@@ -166,9 +182,10 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
     ro.observe(el);
     return () => {
       ro.disconnect();
+      root.removeAttribute('data-a11y-panel-open');
       root.style.removeProperty('--a11y-panel-h');
     };
-  }, [open, state.enabled]);
+  }, [open]);
 
   useEffect(() => {
     const target = document.getElementById('footer-a11y-trigger');
@@ -189,7 +206,6 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
 
   const handleExit = () => {
     reset();
-    dismissPanel();
   };
 
   const handlePanelKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -220,12 +236,13 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
           className={hideFloatingTrigger ? styles.triggerFloatingHidden : undefined}
         />
 
-        {open && state.enabled && (
+        {open && (
           <div
             id={panelId}
             ref={panelRef}
             className={styles.panel}
             role="region"
+            tabIndex={-1}
             aria-label="Настройки версии для слабовидящих"
             onKeyDown={handlePanelKeyDown}
           >
@@ -247,15 +264,14 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
                     Размер шрифта
                   </span>
                   <div className={styles.options}>
-                    {FONT_OPTIONS.map((opt, idx) => (
+                    {FONT_OPTIONS.map((opt) => (
                       <button
                         key={opt.value}
-                        ref={idx === 0 ? firstControlRef : undefined}
                         type="button"
                         className={styles.option}
                         aria-label={opt.label}
                         aria-pressed={state.fontSize === opt.value}
-                        onClick={() => update({ fontSize: opt.value })}
+                        onClick={() => toggleSetting('fontSize', opt.value)}
                       >
                         <span className={`${styles.sample} ${opt.sampleClass}`}>A</span>
                       </button>
@@ -275,7 +291,7 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
                         className={styles.option}
                         aria-label={opt.label}
                         aria-pressed={state.spacing === opt.value}
-                        onClick={() => update({ spacing: opt.value })}
+                        onClick={() => toggleSetting('spacing', opt.value)}
                       >
                         <span className={`${styles.sample} ${opt.spacingClass}`}>Аа</span>
                       </button>
@@ -295,7 +311,7 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
                         className={`${styles.option} ${styles.optionSwatch} ${opt.swatchClass}`}
                         aria-label={opt.label}
                         aria-pressed={state.theme === opt.value}
-                        onClick={() => update({ theme: opt.value })}
+                        onClick={() => toggleSetting('theme', opt.value)}
                       >
                         <span className={styles.swatchLetter}>А</span>
                       </button>
@@ -315,7 +331,7 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
                         className={styles.option}
                         aria-label={opt.label}
                         aria-pressed={state.images === opt.value}
-                        onClick={() => update({ images: opt.value })}
+                        onClick={() => toggleSetting('images', opt.value)}
                       >
                         {opt.short}
                       </button>

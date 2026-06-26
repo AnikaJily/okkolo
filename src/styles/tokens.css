@@ -4,7 +4,11 @@
   --color-purple-light: #d5a7f6;
   --color-purple-dark: #b078dc;
   --color-purple-text: #5b2d8c;
+  /* Акцентная обводка кнопок: 2px inside у заливки primary и 3px outline (Figma 176-805) */
+  --color-purple-stroke: #9c6fcd;
   --color-yellow: #fedd5b;
+  /* Акцентная обводка 2px inside у жёлтых тегов/чипов/активных пунктов */
+  --color-yellow-stroke: #a58a2e;
   --color-bg: #f9f9f9;
   --color-surface: #ffffff;
   --color-text: #000000;

@@ -1,0 +1,276 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--color-scrim);
+  backdrop-filter: blur(2px);
+}
+
+.content {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 50;
+  width: min(calc(100vw - var(--page-padding-x) * 2), 520px);
+  max-height: min(88dvh, 800px);
+  transform: translate(-50%, -50%);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  padding: 25px 20px 20px;
+  box-shadow: var(--shadow-card-hover);
+  outline: none;
+}
+
+/* Просто крестик, без кружка-подложки (как в остальных модалках) */
+.close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 4px;
+  background: none;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.close:hover {
+  color: var(--color-purple-dark);
+}
+
+.close:focus-visible {
+  outline: 2px solid var(--color-purple-dark);
+  outline-offset: 3px;
+}
+
+/* Шапка модалки. Текст подрезан text-box-trim (глобально) — гэпы «реальные»,
+   поэтому держим тот же шаг 20px, что и .summary в EventSignupModal. */
+.summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  padding-right: 48px;
+}
+
+/* Жёлтая плашка, скругление 2px — как «Progress Tags» в Figma */
+.tag {
+  display: inline-flex;
+  align-items: flex-end;
+  background-color: var(--color-yellow);
+  /* Обводка 2px inside */
+  box-shadow: inset 0 0 0 2px var(--color-yellow-stroke);
+  border-radius: var(--radius-tag);
+  padding: 8px 12px;
+  font-family: var(--font-display);
+  font-size: var(--text-tag);
+  font-weight: 500;
+  line-height: normal;
+  color: var(--color-text);
+}
+
+/* header-2 */
+.heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-header-2);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+}
+
+.intro {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: var(--leading-body);
+  color: var(--color-muted);
+}
+
+/* Шаг между блоками формы — 25px, как .form в EventSignupModal/WorkshopsSignupSection */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-top: 24px;
+}
+
+/* Группа «Как часто» / «Сумма»: label → контролы (→ ошибка). Шаг 15px — как .field */
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.groupLabel {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: normal;
+  color: var(--color-muted);
+}
+
+.segment {
+  display: flex;
+  gap: 10px;
+}
+
+.segment .chip {
+  flex: 1 1 0;
+}
+
+.amountGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+/* Кнопка-чип (частота и пресеты суммы): нажатая — фиолетовая, как заливка кнопок */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 10px 16px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill-card);
+  background-color: var(--color-surface);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.chip:hover {
+  background-color: var(--color-purple-subtle);
+}
+
+.chip[aria-pressed='true'] {
+  border-color: var(--color-purple);
+  background-color: var(--color-purple-light);
+}
+
+.chip[aria-pressed='true']:hover {
+  background-color: var(--color-purple-light);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--color-purple-dark);
+  outline-offset: 2px;
+}
+
+/* Произвольная сумма: поле с суффиксом «₽» */
+.customField {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.amountInput {
+  padding-right: 40px;
+}
+
+.currency {
+  position: absolute;
+  right: 16px;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  color: var(--color-muted);
+  pointer-events: none;
+}
+
+/* label → input, шаг 15px — единый ритм формы (см. .field в WorkshopsSignupSection) */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: normal;
+  color: var(--color-muted);
+}
+
+.input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+}
+
+/* Единый видимый фокус проекта */
+.input:focus-visible {
+  outline: 2px solid var(--color-purple-dark);
+  outline-offset: 2px;
+}
+
+.inputError {
+  border-color: var(--color-error);
+}
+
+.submitButton {
+  border-radius: var(--radius-pill-card);
+}
+
+/* Статус «до оплаты» — смонтирован заранее (role="status"), как .statusSuccess */
+.success {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-purple-text);
+}
+
+/* Ошибка поля — рендерится только при наличии, как .fieldError */
+.error {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-error);
+}
+
+/* Видимо скрытый label — для произвольной суммы (группа уже подписана «Сумма») */
+.srLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 640px) {
+  .content {
+    padding: 30px 25px 25px;
+  }
+
+  .amountGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

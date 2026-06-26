@@ -39,9 +39,23 @@
 }
 
 .primary {
+  position: relative;
   background-color: var(--color-purple-light);
   border-color: var(--color-purple-light);
   color: var(--color-text);
+}
+
+/* Stroke 2px заподлицо с внешним краем. Через ::after, а не inset box-shadow:
+   тень рисуется ЗА 3px-бордером и уезжала на 3px внутрь — получалась «двойная
+   рамка». ::after накрывает внешний край border-box (inset -3px = ширина
+   бордера .root), габариты при этом не меняются. */
+.primary::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border: 2px solid var(--color-purple-stroke);
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 .primary:hover {
@@ -59,7 +73,7 @@
 
 .outline {
   background-color: transparent;
-  border-color: var(--color-purple-dark);
+  border-color: var(--color-purple-stroke);
   color: var(--color-text);
 }
 
@@ -68,7 +82,7 @@
      без него вся декларация невалидна и hover-фон вообще не появляется */
   background-color: var(--color-purple-subtle);
   background-color: color-mix(in srgb, var(--color-purple) 18%, transparent);
-  border-color: var(--color-purple-dark);
+  border-color: var(--color-purple-stroke);
   color: var(--color-text);
 }
 
@@ -76,7 +90,7 @@
 .outline:active {
   background-color: var(--color-purple-subtle);
   background-color: color-mix(in srgb, var(--color-purple) 24%, transparent);
-  border-color: var(--color-purple-dark);
+  border-color: var(--color-purple-stroke);
 }
 
 /* Самый компактный вариант — для шапки и плотных мест,

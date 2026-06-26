@@ -85,7 +85,17 @@
   border-bottom: 2px solid var(--color-text);
   box-shadow: var(--shadow-card);
   font-family: var(--font-body);
+  font-size: 21px;
+  line-height: var(--leading-tight);
   color: var(--color-text);
+}
+
+.panel:focus {
+  outline: none;
+}
+
+.panel:focus-visible {
+  outline: none;
 }
 
 .panelBar {
@@ -101,7 +111,7 @@
 .panelTitle {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--text-caption);
+  font-size: inherit;
   font-weight: 600;
   line-height: var(--leading-tight);
   color: var(--color-text);
@@ -112,17 +122,31 @@
   margin: 0 auto;
   padding: var(--space-3) var(--space-6);
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: var(--space-4);
+  gap: var(--space-6);
 }
 
 .settings {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  justify-content: start;
+  align-items: start;
+  column-gap: var(--space-8);
+  row-gap: var(--space-4);
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.group {
   display: flex;
-  flex: 1 1 0;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: var(--space-4) var(--space-6);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  width: max-content;
+  max-width: 100%;
   min-width: 0;
 }
 
@@ -136,17 +160,9 @@
   background: color-mix(in srgb, var(--color-text) 5%, var(--color-surface));
 }
 
-.group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-2);
-  min-width: 0;
-}
-
 .groupLabel {
   font-family: var(--font-display);
-  font-size: var(--text-caption);
+  font-size: inherit;
   font-weight: 500;
   color: var(--color-text);
   line-height: var(--leading-tight);
@@ -154,8 +170,9 @@
 }
 
 .options {
-  display: inline-flex;
+  display: flex;
   flex-wrap: wrap;
+  width: 100%;
   gap: var(--space-2);
 }
 
@@ -171,7 +188,7 @@
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
-  font-size: var(--text-button);
+  font-size: inherit;
   font-weight: 500;
   line-height: var(--leading-none);
   cursor: pointer;
@@ -255,7 +272,7 @@
 }
 
 .swatchLetter {
-  font-size: var(--text-body);
+  font-size: inherit;
   font-weight: 600;
   line-height: var(--leading-none);
 }
@@ -294,7 +311,8 @@
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  margin-left: auto;
+  justify-content: flex-start;
+  width: auto;
 }
 
 .exit {
@@ -304,7 +322,7 @@
   border: 2px solid var(--color-text);
   border-radius: var(--radius-pill);
   font-family: var(--font-body);
-  font-size: var(--text-button);
+  font-size: inherit;
   font-weight: 600;
   line-height: var(--leading-none);
   white-space: nowrap;
@@ -322,35 +340,21 @@
   outline-offset: 3px;
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 1280px) {
+  .settings {
+    grid-template-columns: repeat(4, max-content);
+    column-gap: var(--space-6);
+    row-gap: var(--space-4);
+  }
+}
+
+@media (max-width: 1023px) {
   .panelBar {
     padding: var(--space-2) var(--space-5) 0;
   }
 
   .inner {
-    flex-direction: column;
-    align-items: stretch;
     padding: var(--space-3) var(--space-5);
-    gap: var(--space-4);
-  }
-
-  .settings {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--space-4);
-  }
-
-  .group {
-    width: 100%;
-  }
-
-  .actions {
-    width: 100%;
-    margin-left: 0;
-  }
-
-  .exit {
-    width: 100%;
   }
 }
 
@@ -362,6 +366,16 @@
   .inner {
     padding: var(--space-3);
     gap: var(--space-3);
+  }
+
+  .settings {
+    grid-template-columns: 1fr;
+    width: 100%;
+    row-gap: var(--space-3);
+  }
+
+  .group {
+    width: 100%;
   }
 }
 

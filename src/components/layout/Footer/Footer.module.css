@@ -265,7 +265,10 @@
 .social {
   display: flex;
   gap: 8px;
-  margin: 0;
+  /* Тап-таргет 44px с иконкой 32px по центру → внутренний отступ (44-32)/2=6px.
+     Сдвигаем ряд влево на эти 6px, чтобы иконки оптически встали вровень с
+     текстом колонки «Контакты», не уменьшая зону нажатия. */
+  margin: 4px 0 0 -6px;
   padding: 0;
   list-style: none;
 }
@@ -286,8 +289,8 @@
 
 .socialIcon {
   display: block;
-  width: 22px;
-  height: 22px;
+  width: 32px;
+  height: 32px;
 }
 
 .srOnly {

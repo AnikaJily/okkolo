@@ -1,5 +1,6 @@
 import { ImageActionCard } from '@/components/ui/ImageActionCard/ImageActionCard';
 import type { OkkoloEvent } from '@/data/events';
+import { getEventSpots } from '@/lib/events';
 
 interface EventCardProps {
   event: OkkoloEvent;
@@ -8,11 +9,13 @@ interface EventCardProps {
 }
 
 export function EventCard({ event, onSignup, onDetails }: EventCardProps) {
+  const spots = getEventSpots(event);
+  const description = spots ? `${event.admission} · ${spots.short}` : event.admission;
   return (
     <ImageActionCard
       variant="preview"
       title={event.title}
-      description={event.admission}
+      description={description}
       image={event.image}
       picture={event.picture}
       imageSrcSet={event.imageSrcSet}

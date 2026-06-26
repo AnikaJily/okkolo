@@ -60,6 +60,8 @@
   display: inline-flex;
   align-items: flex-end;
   background-color: var(--color-yellow);
+  /* Обводка 2px inside */
+  box-shadow: inset 0 0 0 2px var(--color-yellow-stroke);
   border-radius: var(--radius-tag);
   padding: 8px 12px;
   font-family: var(--font-display);

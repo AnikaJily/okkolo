@@ -10,6 +10,7 @@ import {
   type ReportsTabId,
 } from '@/data/reports';
 import { loadReports } from '@/lib/reports';
+import { FilterChip } from '@/components/ui/FilterChip';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import styles from './ReportsPage.module.css';
 
@@ -215,12 +216,12 @@ export function ReportsPage() {
           {REPORTS_TABS.map((tab) => {
             const isActive = tab.id === activeTab;
             return (
-              <button
+              <FilterChip
                 key={tab.id}
                 ref={(node) => {
                   tabRefs.current[tab.id] = node;
                 }}
-                type="button"
+                active={isActive}
                 role="tab"
                 id={`tab-${tab.id}`}
                 aria-selected={isActive}
@@ -228,10 +229,9 @@ export function ReportsPage() {
                 tabIndex={isActive ? 0 : -1}
                 onClick={() => handleTabSelect(tab.id)}
                 onKeyDown={handleTabKeyDown}
-                className={isActive ? styles.tabActive : styles.tab}
               >
                 {tab.label}
-              </button>
+              </FilterChip>
             );
           })}
         </div>

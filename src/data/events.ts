@@ -9,13 +9,16 @@ export interface OkkoloEvent {
   date: string;
   dateLabel: string;
   admission: string;
-  /* категория мероприятия из CMS (enum type): музыка | мастер-класс | лекция | стенд-ап */
+  /* тип мероприятия из CMS (справочник «Тип мероприятия»): музыка | мастер-класс | лекция | стенд-ап и др. */
   type?: string;
   description?: string;
   href: string;
   signupHref: string;
   isPaid?: boolean;
   price?: number;
+  /** Вместимость: всего мест и занято (из CMS). undefined — учёта мест нет. */
+  spotsTotal?: number;
+  spotsTaken?: number;
   image: string;
   picture?: PictureSource;
   /** Responsive-набор из форматов Strapi (для CMS-фото без build-time picture). */
