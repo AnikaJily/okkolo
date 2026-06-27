@@ -52,7 +52,7 @@ export function Header({ onMenuClick }: HeaderProps) {
           <img
             src={logoSrc}
             alt="Окколо"
-            className="h-[38px] w-10 object-contain lg:h-11 lg:w-[46px]"
+            className="h-[2.375rem] w-10 object-contain lg:h-11 lg:w-[2.875rem]"
           />
         </a>
 

@@ -137,11 +137,9 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
     setOpen((prev) => !prev);
   }, []);
 
-  // Кнопка считается нажатой, когда параметр равен её значению — в том числе
-  // дефолтному: при выключенном режиме нажаты «стандартные» опции (масштаб 100%,
-  // цвет, обычный интервал). Клик по нажатой опции отжимает её (возврат к
-  // дефолту), по другой — выбирает. Режим включён, пока хоть один параметр
-  // не дефолтный; как только все вернулись к норме — выходим из режима.
+  // Клик по уже выбранной опции отжимает её (возврат к дефолту), по другой —
+  // выбирает. Режим включён, пока хоть один параметр не дефолтный; как только
+  // все вернулись к норме — выходим из режима. Подсветку см. в isOptionActive.
   const toggleSetting = useCallback(
     <K extends (typeof TOGGLEABLE_KEYS)[number]>(key: K, value: A11yState[K]) => {
       const nextValue = state[key] === value ? DEFAULT_STATE[key] : value;
@@ -152,6 +150,15 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
     },
     [state, update],
   );
+
+  // «Обычные» (первые) опции каждой группы — это значения по умолчанию.
+  // Подсвечиваем кнопку, только если выбрано НЕ дефолтное значение: иначе при
+  // выключенном режиме первая опция каждой группы выглядела бы выбранной, а клик
+  // по ней (дефолт→дефолт) ничего не менял — казалось, что «не работает».
+  const isOptionActive = <K extends (typeof TOGGLEABLE_KEYS)[number]>(
+    key: K,
+    value: A11yState[K],
+  ) => state[key] === value && value !== DEFAULT_STATE[key];
 
   const triggerAriaLabel = open
     ? 'Скрыть панель настроек доступности'
@@ -270,7 +277,7 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
                         type="button"
                         className={styles.option}
                         aria-label={opt.label}
-                        aria-pressed={state.fontSize === opt.value}
+                        aria-pressed={isOptionActive('fontSize', opt.value)}
                         onClick={() => toggleSetting('fontSize', opt.value)}
                       >
                         <span className={`${styles.sample} ${opt.sampleClass}`}>A</span>
@@ -290,7 +297,7 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
                         type="button"
                         className={styles.option}
                         aria-label={opt.label}
-                        aria-pressed={state.spacing === opt.value}
+                        aria-pressed={isOptionActive('spacing', opt.value)}
                         onClick={() => toggleSetting('spacing', opt.value)}
                       >
                         <span className={`${styles.sample} ${opt.spacingClass}`}>Аа</span>
@@ -310,7 +317,7 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
                         type="button"
                         className={`${styles.option} ${styles.optionSwatch} ${opt.swatchClass}`}
                         aria-label={opt.label}
-                        aria-pressed={state.theme === opt.value}
+                        aria-pressed={isOptionActive('theme', opt.value)}
                         onClick={() => toggleSetting('theme', opt.value)}
                       >
                         <span className={styles.swatchLetter}>А</span>
@@ -330,7 +337,7 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
                         type="button"
                         className={styles.option}
                         aria-label={opt.label}
-                        aria-pressed={state.images === opt.value}
+                        aria-pressed={isOptionActive('images', opt.value)}
                         onClick={() => toggleSetting('images', opt.value)}
                       >
                         {opt.short}

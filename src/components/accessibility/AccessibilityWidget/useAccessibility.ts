@@ -2,7 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 
 export type FontSize = 'md' | 'lg' | 'xl' | 'xxl';
 export type Spacing = 'normal' | 'wide' | 'wider';
-export type Theme = 'whiteBlack' | 'blackWhite' | 'blueCyan' | 'beigeBrown' | 'brownGreen';
+// 'none' — служебный дефолт «схема не выбрана» (обычные цвета сайта). Все
+// остальные значения — реально применяемые схемы, в т.ч. 'whiteBlack' (чёрным
+// по белому). Так «чёрным по белому» становится выбираемой опцией, а не
+// замаскированным «выключено».
+export type Theme = 'none' | 'whiteBlack' | 'blackWhite' | 'blueCyan' | 'beigeBrown' | 'brownGreen';
 export type Images = 'color' | 'bw' | 'off';
 
 export interface A11yState {
@@ -19,13 +23,13 @@ export const DEFAULT_STATE: A11yState = {
   enabled: false,
   fontSize: 'md',
   spacing: 'normal',
-  theme: 'whiteBlack',
+  theme: 'none',
   images: 'color',
 };
 
 const FONT_VALUES: FontSize[] = ['md', 'lg', 'xl', 'xxl'];
 const SPACING_VALUES: Spacing[] = ['normal', 'wide', 'wider'];
-const THEME_VALUES: Theme[] = ['whiteBlack', 'blackWhite', 'blueCyan', 'beigeBrown', 'brownGreen'];
+const THEME_VALUES: Theme[] = ['none', 'whiteBlack', 'blackWhite', 'blueCyan', 'beigeBrown', 'brownGreen'];
 const IMAGE_VALUES: Images[] = ['color', 'bw', 'off'];
 
 function oneOf<T extends string>(value: unknown, allowed: T[], fallback: T): T {
@@ -42,7 +46,7 @@ function readState(): A11yState {
       enabled: typeof parsed.enabled === 'boolean' ? parsed.enabled : false,
       fontSize: oneOf(parsed.fontSize, FONT_VALUES, 'md'),
       spacing: oneOf(parsed.spacing, SPACING_VALUES, 'normal'),
-      theme: oneOf(parsed.theme, THEME_VALUES, 'whiteBlack'),
+      theme: oneOf(parsed.theme, THEME_VALUES, 'none'),
       images: oneOf(parsed.images, IMAGE_VALUES, 'color'),
     };
   } catch {
@@ -57,7 +61,13 @@ function applyToDom(state: A11yState) {
     root.setAttribute('data-a11y', '');
     root.setAttribute('data-a11y-font', state.fontSize);
     root.setAttribute('data-a11y-spacing', state.spacing);
-    root.setAttribute('data-a11y-theme', state.theme);
+    // theme='none' — схема не выбрана: оставляем обычные цвета сайта (масштаб
+    // шрифта/интервал/картинки при этом могут быть включены сами по себе).
+    if (state.theme === 'none') {
+      root.removeAttribute('data-a11y-theme');
+    } else {
+      root.setAttribute('data-a11y-theme', state.theme);
+    }
     root.setAttribute('data-a11y-images', state.images);
   } else {
     root.removeAttribute('data-a11y');

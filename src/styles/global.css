@@ -74,6 +74,21 @@ samp {
   text-box: none;
 }
 
+/*
+  В режиме доступности (виджет «Версия для слабовидящих») text-box-trim
+  отключаем. При крупном шрифте (до 200%) подрезка cap/baseline убирает
+  межстрочный «воздух», а удлинённые хвосты букв (р/у/д/щ) выпирают за бокс и
+  налезают на соседние строки и блоки (адрес, часы работы, футер). Возвращаем
+  обычный line-box — читаемость (WCAG 1.4.4 / 1.4.10) важнее пиксель-точных
+  гэпов. Специфичность :root[data-a11y] перебивает :where() (нулевую).
+*/
+:root[data-a11y] :where(
+  h1, h2, h3, h4, h5, h6, p, li, dt, dd, figcaption, blockquote, cite, label,
+  legend, th, td, caption, summary, a, button, span, small, strong, em, b, i, div
+) {
+  text-box: none;
+}
+
 /* Body: единая типографика (trim — глобально выше) */
 .bodyCopy {
   margin: 0;

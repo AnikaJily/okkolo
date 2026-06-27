@@ -88,6 +88,32 @@
   font-size: 21px;
   line-height: var(--leading-tight);
   color: var(--color-text);
+  /* Изоляция от a11y-масштабирования. Виджет — инструмент управления и не
+     должен сам раздуваться при выборе крупного шрифта: data-a11y-font меняет
+     :root font-size, а с ним растут ВСЕ rem-токены (--space-*, --text-*).
+     Текст панели уже зафиксирован (21px), но отступы, padding кнопок и образцы
+     букв (.sample) шли через rem-токены и масштабировались — отсюда
+     рассогласование «часть растёт, часть нет». Фиксируем используемые токены в
+     px, чтобы вся панель оставалась стабильного размера. Значения — десктопные
+     (образцы букв сохраняют наглядную ступенчатость 18/21/28/40). */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --text-caption: 18px;
+  --text-body: 21px;
+  --text-feature-title: 28px;
+  --text-section-title: 40px;
+}
+
+/* Когда открыт любой модальный диалог (Radix Dialog/Sheet, overlay z-40,
+   content z-50), опускаем открытую панель под его overlay — иначе панель
+   (z-110) перекрывала бы модалку. Тот же приём, что прячет плавающий триггер
+   выше: реагируем на [data-state='open'][role='dialog'] на :root. */
+:global(:root:has([data-state='open'][role='dialog'])) .panel {
+  z-index: 5;
 }
 
 .panel:focus {
@@ -234,7 +260,7 @@
   font-size: var(--text-section-title);
 }
 
-/* Шаги межбуквенного интервала: 0 / 0.1em / 0.2em */
+/* Шаги межбуквенного интервала: 0 / 0.12em / 0.2em (средний — порог 1.4.12) */
 .sampleSpacingSm {
   font-size: var(--text-body);
   letter-spacing: 0;
@@ -242,7 +268,7 @@
 
 .sampleSpacingMd {
   font-size: var(--text-body);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
 }
 
 .sampleSpacingLg {

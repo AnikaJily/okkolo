@@ -3,8 +3,10 @@ import { formatProductPrice, type ShowroomProduct } from '@/data/products';
 
 interface ProductCardProps {
   product: ShowroomProduct;
-  onAddToCart?: (product: ShowroomProduct) => void;
-  onDetails?: (product: ShowroomProduct) => void;
+  // Обязательны: карточка товара без «в корзину» и «подробнее» не имеет смысла.
+  // Гарантирует, что обе кнопки всегда получают обработчик (нет мёртвых кнопок).
+  onAddToCart: (product: ShowroomProduct) => void;
+  onDetails: (product: ShowroomProduct) => void;
 }
 
 export function ProductCard({ product, onAddToCart, onDetails }: ProductCardProps) {
@@ -20,11 +22,10 @@ export function ProductCard({ product, onAddToCart, onDetails }: ProductCardProp
       imageHeight={product.imageHeight}
       imageSizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 90vw"
       imageAlt={product.title}
-      href="#"
       actionLabel="В корзину"
-      action={onAddToCart ? () => onAddToCart(product) : undefined}
+      action={() => onAddToCart(product)}
       secondaryActionLabel="Подробнее"
-      secondaryAction={onDetails ? () => onDetails(product) : undefined}
+      secondaryAction={() => onDetails(product)}
       actionsLayout="row"
     />
   );

@@ -39,9 +39,11 @@
   letter-spacing: 0;
 }
 
+/* Средний шаг = нижний порог WCAG/ГОСТ 1.4.12: межбуквенный ≥0.12em,
+   межсловный ≥0.16em, межстрочный ≥1.5. */
 :root[data-a11y][data-a11y-spacing='wide'] body :not([data-a11y-widget]):not([data-a11y-widget] *) {
-  letter-spacing: 0.1em;
-  word-spacing: 0.15em;
+  letter-spacing: 0.12em;
+  word-spacing: 0.16em;
   line-height: 1.6;
 }
 

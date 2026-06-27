@@ -255,12 +255,18 @@ a.previewMain:visited {
 
 .previewActionsRow {
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: stretch;
 }
 
 .previewActionsRow > * {
+  /* flex-basis 0 + равный grow — кнопки одинаковой ширины (50/50) в ряду.
+     min-width: max-content не даёт кнопке сжаться уже своего текста: иначе при
+     крупном шрифте a11y (до 200%) подписи «Записаться»/«Подробнее» вылезают за
+     кнопку и налезают друг на друга. Когда две кнопки перестают помещаться в
+     ряд, flex-wrap (на родителе) переносит их в столбик. */
   flex: 1 1 0;
-  min-width: 0;
+  min-width: max-content;
 }
 
 /* В узкой карточке (мобильная сетка шоурума 2 колонки) две кнопки

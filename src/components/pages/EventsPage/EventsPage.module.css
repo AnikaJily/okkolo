@@ -108,12 +108,14 @@
   line-height: 1;
 }
 
-/* Меню — белая карточка с тенью под триггером, по левому краю триггера
- * (на мобильном тип прижат влево, на десктопе — вправо, см. ниже). */
+/* Меню — белая карточка с тенью под триггером. Якорим по ПРАВОМУ краю триггера
+ * (right: 0 → раскрывается влево). При паре «время + тип» триггер прижат вправо
+ * (toolbar: space-between), и прежний left: 0 выкидывал меню за правый край вьюпорта
+ * на телефоне. Когда фильтр типа один — он слева, тогда раскрываем вправо, см. ниже. */
 .typeMenu {
   position: absolute;
   top: calc(100% + 6px);
-  left: 0;
+  right: 0;
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -124,6 +126,14 @@
   background-color: var(--color-surface);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card-hover);
+}
+
+/* Когда фильтр типа — единственный элемент тулбара, он стоит слева (space-between
+ * с одним ребёнком = flex-start), поэтому меню раскрываем вправо, чтобы не уехать
+ * за левый край. max-width у .typeMenu держит правый край в пределах вьюпорта. */
+.typeFilter:only-child .typeMenu {
+  right: auto;
+  left: 0;
 }
 
 .typeMenuList {
@@ -243,11 +253,6 @@
     flex: 0 0 auto;
     display: inline-flex;
     gap: 4px;
-  }
-
-  .typeMenu {
-    left: auto;
-    right: 0;
   }
 
   .agenda {
