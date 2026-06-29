@@ -52,15 +52,16 @@
   color: var(--color-text);
 }
 
-/* Stroke 2px заподлицо с внешним краем. Через ::after, а не inset box-shadow:
-   тень рисуется ЗА 3px-бордером и уезжала на 3px внутрь — получалась «двойная
-   рамка». ::after накрывает внешний край border-box (inset -3px = ширина
-   бордера .root), габариты при этом не меняются. */
+/* Stroke 3px заподлицо с внешним краем — той же ширины, что border у .outline,
+   чтобы ободок у закрашенной и незакрашенной кнопок выглядел одинаково.
+   Через ::after, а не inset box-shadow: тень рисуется ЗА 3px-бордером и уезжала
+   на 3px внутрь — получалась «двойная рамка». ::after накрывает внешний край
+   border-box (inset -3px = ширина бордера .root), габариты не меняются. */
 .primary::after {
   content: '';
   position: absolute;
   inset: -3px;
-  border: 2px solid var(--color-purple-stroke);
+  border: 3px solid var(--color-purple-stroke);
   border-radius: inherit;
   pointer-events: none;
 }
