@@ -82,9 +82,9 @@ export function ImageActionCard({
     );
   }
 
-  /** Карточка-ссылка только если нет отдельной кнопки с actionLabel */
+  /** Область карточки (фото + текст) ведёт на href, кнопка остаётся отдельным hit-target. */
   const cardNavHref =
-    !action && !secondaryAction && href && !actionLabel ? href : undefined;
+    !action && !secondaryAction && href ? href : undefined;
   const cardMainInteractive = Boolean(secondaryAction) || Boolean(cardNavHref);
   const cardMainLabel = `${secondaryActionLabel ?? actionLabel}: ${title}`;
   // Контекст для видимых кнопок: «Подробнее» вне строки списка непонятно (SC 2.4.4).
