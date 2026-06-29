@@ -244,17 +244,37 @@ sudo fail2ban-client status sshd
 
 ### Фронт
 
-С локальной машины:
+> 🔑 **Золотое правило:** фронт ВСЕГДА собирается с `VITE_STRAPI_URL=https://okkolo-project.ru`.
+> Сайт работает по HTTPS, API проксируется на том же origin. Если собрать со старым
+> `http://158.160.128.16` **или** с дефолтным `http://localhost:1337` (когда забыли передать
+> переменную), браузер заблокирует запросы как **mixed-content**, и фронт молча свалится на
+> моки из `src/data/*` — сайт открывается, но данных из Strapi нет. Именно так оно и ломалось
+> (2026-06-30: на проде лежал бандл, собранный со старым IP). Шаг 3 ниже ловит это до того, как заметит пользователь.
+
+С локальной машины — **три шага, шаг 3 обязателен:**
 
 ```bash
 cd ~/Projects/okkolo
+
+# 1. Сборка с прод-URL (переменная ОБЯЗАТЕЛЬНА — без неё дефолт localhost:1337)
 VITE_STRAPI_URL=https://okkolo-project.ru npm run build
+
+# 2. Заливка (--delete чистит старые ассеты; nginx перезагружать не нужно)
 rsync -az --delete -e ssh dist/ nastyasep2004@158.160.128.16:~/apps/web/
+
+# 3. ПРОВЕРКА живого бандла: правильный URL зашит, плохих нет
+JS=$(curl -s https://okkolo-project.ru/ | grep -oE '/assets/index-[^"]+\.js' | head -1)
+curl -s "https://okkolo-project.ru$JS" | grep -cE 'okkolo-project\.ru'                 # ждём ≥1
+curl -s "https://okkolo-project.ru$JS" | grep -cE '158\.160\.128\.16|localhost:1337'   # ждём 0
 ```
 
-`--delete` чистит старые файлы. Nginx не нужно перезагружать — он раздаёт прямо из `~/apps/web/`.
+После деплоя открой сайт с **жёстким обновлением** (Cmd+Shift+R) — иначе браузер отдаст старый
+бандл из кэша и покажется, будто данные так и не появились.
 
-> **Важно про `VITE_STRAPI_URL`:** сайт работает по HTTPS (`https://okkolo-project.ru`), API проксируется на том же origin. Поэтому собирать нужно **именно с `https://okkolo-project.ru`** — если собрать со старым `http://158.160.128.16`, браузер заблокирует запросы как mixed-content, и фронт молча свалится на моки. Можно оставить значение пустым (тогда фронт пойдёт на относительный `/api`, тот же origin) — это даже надёжнее при смене домена.
+> **Альтернатива (надёжнее при смене домена):** собрать с пустым `VITE_STRAPI_URL=` — тогда фронт
+> пойдёт на относительный `/api` (тот же origin) и mixed-content в принципе невозможен. Но текущий
+> код по умолчанию падает на `http://localhost:1337` (`src/lib/strapi.ts`), поэтому пустое значение
+> надёжно только на проде; локально всё равно нужен явный URL.
 
 ### CMS
 
@@ -333,10 +353,12 @@ HTTPS выпущен Certbot'ом (Let's Encrypt), nginx редиректит `:
    ```bash
    pm2 restart okkolo-cms --update-env
    ```
-5. Пересобрать фронт с новым URL:
+5. Пересобрать фронт с новым URL и проверить живой бандл (шаг 3 из «Деплой → Фронт»):
    ```bash
    VITE_STRAPI_URL=https://example.ru npm run build
    rsync -az --delete -e ssh dist/ nastyasep2004@158.160.128.16:~/apps/web/
+   JS=$(curl -s https://example.ru/ | grep -oE '/assets/index-[^"]+\.js' | head -1)
+   curl -s "https://example.ru$JS" | grep -cE 'example\.ru'   # ждём ≥1, старых URL — 0
    ```
 
 Certbot ставит cron-задачу автообновления — отдельной заботы по продлению нет.
