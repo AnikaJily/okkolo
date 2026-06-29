@@ -164,7 +164,9 @@
 
 .teamPhoto {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 5;
+  /* cover — чтобы портретный кроп не растягивал фото (object-fit по умолчанию fill) */
+  object-fit: cover;
   border-radius: 8px;
   /* Жёлтая рамка-акцент: фирменный жёлтый из дека. Ширина и скругление —
      по просьбе заказчицы (4px / 8px), отдельно от общего --stroke-width. */

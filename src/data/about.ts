@@ -89,7 +89,7 @@ export interface AboutTeamMember {
 }
 
 export const ABOUT_TEAM: readonly AboutTeamMember[] = [
-  { id: 'yamaletdinova', name: 'Яна Ямалетдинова', role: 'Руководитель' },
+  { id: 'yamaletdinova', name: 'Яна Ямалетдинова', role: 'Руководительница' },
   { id: 'yavnik', name: 'Екатерина Явник', role: 'PR-менеджер' },
   { id: 'dorozhko', name: 'Анна Дорожко', role: 'Арт-менеджер' },
   { id: 'falej', name: 'Елизавета Фалей', role: 'Бариста' },
@@ -104,7 +104,7 @@ export const ABOUT_TEAM: readonly AboutTeamMember[] = [
    Если заказчица попросит скрыть номер, очисти phone/phoneHref (как CONTACT_PHONE в site.ts). ── */
 export const ABOUT_CONTACTS = {
   lead: 'Яна Ямалетдинова',
-  leadRole: 'Руководитель проекта',
+  leadRole: 'Руководительница проекта',
   phone: '+7 917 356 92 07',
   phoneHref: 'tel:+79173569207',
   telegramHref: 'https://t.me/+2Q4vey3jL1llZDEy',

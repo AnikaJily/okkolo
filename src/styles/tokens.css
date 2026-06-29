@@ -22,7 +22,7 @@
   --color-border-strong: #8a8a8a;
   /* Подложка модалок и шторок — единственное место, где задается скрим */
   --color-scrim: rgba(0, 0, 0, 0.36);
-  --color-hover-soft: rgba(0, 0, 0, 0.05);
+  --color-hover-soft: rgba(0, 0, 0, 0.08);
   --color-purple-subtle: rgba(197, 148, 232, 0.12);
   --color-error: #b00020;
 

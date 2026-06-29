@@ -11,7 +11,7 @@ interface ImageActionCardProps {
   /** Вариант основной кнопки: primary (заливка) или outline (обводка) */
   actionVariant?: 'primary' | 'outline';
   title: string;
-  description: string;
+  description: ReactNode;
   image?: string;
   picture?: PictureSource;
   /** srcSet из форматов CMS (Strapi) для fallback-<img>, когда нет build-time picture. */
