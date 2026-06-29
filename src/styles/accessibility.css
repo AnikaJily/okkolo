@@ -65,6 +65,10 @@
   background-color: var(--a11y-whiteBlack-bg) !important;
   color: var(--a11y-whiteBlack-fg) !important;
   border-color: var(--a11y-whiteBlack-fg) !important;
+  /* Жёлтая обводка тегов/чипов рисуется через box-shadow (var(--color-yellow-stroke)),
+     а не border — element-правила выше её не трогают. Перекрашиваем сам токен в цвет
+     текста темы (виджет токеном не пользуется — его палитра не страдает). */
+  --color-yellow-stroke: var(--a11y-whiteBlack-fg);
 }
 :root[data-a11y][data-a11y-theme='whiteBlack'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
   color: var(--a11y-whiteBlack-link) !important;
@@ -79,6 +83,7 @@
   background-color: var(--a11y-blackWhite-bg) !important;
   color: var(--a11y-blackWhite-fg) !important;
   border-color: var(--a11y-blackWhite-fg) !important;
+  --color-yellow-stroke: var(--a11y-blackWhite-fg);
 }
 :root[data-a11y][data-a11y-theme='blackWhite'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
   color: var(--a11y-blackWhite-link) !important;
@@ -94,6 +99,7 @@
   background-color: var(--a11y-blueCyan-bg) !important;
   color: var(--a11y-blueCyan-fg) !important;
   border-color: var(--a11y-blueCyan-fg) !important;
+  --color-yellow-stroke: var(--a11y-blueCyan-fg);
 }
 :root[data-a11y][data-a11y-theme='blueCyan'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
   color: var(--a11y-blueCyan-link) !important;
@@ -108,6 +114,7 @@
   background-color: var(--a11y-beigeBrown-bg) !important;
   color: var(--a11y-beigeBrown-fg) !important;
   border-color: var(--a11y-beigeBrown-fg) !important;
+  --color-yellow-stroke: var(--a11y-beigeBrown-fg);
 }
 :root[data-a11y][data-a11y-theme='beigeBrown'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
   color: var(--a11y-beigeBrown-link) !important;
@@ -122,6 +129,7 @@
   background-color: var(--a11y-brownGreen-bg) !important;
   color: var(--a11y-brownGreen-fg) !important;
   border-color: var(--a11y-brownGreen-fg) !important;
+  --color-yellow-stroke: var(--a11y-brownGreen-fg);
 }
 :root[data-a11y][data-a11y-theme='brownGreen'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
   color: var(--a11y-brownGreen-link) !important;
