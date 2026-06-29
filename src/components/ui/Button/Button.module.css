@@ -11,7 +11,14 @@
   line-height: normal;
   letter-spacing: 0;
   text-decoration: none;
-  white-space: nowrap;
+  /* Длинные подписи переносятся и не вылезают за контейнер: на крупном
+     a11y-шрифте текст в одну строку («Посмотреть все мероприятия», «Открыть в
+     Яндекс Картах») распирал кнопку шире экрана и обрезался (reflow, WCAG
+     1.4.10). При обычном размере подписи и так в строку — вид не меняется. */
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: break-word;
+  text-align: center;
   user-select: none;
   transition:
     background-color 0.15s ease,

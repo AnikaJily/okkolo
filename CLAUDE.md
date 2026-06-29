@@ -185,20 +185,22 @@ src/components/
 
 Backend — Strapi 5 (`okkolo-cms`). Content-types и эндпоинты — см. `okkolo-cms/CLAUDE.md`. Тут — что важно фронту:
 
-- **API URL** из `VITE_STRAPI_URL`. Локально — `http://localhost:1337` (Strapi на SQLite, см. `okkolo-cms/.env`). Прод — `http://158.160.128.16` (через nginx-прокси на 1337).
+- **API URL** из `VITE_STRAPI_URL`. Локально — `http://localhost:1337` (Strapi на SQLite, см. `okkolo-cms/.env`). Прод — **`https://okkolo-project.ru`** (HTTPS, тот же origin, nginx проксирует `/api` на `127.0.0.1:1337`; БД на проде — PostgreSQL).
 - **Публичные эндпоинты сейчас** (выставлены вручную в админке или через `okkolo-cms/src/index.ts`): GET `/api/directions`, GET `/api/events`, GET `/api/products`, GET `/api/showrooms`. POST `/api/event-registrations` и POST `/api/orders` могут вернуть 403 на свежем инстансе — нужно включить `create` для роли Public в админке.
 - **Любая ошибка fetch — silent fallback на `src/data/*`.** Это удобно для разработки, но прячет реальные баги: при отладке смотри Network и `console.error` (адаптеры в `src/lib/` логируют).
 - **Схема CMS ↔ фронт** (актуализировано на 2026-06-16 по аудиту):
   - Ранее задокументированные баги ИСПРАВЛЕНЫ: `event.price` (строчная), `event-registration.paymentStatus` без ведущего пробела, `Direction.href` присутствует в схеме. Старые предупреждения сняты.
-  - `order` теперь хранит `itemsSubtotal` и `deliveryPrice` (добавлены в `schema.json`) — `createOrder` слал их и раньше, но они не сохранялись. После пулла CMS перезапустить Strapi, чтобы применилась миграция БД.
+  - `order` теперь хранит `itemsSubtotal` и `deliveryPrice` — `createOrder` слал их и раньше, но они не сохранялись. После пулла CMS перезапустить Strapi, чтобы применилась миграция БД.
   - `event.href`/`event.signupHref` убраны из контракта `StrapiEventItem` — этих полей в CMS нет, фронт формирует `href` из slug, `signupHref` = `SUPPORT_HREF`.
+  - ⚠️ **Прод опережает репозиторий `okkolo-cms` (2026-06-27).** На проде `event.type` и `product.category` — это **relation** (отдельные коллекции `event-types`/`categories` + link-таблицы); фронт правильно читает `item.type?.name` с `populate[type]=true` (см. `src/lib/strapi.ts` → `StrapiEventType`, `events.ts` → `toEvent`). В репе `okkolo-cms` (ветка `vankrav`) эти поля всё ещё `enumeration`, а полей `order.itemsSubtotal/deliveryPrice` нет. **Источник истины по схеме — прод-API, а не `schema.json` в репе.** Не трогай маппинг `type`/`category` «под локальную схему» — сломаешь прод (история: воронка-фильтр типов на `/events` появляется только при `populate[type]` + чтении `.name`).
 
 ## Деплой
 
 Полный плейбук — `DEPLOY.md` в корне репы. Кратко:
 
-- **Прод сервер:** Ubuntu 24.04, `158.160.128.16`, пользователь `nastyasep2004`. Nginx раздаёт статику `~/apps/web` и проксирует API на `127.0.0.1:1337` (Strapi под pm2).
-- **Сборка фронта — локально:** `npm run build` → артефакты в `dist/` → rsync на сервер в `~/apps/web/`.
+- **Прод сервер:** Ubuntu 24.04, `158.160.128.16`, пользователь `nastyasep2004`. Домен **`https://okkolo-project.ru`** (HTTPS через Certbot, `:80` и голый IP редиректят 301 на HTTPS). Nginx раздаёт статику `~/apps/web` и проксирует API на `127.0.0.1:1337` (Strapi под pm2). БД на проде — **PostgreSQL** (не SQLite).
+- **Сборка фронта — локально:** `VITE_STRAPI_URL=https://okkolo-project.ru npm run build` → артефакты в `dist/` → rsync на сервер в `~/apps/web/`. Собирать со старым `http://158.160.128.16` НЕЛЬЗЯ — на HTTPS-странице запрос заблокируется как mixed-content и фронт свалится на моки.
+- ⚠️ **Прод-схема CMS опережает репозиторий `okkolo-cms`:** на проде `event.type`/`product.category` — это relation (коллекции `event-types`/`categories`), а в репе — старый `enumeration`. Правки делали в админке и не вернули в git. **Не деплой CMS из репы поверх прода** без синхронизации схемы — снесёт relation-данные. Подробности и порядок действий — в `DEPLOY.md` (раздел «CMS»).
 - **Vercel** как альтернатива тоже поддержан: `vercel.json` делает SPA fallback (`/(.*) → /index.html`). На vercel-деплое `VITE_STRAPI_URL` нужно прописать через env.
 - Все full-reload-переходы внутри SPA опираются на этот SPA fallback (nginx `try_files $uri $uri/ /index.html;` или vercel rewrite) — иначе `/events`, `/showroom`, `/workshops` отдадут 404.
 

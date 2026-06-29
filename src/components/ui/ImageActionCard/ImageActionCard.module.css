@@ -162,10 +162,21 @@ a.previewMain:visited {
   background-color: var(--color-bg);
 }
 
+/* Карточки товаров: фото снимают вертикально/квадратно, а широкий низкий фрейм
+   с object-fit:cover режет верх и низ — виден лишь кусок. Даём товарам фрейм
+   ближе к квадрату (повыше). Включается пропом tallImage (сейчас — ProductCard). */
+.previewImageWrapTall {
+  aspect-ratio: 1 / 1;
+}
+
 @media (min-width: 640px) {
   .previewImageWrap {
     aspect-ratio: auto;
     height: 217px;
+  }
+
+  .previewImageWrapTall {
+    height: 260px;
   }
 }
 
@@ -314,5 +325,9 @@ a.previewMain:visited {
   /* Figma Product: фото 275px на ноутбуке, контент с отступом 20px */
   .previewImageWrap {
     height: 275px;
+  }
+
+  .previewImageWrapTall {
+    height: 340px;
   }
 }

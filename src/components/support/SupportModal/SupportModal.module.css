@@ -115,56 +115,13 @@
   color: var(--color-muted);
 }
 
-.segment {
-  display: flex;
-  gap: 10px;
-}
-
-.segment .chip {
-  flex: 1 1 0;
-}
-
+/* Частота и пресеты суммы — общий ui/FilterChip (жёлтый тег = выбрано),
+   как тумблер «Самовывоз/Доставка» в корзине: ряд с переносом, шаг 10px. */
+.segment,
 .amountGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
-}
-
-/* Кнопка-чип (частота и пресеты суммы): нажатая — фиолетовая, как заливка кнопок */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  padding: 10px 16px;
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-pill-card);
-  background-color: var(--color-surface);
-  font-family: var(--font-body);
-  font-size: var(--text-body);
-  font-weight: 500;
-  line-height: 1;
-  color: var(--color-text);
-  cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
-}
-
-.chip:hover {
-  background-color: var(--color-purple-subtle);
-}
-
-.chip[aria-pressed='true'] {
-  border-color: var(--color-purple);
-  background-color: var(--color-purple-light);
-}
-
-.chip[aria-pressed='true']:hover {
-  background-color: var(--color-purple-light);
-}
-
-.chip:focus-visible {
-  outline: 2px solid var(--color-purple-dark);
-  outline-offset: 2px;
 }
 
 /* Произвольная сумма: поле с суффиксом «₽» */
@@ -268,9 +225,5 @@
 @media (min-width: 640px) {
   .content {
     padding: 30px 25px 25px;
-  }
-
-  .amountGrid {
-    grid-template-columns: repeat(4, 1fr);
   }
 }

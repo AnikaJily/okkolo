@@ -42,6 +42,7 @@ const SPACING_OPTIONS: { value: Spacing; label: string; spacingClass: string }[]
 ];
 
 const THEME_OPTIONS: { value: Theme; label: string; swatchClass: string }[] = [
+  { value: 'none', label: 'Обычные цвета сайта', swatchClass: styles.swatchNone },
   { value: 'whiteBlack', label: 'Чёрный текст на белом фоне', swatchClass: styles.swatchWhiteBlack },
   { value: 'blackWhite', label: 'Белый текст на чёрном фоне', swatchClass: styles.swatchBlackWhite },
   { value: 'blueCyan', label: 'Тёмно-синий текст на голубом фоне', swatchClass: styles.swatchBlueCyan },
@@ -131,10 +132,18 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
   const imagesLabelId = useId();
   const floatingTriggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  // Элемент, с которого открыли панель (триггер мог быть в футере/хедере или
+  // плавающий) — на него возвращаем фокус при закрытии.
+  const openerRef = useRef<HTMLElement | null>(null);
   const [hideFloatingTrigger, setHideFloatingTrigger] = useState(false);
 
   const togglePanel = useCallback(() => {
-    setOpen((prev) => !prev);
+    setOpen((prev) => {
+      // Запоминаем инициатора только при открытии (на клавиатуре он сейчас в
+      // фокусе); присваивание идемпотентно и безопасно в StrictMode.
+      if (!prev) openerRef.current = document.activeElement as HTMLElement | null;
+      return !prev;
+    });
   }, []);
 
   // Клик по уже выбранной опции отжимает её (возврат к дефолту), по другой —
@@ -151,18 +160,22 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
     [state, update],
   );
 
-  // «Обычные» (первые) опции каждой группы — это значения по умолчанию.
-  // Подсвечиваем кнопку, только если выбрано НЕ дефолтное значение: иначе при
-  // выключенном режиме первая опция каждой группы выглядела бы выбранной, а клик
-  // по ней (дефолт→дефолт) ничего не менял — казалось, что «не работает».
+  // Радио-модель: в каждой группе всегда подсвечена ровно одна кнопка — текущее
+  // значение, в т.ч. дефолтное («Обычный размер/интервал», «Цвет», «Обычные
+  // цвета сайта»). Так в обычном режиме видно текущее состояние, а не «ничего не
+  // выбрано». Возврат к норме: клик по уже выбранной не-дефолтной опции
+  // (toggleSetting сбрасывает её в дефолт) или кнопка «Обычная версия».
   const isOptionActive = <K extends (typeof TOGGLEABLE_KEYS)[number]>(
     key: K,
     value: A11yState[K],
-  ) => state[key] === value && value !== DEFAULT_STATE[key];
+  ) => state[key] === value;
 
-  const triggerAriaLabel = open
-    ? 'Скрыть панель настроек доступности'
-    : 'Открыть панель настроек доступности';
+  // Видимая подпись (A11Y_WIDGET_TRIGGER_LABEL) должна входить в доступное имя,
+  // иначе голосовой ввод по видимому тексту не сработает (2.5.3 Label in Name).
+  // Состояние открыто/закрыто дублируется через aria-expanded.
+  const triggerAriaLabel = `${A11Y_WIDGET_TRIGGER_LABEL}. ${
+    open ? 'Скрыть панель настроек' : 'Открыть панель настроек'
+  }`;
 
   useEffect(() => {
     if (!open) return;
@@ -208,6 +221,15 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
 
   const dismissPanel = useCallback(() => {
     setOpen(false);
+    // Возвращаем фокус инициатору; .focus() по скрытому (visibility:hidden)
+    // элементу — no-op, поэтому проверяем document.activeElement и
+    // откатываемся на видимые триггеры (футер → плавающий).
+    const opener = openerRef.current;
+    opener?.focus();
+    if (document.activeElement === opener) return;
+    const footerTrigger = document.getElementById('footer-a11y-trigger');
+    footerTrigger?.focus();
+    if (document.activeElement === footerTrigger) return;
     floatingTriggerRef.current?.focus();
   }, []);
 

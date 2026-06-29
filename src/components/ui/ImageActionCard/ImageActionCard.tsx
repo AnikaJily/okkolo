@@ -31,6 +31,9 @@ interface ImageActionCardProps {
   descriptionClassName?: string;
   extraContent?: ReactNode;
   actionsLayout?: 'column' | 'row';
+  /** Более высокий (ближе к квадрату) фрейм фото — для товаров, чьи снимки
+   *  вертикальные/квадратные и обрезаются в широком низком контейнере. */
+  tallImage?: boolean;
 }
 
 export function ImageActionCard({
@@ -56,7 +59,12 @@ export function ImageActionCard({
   descriptionClassName,
   extraContent,
   actionsLayout = 'column',
+  tallImage = false,
 }: ImageActionCardProps) {
+  const imageWrapClass = cn(
+    styles.previewImageWrap,
+    tallImage && styles.previewImageWrapTall,
+  );
   const titleId = useId();
 
   if (variant === 'content') {
@@ -221,7 +229,7 @@ export function ImageActionCard({
 
   const previewMainContent = (
     <>
-      <div className={styles.previewImageWrap}>{previewMedia}</div>
+      <div className={imageWrapClass}>{previewMedia}</div>
       <div className={styles.previewBody}>
         {meta ? <span className={styles.previewMeta}>{meta}</span> : null}
         {previewTextBlock}
@@ -251,7 +259,7 @@ export function ImageActionCard({
         </>
       ) : (
         <>
-          <div className={styles.previewImageWrap}>{previewMedia}</div>
+          <div className={imageWrapClass}>{previewMedia}</div>
           <div className={styles.previewBody}>
             {meta ? <span className={styles.previewMeta}>{meta}</span> : null}
             {previewTextBlock}

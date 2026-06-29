@@ -22,7 +22,9 @@
 }
 
 .skipLink:focus-visible {
-  top: 12px;
+  /* Под открытой панелью доступности (fixed, top:0, z выше skip-link) ссылка
+     иначе всплывала бы ровно за панель и фокус был бы не виден (2.4.7). */
+  top: calc(12px + var(--a11y-panel-h, 0px));
   outline: 2px solid var(--color-purple-dark);
   outline-offset: 2px;
 }

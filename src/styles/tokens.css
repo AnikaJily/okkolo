@@ -140,6 +140,10 @@
   --container-max: 1200px;
   --page-padding-x: 22px;
   --header-offset: 88px;
+  /* Отступ плавающих FAB-кнопок (a11y-триггер, корзина) от кромки экрана — в px,
+     чтобы они не «всплывали» при a11y-масштабе шрифта (rem-токены растут вместе
+     с :root font-size). */
+  --fab-inset: 16px;
 }
 
 /*
@@ -152,6 +156,7 @@
 @media (min-width: 640px) {
   :root {
     --page-padding-x: 40px;
+    --fab-inset: 20px;
     --font-size-md: 1.0625rem;     /* 17 */
     --font-size-lg: 1.25rem;       /* 20 */
     --font-size-xl: 1.75rem;       /* 28 */

@@ -7,8 +7,8 @@
   а не отдельный пункт стандарта: ГОСТ Р 52872-2019 / WCAG 2.1 AA описывают
   доступность всего сайта, а не конкретную панель-переключатель. Ориентир —
   частичное соответствие этим документам. Набор переключателей:
-    - 3 шага размера шрифта (100 / 125 / 150 %)
-    - 3 шага межбуквенного интервала (0 / 0.1em / 0.2em)
+    - 4 шага размера шрифта (100 / 125 / 150 / 200 %)
+    - 3 шага межбуквенного интервала (0 / 0.12em / 0.2em)
     - 5 цветовых схем
     - 3 режима изображений (цвет / Ч-Б / скрыть)
 */
@@ -128,6 +128,21 @@
   text-decoration: underline !important;
 }
 
+/* === Кольцо фокуса в светлых цветосхемах ===
+   По умолчанию фокус-кольцо — var(--color-purple-dark) (global.css + модули). На
+   перекрашенном фоне светлых тем blueCyan (#9dd1ff) и beigeBrown (#f5ecd1)
+   фиолетовый даёт <3:1 — фокус почти не виден (1.4.11 / 2.4.7). Перекрашиваем
+   outline в цвет текста темы (высокий контраст к её фону); виджет исключён, как
+   и все тематические правила. Толщина/offset остаются из исходных правил. */
+:root[data-a11y][data-a11y-theme='blueCyan']
+  :where(a, button, input, select, textarea, summary, [tabindex]):not([data-a11y-widget]):not([data-a11y-widget] *):focus-visible {
+  outline-color: var(--a11y-blueCyan-fg) !important;
+}
+:root[data-a11y][data-a11y-theme='beigeBrown']
+  :where(a, button, input, select, textarea, summary, [tabindex]):not([data-a11y-widget]):not([data-a11y-widget] *):focus-visible {
+  outline-color: var(--a11y-beigeBrown-fg) !important;
+}
+
 /* === Изображения === */
 /* color — без правил, картинки в исходном виде */
 :root[data-a11y][data-a11y-images='bw'] body img:not([data-a11y-keep]):not([data-a11y-widget] *),
@@ -148,6 +163,14 @@
   Атрибут data-a11y-panel-open ставится при открытой панели, даже если фильтры
   ещё не включены (пользователь не выбрал настройку).
 */
+/* Панель — position:fixed; body{overflow-x:hidden} fixed-потомков НЕ обрезает
+   (их containing block — вьюпорт). Когда панель открыта и появляется/двигается
+   вертикальный скролл, страницу можно было увести вбок. Клипаем горизонталь на
+   самом корне — body-клипа для fixed недостаточно. */
+:root[data-a11y-panel-open] {
+  overflow-x: hidden;
+}
+
 :root[data-a11y-panel-open] body {
   padding-top: var(--a11y-panel-h, 0px);
 }

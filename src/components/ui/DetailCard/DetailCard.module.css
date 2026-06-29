@@ -9,23 +9,28 @@
   overscroll-behavior: contain;
 }
 
-/* Просто крестик, без кружка-подложки. На мобильных он поверх фото —
-   легкое белое свечение оставляет его читаемым на любом снимке */
+/* Крестик лежит поверх контента: на мобильных — над фото (любой яркости), на
+   десктопе — у правого края. Светлая круглая подложка + лёгкая тень держат
+   тёмный икс читаемым на любом кадре (раньше было только белое drop-shadow
+   «свечение» — на светлых/пёстрых участках фото икс терялся). Круг 48px = ровно
+   под иконку dialog (48px) и тап-таргет ≥44px. */
 .close {
   position: absolute;
-  top: 14px;
-  right: 16px;
+  top: 12px;
+  right: 12px;
   z-index: 2;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  padding: 4px;
-  background: none;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-surface) 90%, transparent);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--color-text) 22%, transparent);
   color: var(--color-text);
   cursor: pointer;
-  /* На мобильных крестик поверх фото — белое свечение для контраста */
-  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--color-surface) 90%, transparent));
 }
 
 .close:hover {
@@ -184,6 +189,14 @@
 
   .info {
     gap: 30px;
+  }
+
+  /* В row-раскладке крестик с подложкой лежит над контентом (right:12px + круг
+     48px ≈ 60px от правого края). Резервируем место справа у верхнего блока,
+     чтобы заголовок без тега не заезжал под крестик. На мобильных он над фото —
+     там не нужно. */
+  .head {
+    padding-right: 56px;
   }
 
   .footer {

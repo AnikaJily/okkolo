@@ -47,20 +47,25 @@ export function WorkshopsSignupSection() {
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; contact?: string }>({});
   const [consentError, setConsentError] = useState(false);
-  const [copyStatus, setCopyStatus] = useState<string | null>(null);
+  // Фидбэк копирования — меняем надпись самой нажатой кнопки (key — какой канал).
+  const [copyFeedback, setCopyFeedback] = useState<{ key: ContactMethod; ok: boolean } | null>(
+    null,
+  );
+  const copyTimer = useRef<number | null>(null);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
   const nameRef = useRef<HTMLInputElement>(null);
   const contactRef = useRef<HTMLInputElement>(null);
 
-  const handleCopy = async (value: string, label: string) => {
+  const handleCopy = async (value: string, key: ContactMethod) => {
+    if (copyTimer.current) window.clearTimeout(copyTimer.current);
     try {
       await copyToClipboard(value);
-      setCopyStatus(`${label} скопирован`);
-      window.setTimeout(() => setCopyStatus(null), 2500);
+      setCopyFeedback({ key, ok: true });
     } catch {
-      setCopyStatus('Не удалось скопировать');
-      window.setTimeout(() => setCopyStatus(null), 2500);
+      setCopyFeedback({ key, ok: false });
     }
+    // Возвращаем надпись кнопки к «Скопировать» через паузу.
+    copyTimer.current = window.setTimeout(() => setCopyFeedback(null), 2500);
   };
 
   const handleContactMethodChange = (method: ContactMethod) => {
@@ -129,6 +134,20 @@ export function WorkshopsSignupSection() {
 
   const phoneDisplay = CONTACT_PHONE_DISPLAY || CONTACT_PHONE_PLACEHOLDER;
 
+  // Надпись кнопки копирования: «Скопировано» / «Не удалось» — только на той,
+  // что нажали; остальные остаются «Скопировать».
+  const copyButtonLabel = (key: ContactMethod) =>
+    copyFeedback?.key === key ? (copyFeedback.ok ? 'Скопировано' : 'Не удалось') : 'Скопировать';
+
+  // Текст для скринридера (смена надписи кнопки сама по себе озвучивается ненадёжно).
+  const copyAnnouncement = copyFeedback
+    ? copyFeedback.ok
+      ? copyFeedback.key === 'phone'
+        ? 'Номер телефона скопирован'
+        : 'Адрес почты скопирован'
+      : 'Не удалось скопировать'
+    : '';
+
   return (
     <section
       id="workshops-signup"
@@ -168,9 +187,9 @@ export function WorkshopsSignupSection() {
                   variant="outline"
                   size="md"
                   className={styles.copyButton}
-                  onClick={() => handleCopy(phoneDisplay, 'Номер')}
+                  onClick={() => handleCopy(phoneDisplay, 'phone')}
                 >
-                  Скопировать
+                  {copyButtonLabel('phone')}
                 </Button>
               </div>
 
@@ -186,9 +205,9 @@ export function WorkshopsSignupSection() {
                   variant="outline"
                   size="md"
                   className={styles.copyButton}
-                  onClick={() => handleCopy(CONTACT_EMAIL, 'Почта')}
+                  onClick={() => handleCopy(CONTACT_EMAIL, 'email')}
                 >
-                  Скопировать
+                  {copyButtonLabel('email')}
                 </Button>
               </div>
             </div>
@@ -198,11 +217,11 @@ export function WorkshopsSignupSection() {
             Неудобно звонить или не дозвонились? Оставьте заявку, мы перезвоним или напишем.
           </p>
 
-          {copyStatus ? (
-            <p className={styles.copyStatus} role="status" aria-live="polite">
-              {copyStatus}
-            </p>
-          ) : null}
+          {/* Видимый фидбэк — на самой кнопке; здесь только озвучка для скринридера.
+              Смонтирован всегда (live-region должен существовать до смены текста). */}
+          <p className="visually-hidden" role="status" aria-live="polite">
+            {copyAnnouncement}
+          </p>
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit} noValidate>

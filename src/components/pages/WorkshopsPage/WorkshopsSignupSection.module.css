@@ -248,14 +248,6 @@
   color: var(--color-text);
 }
 
-.copyStatus {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: var(--text-caption);
-  font-weight: 500;
-  color: var(--color-purple-text);
-}
-
 .form {
   display: flex;
   flex-direction: column;

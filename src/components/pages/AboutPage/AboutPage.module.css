@@ -126,20 +126,23 @@
   border-radius: var(--radius-xl);
   background-color: var(--color-surface);
   box-shadow: var(--shadow-card);
-  font-family: var(--font-display);
-  font-size: var(--text-card-title);
-  font-weight: 600;
-  line-height: var(--leading-tight);
-  text-align: center;
-  color: var(--color-text);
 }
 
-.partnersNote {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: var(--text-caption);
-  font-weight: 500;
-  color: var(--color-muted);
+/* Логотипы нормализуем по высоте (как «стена логотипов»): узкие/широкие
+   марки выравниваются по верт. размеру, ширина — авто, contain. */
+.partnerLogo {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 44px;
+  object-fit: contain;
+}
+
+@media (min-width: 1024px) {
+  .partnerLogo {
+    max-height: 52px;
+  }
 }
 
 /* ── Команда ──────────────────────────────────────────────────────── */

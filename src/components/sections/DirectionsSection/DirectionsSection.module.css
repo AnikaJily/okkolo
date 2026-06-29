@@ -1,6 +1,10 @@
 .root {
   --direction-card-min: 260px;
   --direction-gap: 24px;
+  /* Карусель (мобайл/планшет): ширина слайда = контейнер минус этот «подгляд»,
+     чтобы одна карточка занимала почти весь экран, а следующая чуть выглядывала
+     (видно ≈ peek минус gap трека). */
+  --direction-peek: 40px;
 
   display: flex;
   flex-direction: column;

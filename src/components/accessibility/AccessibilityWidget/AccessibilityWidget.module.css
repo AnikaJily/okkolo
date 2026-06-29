@@ -23,13 +23,34 @@
     calc((100vw - var(--container-max)) / 2 + var(--page-padding-x)),
     env(safe-area-inset-right)
   );
-  bottom: max(var(--space-5), env(safe-area-inset-bottom));
+  bottom: max(var(--fab-inset), env(safe-area-inset-bottom));
   z-index: 30;
 }
 
 :global(:root:has([data-state='open'][role='dialog'])) .triggerFloating {
   visibility: hidden;
   pointer-events: none;
+}
+
+/* Пока открыта панель доступности — сам плавающий триггер избыточен
+   (управление уже в панели) и мешает: прячем его, как и при открытом диалоге.
+   Заодно снимает коллизию с уезжающей вниз кнопкой корзины в ландшафте. */
+:global(:root[data-a11y-panel-open]) .triggerFloating {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* На крупном a11y-шрифте (xl/xxl) лейбл масштабируется (rem) и раздувает пилюлю
+   плавающего триггера почти на пол-экрана — оставляем только иконку с aria-label,
+   как и на узких экранах (<=640). */
+:global(:root[data-a11y][data-a11y-font='xl']) .triggerFloating,
+:global(:root[data-a11y][data-a11y-font='xxl']) .triggerFloating {
+  padding: 15px;
+}
+
+:global(:root[data-a11y][data-a11y-font='xl']) .triggerFloating .triggerLabel,
+:global(:root[data-a11y][data-a11y-font='xxl']) .triggerFloating .triggerLabel {
+  display: none;
 }
 
 .triggerFloatingHidden {
@@ -60,6 +81,14 @@
 
 .triggerLabel {
   font: inherit;
+  /* По умолчанию переносим: в бургер-меню (fullWidth) и в футере лейбл
+     масштабируется a11y-шрифтом и при nowrap вылезал за контейнер (1.4.10). */
+  white-space: normal;
+  text-align: center;
+}
+
+/* Плавающая пилюля — всегда в одну строку (а на <=640 и xl/xxl лейбл скрыт). */
+.triggerFloating .triggerLabel {
   white-space: nowrap;
 }
 
@@ -67,7 +96,6 @@
   .triggerFloating {
     padding: 15px;
     right: max(var(--page-padding-x), env(safe-area-inset-right));
-    bottom: max(var(--space-4), env(safe-area-inset-bottom));
   }
 
   .triggerFloating .triggerLabel {
@@ -81,6 +109,19 @@
   left: 0;
   right: 0;
   z-index: 110;
+  /* Панель фиксирована к верху без своего скролла: если контент в одну колонку
+     (мобайл) или крупный шрифт делают её выше экрана — особенно в ландшафте/на
+     низких экранах — низ (кнопка «Обычная версия») уезжает за пределы вьюпорта
+     и недостижим. Ограничиваем высотой вьюпорта и включаем внутренний скролл
+     (WCAG 1.4.10 reflow по высоте). dvh — чтобы учитывать адресную строку на
+     мобильных браузерах. */
+  max-height: 100dvh;
+  /* hidden по X (а не дефолтный visible): иначе один только overflow-y:auto
+     вычисляет overflow-x в auto (правило «visible рядом с не-visible → auto») и
+     панель могла бы скроллиться вбок. overflow: hidden auto — клип X + скролл Y. */
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background: var(--color-surface);
   border-bottom: 2px solid var(--color-text);
   box-shadow: var(--shadow-card);
@@ -106,6 +147,10 @@
   --text-body: 21px;
   --text-feature-title: 28px;
   --text-section-title: 40px;
+  /* Иконка «свернуть» (.collapse → CloseIcon size="sheet") тоже изолируем:
+     --icon-close-sheet задан в rem и иначе раздувался бы до 45/60px на xl/xxl,
+     вылезая за кнопку 50px. */
+  --icon-close-sheet: 30px;
 }
 
 /* Когда открыт любой модальный диалог (Radix Dialog/Sheet, overlay z-40,
@@ -125,13 +170,19 @@
 }
 
 .panelBar {
+  /* Липкая шапка: при внутреннем скролле панели (низкий экран/ландшафт) крестик
+     «Свернуть» остаётся виден — иначе тач-юзеру нечем закрыть панель. */
+  position: sticky;
+  top: 0;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
   max-width: var(--container-max, 1320px);
   margin: 0 auto;
-  padding: var(--space-2) var(--space-6) 0;
+  padding: var(--space-2) var(--space-6);
+  background: var(--color-surface);
 }
 
 .panelTitle {
@@ -283,6 +334,9 @@
   background: var(--swatch-bg, var(--color-surface));
   color: var(--swatch-fg, var(--color-text));
   border-color: var(--swatch-border, var(--color-border-strong));
+  /* Образцы цвета: сохраняем превью-цвета в forced-colors, иначе все 6 схем
+     станут одинаковыми (Canvas/CanvasText) и неразличимыми (1.4.1). */
+  forced-color-adjust: none;
 }
 
 .optionSwatch:hover {
@@ -293,14 +347,30 @@
 .optionSwatch[aria-pressed='true'] {
   background: var(--swatch-bg, var(--color-surface));
   color: var(--swatch-fg, var(--color-text));
-  border-color: var(--color-purple-dark);
-  box-shadow: 0 0 0 2px var(--color-purple-dark) inset;
+  border-color: var(--swatch-border, var(--color-border-strong));
+  /* Кольцо выбора выносим НА белую панель, а не inset поверх цветного превью:
+     #b078dc к фону свотча blueCyan/beigeBrown <3:1, а к surface — 3.2:1. Белая
+     прокладка отделяет кольцо от цветного края свотча (1.4.11). */
+  box-shadow:
+    0 0 0 2px var(--color-surface),
+    0 0 0 4px var(--color-purple-dark);
 }
 
 .swatchLetter {
   font-size: inherit;
   font-weight: 600;
   line-height: var(--leading-none);
+}
+
+/* «Обычные цвета сайта» — дефолтная схема (theme='none'). Фон — брендовый
+   градиент (фиолетовый→жёлтый), чтобы свотч читался как «обычная ЦВЕТНАЯ
+   версия» и не сливался с монохромным «чёрный на белом». Тёмная «А» поверх
+   контрастна на обоих концах градиента. `background:` (шорткат) принимает
+   градиент из --swatch-bg, как и сплошной цвет у остальных схем. */
+.swatchNone {
+  --swatch-bg: linear-gradient(135deg, var(--color-purple-light) 0%, var(--color-yellow) 100%);
+  --swatch-fg: var(--color-text);
+  --swatch-border: var(--color-border-strong);
 }
 
 .swatchWhiteBlack {

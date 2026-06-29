@@ -27,6 +27,7 @@ export function ProductCard({ product, onAddToCart, onDetails }: ProductCardProp
       secondaryActionLabel="Подробнее"
       secondaryAction={() => onDetails(product)}
       actionsLayout="row"
+      tallImage
     />
   );
 }

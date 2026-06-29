@@ -7,10 +7,11 @@
 | | |
 |---|---|
 | IP сервера | `158.160.128.16` |
+| Домен | `okkolo-project.ru` (HTTPS, Let's Encrypt / Certbot) |
 | ОС | Ubuntu 24.04 LTS |
-| Сайт | http://158.160.128.16 |
-| Админка Strapi | http://158.160.128.16/admin |
-| API | http://158.160.128.16/api/... |
+| Сайт | https://okkolo-project.ru (http и голый IP → 301 на HTTPS) |
+| Админка Strapi | https://okkolo-project.ru/admin |
+| API | https://okkolo-project.ru/api/... |
 | Пользователь на сервере | `nastyasep2004` (sudo NOPASSWD) |
 | SSH | `ssh nastyasep2004@158.160.128.16` |
 
@@ -247,13 +248,26 @@ sudo fail2ban-client status sshd
 
 ```bash
 cd ~/Projects/okkolo
-VITE_STRAPI_URL=http://158.160.128.16 npm run build
+VITE_STRAPI_URL=https://okkolo-project.ru npm run build
 rsync -az --delete -e ssh dist/ nastyasep2004@158.160.128.16:~/apps/web/
 ```
 
 `--delete` чистит старые файлы. Nginx не нужно перезагружать — он раздаёт прямо из `~/apps/web/`.
 
+> **Важно про `VITE_STRAPI_URL`:** сайт работает по HTTPS (`https://okkolo-project.ru`), API проксируется на том же origin. Поэтому собирать нужно **именно с `https://okkolo-project.ru`** — если собрать со старым `http://158.160.128.16`, браузер заблокирует запросы как mixed-content, и фронт молча свалится на моки. Можно оставить значение пустым (тогда фронт пойдёт на относительный `/api`, тот же origin) — это даже надёжнее при смене домена.
+
 ### CMS
+
+> ⚠️ **ОСТОРОЖНО: прод-схема CMS опережает репозиторий (актуально на 2026-06-27).**
+> Контент-типы на сервере правили напрямую через админку (Content-Type Builder переписал
+> `schema.json` на сервере), и эти изменения **не вернули в git**. На проде сейчас:
+> `event.type` и `product.category` — это **relation** (коллекции `event-types`, `categories`
+> + link-таблицы `events_type_lnk`, `products_category_lnk`), а у `order` есть поля
+> `itemsSubtotal`/`deliveryPrice`. В репозитории же `type`/`category` — старый `enumeration`.
+> **Поэтому `rsync` репы поверх прода СЕЙЧАС НЕЛЬЗЯ** — Strapi на старте «домигрирует» схему вниз
+> и удалит relation-связи/поля (потеря данных). Сначала нужно **синхронизировать репозиторий с
+> продом**: стянуть актуальные `src/api/**/schema.json` и `types/generated/*` с сервера в git,
+> и только потом деплоить. Перед любым деплоем CMS — `pg_dump` (см. раздел PostgreSQL).
 
 С локальной машины (без переноса `.env` и `node_modules`):
 
@@ -290,7 +304,15 @@ pm2 restart okkolo-cms --update-env
 
 Пока контент-типы не созданы, фронт молча фоллбэчит на моки из `src/data/` — это by design.
 
-## Когда появится домен / HTTPS
+## Домен / HTTPS — НАСТРОЕНО
+
+✅ **Уже сделано (июнь 2026):** домен `okkolo-project.ru` указывает на `158.160.128.16`,
+HTTPS выпущен Certbot'ом (Let's Encrypt), nginx редиректит `:80` → HTTPS
+(`return 301 https://$host$request_uri`), `root` отдаётся из `~/apps/web`.
+В `~/apps/cms/.env` — `PUBLIC_URL=https://okkolo-project.ru` и `CORS_ORIGIN=https://okkolo-project.ru`.
+Сертификат продлевается автоматически (cron от Certbot).
+
+Шаги ниже оставлены как справка — на случай переноса на другой домен/сервер:
 
 1. Указать A-запись домена на `158.160.128.16`.
 2. Открыть 443/tcp:
@@ -335,9 +357,11 @@ Certbot ставит cron-задачу автообновления — отде
 
 ```bash
 # С локальной машины:
-curl -s -o /dev/null -w "/ %{http_code}\n" http://158.160.128.16/
-curl -s -o /dev/null -w "/admin %{http_code}\n" http://158.160.128.16/admin
-curl -s http://158.160.128.16/api/directions | head -c 200
+curl -s -o /dev/null -w "/ %{http_code}\n" https://okkolo-project.ru/
+curl -s -o /dev/null -w "/admin %{http_code}\n" https://okkolo-project.ru/admin
+curl -sg "https://okkolo-project.ru/api/events?populate[type]=true" | head -c 200
+# ВАЖНО: для URL со скобками (?populate[type]=...) нужен флаг -g (--globoff),
+# иначе curl трактует [ ] как glob-диапазон и молча возвращает пустой ответ.
 
 # На сервере:
 pm2 status

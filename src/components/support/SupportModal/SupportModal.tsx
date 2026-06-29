@@ -4,6 +4,7 @@ import type { ChangeEvent, FormEvent } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { CloseIcon } from '@/components/ui/CloseIcon/CloseIcon';
+import { FilterChip } from '@/components/ui/FilterChip';
 import { RequiredMark } from '@/components/ui/RequiredMark';
 import {
   SUPPORT_AMOUNTS,
@@ -167,15 +168,14 @@ export function SupportModal({ open, onOpenChange }: SupportModalProps) {
               </span>
               <div className={styles.segment}>
                 {SUPPORT_FREQUENCIES.map((option) => (
-                  <button
+                  <FilterChip
                     key={option.value}
-                    type="button"
-                    className={styles.chip}
+                    active={frequency === option.value}
                     aria-pressed={frequency === option.value}
                     onClick={() => setFrequency(option.value)}
                   >
                     {option.label}
-                  </button>
+                  </FilterChip>
                 ))}
               </div>
             </div>
@@ -187,15 +187,14 @@ export function SupportModal({ open, onOpenChange }: SupportModalProps) {
               </span>
               <div className={styles.amountGrid}>
                 {SUPPORT_AMOUNTS.map((value) => (
-                  <button
+                  <FilterChip
                     key={value}
-                    type="button"
-                    className={styles.chip}
+                    active={preset === value}
                     aria-pressed={preset === value}
                     onClick={() => selectPreset(value)}
                   >
                     {amountFormatter.format(value)}
-                  </button>
+                  </FilterChip>
                 ))}
               </div>
 

@@ -94,11 +94,16 @@ export function AboutPage() {
         <ul className={styles.partnersStrip}>
           {ABOUT_PARTNERS.map((partner) => (
             <li key={partner.id} className={styles.partnerCard}>
-              {partner.name}
+              <img
+                src={partner.logo}
+                alt={partner.name}
+                className={styles.partnerLogo}
+                loading="lazy"
+                decoding="async"
+              />
             </li>
           ))}
         </ul>
-        <p className={styles.partnersNote}>Логотипы партнёров появятся позже</p>
       </section>
     </main>
   );

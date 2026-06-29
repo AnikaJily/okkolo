@@ -1,4 +1,8 @@
 import { CONTACT_EMAIL, OKKOLO_ADDRESS, OKKOLO_MAP_URL } from '@/data/site';
+import sberLogo from '@/assets/logos/partner-sber.png';
+import magnitLogo from '@/assets/logos/partner-magnit.png';
+import ozkLogo from '@/assets/logos/partner-ozk.png';
+import damateLogo from '@/assets/logos/partner-damate.png';
 
 /**
  * Контент страницы «О нас» (/about).
@@ -56,17 +60,19 @@ export const ABOUT_STATS: readonly AboutStat[] = [
   { id: 'since', value: '2022', label: 'год, с которого работает «Окколо»' },
 ];
 
-/* ── Партнёры (слайд 6). Логотипы пока не загружены — выводим названия ── */
+/* ── Партнёры (слайд 6). `logo` — оптимизированный PNG с прозрачным фоном
+   (src/assets/logos, ≤480px); `name` уходит в alt для скринридеров. ── */
 export interface AboutPartner {
   id: string;
   name: string;
+  logo: string;
 }
 
 export const ABOUT_PARTNERS: readonly AboutPartner[] = [
-  { id: 'sber', name: 'Сбербанк' },
-  { id: 'magnit', name: 'Магнит' },
-  { id: 'ozk', name: 'Объединённая зерновая компания' },
-  { id: 'damate', name: 'Damate' },
+  { id: 'sber', name: 'Сбербанк', logo: sberLogo },
+  { id: 'magnit', name: 'Магнит', logo: magnitLogo },
+  { id: 'ozk', name: 'Объединённая зерновая компания', logo: ozkLogo },
+  { id: 'damate', name: 'Damate', logo: damateLogo },
 ];
 
 /* ── Команда (слайд 7) — порядок как в деке ──────────────────────── */

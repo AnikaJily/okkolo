@@ -17,7 +17,7 @@
 
 .statsBand {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 16px;
   margin: 0;
   padding: 0;
@@ -50,10 +50,29 @@
   color: var(--color-text);
 }
 
+/* Маленькие экраны — одна колонка (база). С 480px помещаются две, с 640px — все
+   четыре. В две на узком экране карточка с крупным числом и длинной подписью
+   слишком сжата. */
+@media (min-width: 480px) {
+  .statsBand {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (min-width: 640px) {
   .statsBand {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+}
+
+/* Увеличенный шрифт (a11y, 125/150/200%) — в одну колонку независимо от ширины:
+   при крупном тексте числа (--text-section-title) и длинные подписи в 2/4
+   колонки наезжают друг на друга. Специфичность :root[data-a11y…] перебивает
+   медиа-правила выше. */
+:global(:root[data-a11y][data-a11y-font='lg']) .statsBand,
+:global(:root[data-a11y][data-a11y-font='xl']) .statsBand,
+:global(:root[data-a11y][data-a11y-font='xxl']) .statsBand {
+  grid-template-columns: 1fr;
 }
 
 @media (min-width: 1024px) {

@@ -36,7 +36,7 @@
 
 .products {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 8px 8px;
   row-gap: 23px;
   width: 100%;
@@ -100,6 +100,17 @@
   text-align: center;
 }
 
+/* Узкие экраны (<490px) — одна колонка: в две карточки сильно мнутся, тексты
+   переносятся по слогам и кнопки «В корзину»/«Подробнее» обрезаются. С 490px
+   места хватает — возвращаем две. */
+@media (min-width: 490px) {
+  .products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Планшетный диапазон (640–899px) — две колонки. На три тут рано: при padding 40
+   и gap 16 карточка ≈176px и снова мнётся; в две — ≥272px, комфортно. */
 @media (min-width: 640px) {
   .root {
     gap: 36px;
@@ -107,9 +118,16 @@
   }
 
   .products {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
     row-gap: 24px;
+  }
+}
+
+/* Три колонки — только когда на карточку остаётся ≥260px (≈900px вьюпорта). */
+@media (min-width: 900px) {
+  .products {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

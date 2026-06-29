@@ -248,9 +248,10 @@
 
 .barActions .footerBarBtn {
   box-sizing: border-box;
+  /* Только min-height (без жёсткого height): при крупном a11y-шрифте лейбл
+     a11y-триггера переносится в 2 строки и кнопка должна вырасти, а не обрезать. */
   min-height: var(--footer-bar-btn-height);
-  height: var(--footer-bar-btn-height);
-  padding: 0 20px;
+  padding: 6px 20px;
 }
 
 .footerA11y {
