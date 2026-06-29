@@ -85,7 +85,7 @@
 .pageButtonActive {
   background-color: var(--color-yellow);
   /* Обводка 2px inside */
-  box-shadow: inset 0 0 0 2px var(--color-yellow-stroke);
+  box-shadow: inset 0 0 0 var(--stroke-width) var(--color-yellow-stroke);
   /* Текущая страница — не только цветом: жирность (есть и aria-current). SC 1.4.1. */
   font-weight: 600;
 }

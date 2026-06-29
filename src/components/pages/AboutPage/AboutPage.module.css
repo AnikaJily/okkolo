@@ -167,7 +167,7 @@
   aspect-ratio: 1 / 1;
   border-radius: var(--radius-lg);
   /* Жёлтая рамка-акцент: фирменный жёлтый из дека, ширина 3px как у Button */
-  border: 3px solid var(--color-yellow);
+  border: var(--stroke-width) solid var(--color-yellow);
 }
 
 .teamName {

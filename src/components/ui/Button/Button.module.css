@@ -3,7 +3,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 3px solid transparent;
+  border: var(--stroke-width) solid transparent;
   border-radius: var(--radius-pill);
   font-family: var(--font-body);
   font-size: var(--text-button);
@@ -52,16 +52,16 @@
   color: var(--color-text);
 }
 
-/* Stroke 3px заподлицо с внешним краем — той же ширины, что border у .outline,
-   чтобы ободок у закрашенной и незакрашенной кнопок выглядел одинаково.
-   Через ::after, а не inset box-shadow: тень рисуется ЗА 3px-бордером и уезжала
-   на 3px внутрь — получалась «двойная рамка». ::after накрывает внешний край
-   border-box (inset -3px = ширина бордера .root), габариты не меняются. */
+/* Stroke шириной --stroke-width заподлицо с внешним краем — той же ширины, что
+   border у .outline, чтобы ободок у закрашенной и незакрашенной кнопок выглядел
+   одинаково. Через ::after, а не inset box-shadow: тень рисуется ЗА бордером и
+   уезжала внутрь — получалась «двойная рамка». ::after накрывает внешний край
+   border-box (inset = ширина бордера .root), габариты не меняются. */
 .primary::after {
   content: '';
   position: absolute;
-  inset: -3px;
-  border: 3px solid var(--color-purple-stroke);
+  inset: calc(-1 * var(--stroke-width));
+  border: var(--stroke-width) solid var(--color-purple-stroke);
   border-radius: inherit;
   pointer-events: none;
 }

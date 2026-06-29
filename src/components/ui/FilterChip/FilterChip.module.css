@@ -35,7 +35,7 @@
 .chipActive {
   background-color: var(--color-yellow);
   /* Обводка 2px inside */
-  box-shadow: inset 0 0 0 2px var(--color-yellow-stroke);
+  box-shadow: inset 0 0 0 var(--stroke-width) var(--color-yellow-stroke);
   /* Второй индикатор «выбрано» (не только цвет): жирность (SC 1.4.1). */
   font-weight: 600;
 }
