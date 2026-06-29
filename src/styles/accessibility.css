@@ -128,6 +128,45 @@
   text-decoration: underline !important;
 }
 
+/* === Псевдоэлементы (::before / ::after) в цветосхемах ===
+   Правила выше красят только ЭЛЕМЕНТЫ — псевдоэлементы оставались цветными.
+   Из-за этого в теме НЕ перекрашивались: обводка залитых кнопок (.primary::after,
+   рисуется через border псевдоэлемента) и фоновые «пятна» главной
+   (.main::before / .main::after — фиолетовый и жёлтый круг). Красим их фон в цвет
+   темы (пятна сливаются с фоном и исчезают) и border в цвет текста (обводка кнопок
+   становится в тон остальным). background-image:none — на случай декоративных
+   градиентов; функциональных фон-картинок у псевдоэлементов в проекте нет. */
+:root[data-a11y][data-a11y-theme='whiteBlack'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::before,
+:root[data-a11y][data-a11y-theme='whiteBlack'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::after {
+  background-color: var(--a11y-whiteBlack-bg) !important;
+  background-image: none !important;
+  border-color: var(--a11y-whiteBlack-fg) !important;
+}
+:root[data-a11y][data-a11y-theme='blackWhite'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::before,
+:root[data-a11y][data-a11y-theme='blackWhite'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::after {
+  background-color: var(--a11y-blackWhite-bg) !important;
+  background-image: none !important;
+  border-color: var(--a11y-blackWhite-fg) !important;
+}
+:root[data-a11y][data-a11y-theme='blueCyan'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::before,
+:root[data-a11y][data-a11y-theme='blueCyan'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::after {
+  background-color: var(--a11y-blueCyan-bg) !important;
+  background-image: none !important;
+  border-color: var(--a11y-blueCyan-fg) !important;
+}
+:root[data-a11y][data-a11y-theme='beigeBrown'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::before,
+:root[data-a11y][data-a11y-theme='beigeBrown'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::after {
+  background-color: var(--a11y-beigeBrown-bg) !important;
+  background-image: none !important;
+  border-color: var(--a11y-beigeBrown-fg) !important;
+}
+:root[data-a11y][data-a11y-theme='brownGreen'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::before,
+:root[data-a11y][data-a11y-theme='brownGreen'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::after {
+  background-color: var(--a11y-brownGreen-bg) !important;
+  background-image: none !important;
+  border-color: var(--a11y-brownGreen-fg) !important;
+}
+
 /* === Кольцо фокуса в светлых цветосхемах ===
    По умолчанию фокус-кольцо — var(--color-purple-dark) (global.css + модули). На
    перекрашенном фоне светлых тем blueCyan (#9dd1ff) и beigeBrown (#f5ecd1)
