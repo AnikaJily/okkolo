@@ -10,6 +10,10 @@ export interface WorkshopProgram {
   description: string;
   image: string;
   picture?: PictureSource;
+  /** srcSet из форматов Strapi — для responsive-<img>, когда фото пришло из CMS. */
+  imageSrcSet?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   imageAlt?: string;
 }
 
@@ -65,14 +69,5 @@ export const workshopPrograms: WorkshopProgram[] = [
     image: heroTeamPicture.img.src,
     picture: heroTeamPicture,
     imageAlt: 'Администрирование в «Окколо»',
-  },
-  {
-    id: 'sound',
-    title: 'Звукорежиссура',
-    description:
-      'Вы научитесь делать звук и свет на мероприятия',
-    image: heroTeamPicture.img.src,
-    picture: heroTeamPicture,
-    imageAlt: 'Звукорежиссура в «Окколо»',
   },
 ];

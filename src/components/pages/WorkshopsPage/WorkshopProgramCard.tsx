@@ -7,6 +7,9 @@ export interface WorkshopProgramCardProps {
   description: string;
   image?: string;
   picture?: PictureSource;
+  imageSrcSet?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   imageAlt?: string;
   showAction?: boolean;
   actionLabel?: string;
@@ -18,6 +21,9 @@ export function WorkshopProgramCard({
   description,
   image,
   picture,
+  imageSrcSet,
+  imageWidth,
+  imageHeight,
   imageAlt = '',
   showAction = true,
   actionLabel = 'Записаться',
@@ -30,6 +36,9 @@ export function WorkshopProgramCard({
       description={description}
       image={image}
       picture={picture}
+      imageSrcSet={imageSrcSet}
+      imageWidth={imageWidth}
+      imageHeight={imageHeight}
       imageAlt={imageAlt}
       imageSizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 90vw"
       href={showAction ? actionHref : undefined}

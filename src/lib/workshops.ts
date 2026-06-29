@@ -9,6 +9,7 @@ import {
   fetchWorkshopPrograms,
   fetchWorkshopsPage,
   getStrapiImageUrl,
+  getStrapiResponsiveImage,
   type StrapiWorkshopProgram,
   type StrapiWorkshopsPage,
 } from '@/lib/strapi';
@@ -31,14 +32,19 @@ function toProgram(item: StrapiWorkshopProgram, index: number): WorkshopProgram 
   if (!title || !description) return null;
 
   const fallback = fallbackPrograms[index] ?? fallbackPrograms[0];
-  const imageUrl = getStrapiImageUrl(item.image) ?? fallback?.image ?? '';
+  const responsive = getStrapiResponsiveImage(item.image);
 
   return {
     id: item.documentId,
     title,
     description,
-    image: imageUrl,
-    picture: fallback?.picture,
+    // Фото из Strapi есть → рендерим его (responsive <img srcSet>), build-time picture не подставляем.
+    // Нет фото в CMS → встроенная picture по индексу (как было).
+    image: responsive?.src ?? fallback?.image ?? '',
+    picture: responsive ? undefined : fallback?.picture,
+    imageSrcSet: responsive?.srcSet || undefined,
+    imageWidth: responsive?.width,
+    imageHeight: responsive?.height,
     imageAlt: fallback?.imageAlt ?? title,
   };
 }
