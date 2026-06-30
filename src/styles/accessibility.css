@@ -70,11 +70,15 @@
      текста темы (виджет токеном не пользуется — его палитра не страдает). */
   --color-yellow-stroke: var(--a11y-whiteBlack-fg);
 }
-/* Монохромные схемы (чёрным по белому / белым по чёрному): ссылки — цветом
+/* Подчёркивание — для текстовых ССЫЛОК (сигнал «это ссылка», SC 1.4.1), но НЕ
+   для кнопок: Button рендерит <a> при наличии href и <button> без — без
+   :not([data-button]) часть одинаковых на вид кнопок («Подробнее», CTA-ссылки)
+   подчёркивалась, а часть нет. data-button есть у всех кнопок Button — исключаем.
+
+   Монохромные схемы (чёрным по белому / белым по чёрному): ссылки — цветом
    текста схемы, БЕЗ отдельного акцентного цвета. Так «ч/б» остаётся реально
-   монохромным, а подчёркивание — достаточный и единственный сигнал «это ссылка»
-   (SC 1.4.1). В цветных схемах ниже ссылки сохраняют свой акцентный -link-цвет. */
-:root[data-a11y][data-a11y-theme='whiteBlack'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
+   монохромным. В цветных схемах ниже ссылки сохраняют свой акцентный -link-цвет. */
+:root[data-a11y][data-a11y-theme='whiteBlack'] body a:not([data-a11y-widget] a):not([data-a11y-keep]):not([data-button]) {
   color: var(--a11y-whiteBlack-fg) !important;
   text-decoration: underline !important;
 }
@@ -89,7 +93,7 @@
   border-color: var(--a11y-blackWhite-fg) !important;
   --color-yellow-stroke: var(--a11y-blackWhite-fg);
 }
-:root[data-a11y][data-a11y-theme='blackWhite'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
+:root[data-a11y][data-a11y-theme='blackWhite'] body a:not([data-a11y-widget] a):not([data-a11y-keep]):not([data-button]) {
   color: var(--a11y-blackWhite-fg) !important;
   text-decoration: underline !important;
 }
@@ -105,7 +109,7 @@
   border-color: var(--a11y-blueCyan-fg) !important;
   --color-yellow-stroke: var(--a11y-blueCyan-fg);
 }
-:root[data-a11y][data-a11y-theme='blueCyan'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
+:root[data-a11y][data-a11y-theme='blueCyan'] body a:not([data-a11y-widget] a):not([data-a11y-keep]):not([data-button]) {
   color: var(--a11y-blueCyan-link) !important;
   text-decoration: underline !important;
 }
@@ -120,7 +124,7 @@
   border-color: var(--a11y-beigeBrown-fg) !important;
   --color-yellow-stroke: var(--a11y-beigeBrown-fg);
 }
-:root[data-a11y][data-a11y-theme='beigeBrown'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
+:root[data-a11y][data-a11y-theme='beigeBrown'] body a:not([data-a11y-widget] a):not([data-a11y-keep]):not([data-button]) {
   color: var(--a11y-beigeBrown-link) !important;
   text-decoration: underline !important;
 }
@@ -135,7 +139,7 @@
   border-color: var(--a11y-brownGreen-fg) !important;
   --color-yellow-stroke: var(--a11y-brownGreen-fg);
 }
-:root[data-a11y][data-a11y-theme='brownGreen'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
+:root[data-a11y][data-a11y-theme='brownGreen'] body a:not([data-a11y-widget] a):not([data-a11y-keep]):not([data-button]) {
   color: var(--a11y-brownGreen-link) !important;
   text-decoration: underline !important;
 }

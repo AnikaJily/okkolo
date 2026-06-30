@@ -54,6 +54,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
     return (
       <a
         ref={ref as Ref<HTMLAnchorElement>}
+        data-button=""
         className={classes}
         {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}
       >
@@ -66,6 +67,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
     <button
       ref={ref as Ref<HTMLButtonElement>}
       type="button"
+      data-button=""
       className={classes}
       {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
     >
