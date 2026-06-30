@@ -76,3 +76,18 @@
     gap: var(--gap-after-h1);
   }
 }
+
+/*
+  На максимальном a11y-шрифте (200%) грид из узких колонок «скучивает» карточки:
+  крупный текст ломает заголовки посреди слова, описания жмутся. Переключаемся на
+  карусель (по карточке с запасом ширины) даже на десктопе, где обычно грид.
+  Перебивает @container-правила выше — специфичность :root[data-a11y…] (0,3,1)
+  выше, чем у .grid/.carouselWrap (0,1,0) в @container.
+*/
+:global(:root[data-a11y][data-a11y-font='xxl']) .carouselWrap {
+  display: block;
+}
+
+:global(:root[data-a11y][data-a11y-font='xxl']) .grid {
+  display: none;
+}
