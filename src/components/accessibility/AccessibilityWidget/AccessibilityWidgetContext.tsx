@@ -180,7 +180,8 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
   useEffect(() => {
     if (!open) return;
     requestAnimationFrame(() => {
-      panelRef.current?.focus();
+      // preventScroll: панель fixed сверху, и так видна — не дёргаем скролл.
+      panelRef.current?.focus({ preventScroll: true });
     });
   }, [open]);
 
@@ -224,13 +225,16 @@ export function AccessibilityWidgetProvider({ children }: { children: ReactNode 
     // Возвращаем фокус инициатору; .focus() по скрытому (visibility:hidden)
     // элементу — no-op, поэтому проверяем document.activeElement и
     // откатываемся на видимые триггеры (футер → плавающий).
+    // ВЕЗДЕ preventScroll: без него .focus() прокручивает страницу к элементу —
+    // когда инициатор был скрытым плавающим триггером, фокус откатывался на
+    // футер-триггер внизу страницы и пользователя «утягивало в футер».
     const opener = openerRef.current;
-    opener?.focus();
+    opener?.focus({ preventScroll: true });
     if (document.activeElement === opener) return;
     const footerTrigger = document.getElementById('footer-a11y-trigger');
-    footerTrigger?.focus();
+    footerTrigger?.focus({ preventScroll: true });
     if (document.activeElement === footerTrigger) return;
-    floatingTriggerRef.current?.focus();
+    floatingTriggerRef.current?.focus({ preventScroll: true });
   }, []);
 
   const handleExit = () => {
