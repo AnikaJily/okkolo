@@ -48,21 +48,35 @@
   position: absolute;
   right: -2px;
   bottom: -2px;
+  box-sizing: border-box;
   display: flex;
   min-width: 22px;
-  height: 22px;
+  /* min-height (не фиксированный height) + padding: кружок ВСЕГДА обнимает цифру,
+     не обрезая её. border-radius:999px держит круг/пилюлю при «99+». */
+  min-height: 22px;
   align-items: center;
   justify-content: center;
-  padding: 0 5px;
-  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  border-radius: 999px;
   background: var(--color-yellow);
   /* Обводка 2px inside */
   box-shadow: inset 0 0 0 var(--stroke-width) var(--color-yellow-stroke);
   font-family: var(--font-display);
-  font-size: var(--text-caption);
+  /* Размер счётчика — в px, изолирован от a11y-масштаба шрифта. Сам FAB фиксирован
+     (56/60px, не растёт по rem), поэтому и цифра не должна: иначе на крупном
+     a11y-шрифте (rem) она перерастала кружок и вылезала за него. */
+  font-size: 13px;
   font-weight: 600;
   line-height: 1;
   color: var(--color-text);
+}
+
+@media (min-width: 640px) {
+  .badge {
+    min-width: 24px;
+    min-height: 24px;
+    font-size: 14px;
+  }
 }
 
 @media (min-width: 640px) {

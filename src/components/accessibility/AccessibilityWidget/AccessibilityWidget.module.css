@@ -2,6 +2,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  /* Не шире контейнера: в футере на крупном a11y-шрифте лейбл «Версия для
+     слабовидящих» в одну строку распирал кнопку за край (как у обычного Button,
+     где max-width:100% уже есть). Лейбл переносится (white-space:normal ниже). */
+  max-width: 100%;
   gap: 10px;
   padding: 15px 20px;
   background: var(--color-surface);

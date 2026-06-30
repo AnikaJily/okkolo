@@ -307,10 +307,16 @@
   min-height: 48px;
   display: flex;
   align-items: center;
+  min-width: 0;
 }
 
 .sheetNavLink {
   display: inline-block;
+  /* На крупном a11y-шрифте длинные пункты («Доступность») не должны вылезать за
+     правый край узкого листа меню — ограничиваем шириной и переносим/ломаем слово
+     (1.4.10 reflow). Подложка hover/active по-прежнему обнимает текст (inline-block). */
+  max-width: 100%;
+  overflow-wrap: break-word;
   padding: 8px 12px;
   font-family: var(--font-display);
   font-size: var(--text-body);

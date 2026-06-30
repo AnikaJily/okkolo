@@ -37,7 +37,10 @@ export const SheetContent = forwardRef<ElementRef<typeof Dialog.Content>, SheetC
         className={cn(
           variant === 'center'
             ? 'fixed left-1/2 top-1/2 z-50 flex w-[min(calc(100vw-var(--page-padding-x)*2),560px)] max-h-[min(90dvh,820px)] -translate-x-1/2 -translate-y-1/2 flex-col gap-8 overflow-y-auto overscroll-contain rounded-[var(--radius-xl)] bg-[var(--color-surface)] px-5 py-6 shadow-[var(--shadow-card-hover)] outline-none sm:px-6 sm:py-7'
-            : 'fixed inset-y-0 right-0 z-50 flex w-[min(88vw,360px)] flex-col gap-8 overflow-y-auto overscroll-contain bg-[var(--color-surface)] px-6 py-7 shadow-[var(--shadow-card-hover)] outline-none',
+            : // top-0 h-[100dvh] вместо inset-y-0: на мобиле inset-y-0 тянется на высоту
+              // layout-вьюпорта (с адресной строкой), и низ листа (кнопки в footer) уходил
+              // под кромку браузера — «кнопок снизу не видно». dvh = по видимой высоте.
+              'fixed top-0 right-0 h-[100dvh] z-50 flex w-[min(88vw,360px)] flex-col gap-8 overflow-y-auto overscroll-contain bg-[var(--color-surface)] px-6 py-7 shadow-[var(--shadow-card-hover)] outline-none',
           className,
         )}
         {...props}
