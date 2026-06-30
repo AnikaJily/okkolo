@@ -176,3 +176,19 @@
     height: 100%;
   }
 }
+
+/* Крупный a11y-шрифт: текст и карта — в колонку (карта после текста, как на
+   мобиле). Бок о бок при 150–200% колонка фактов/часов слишком узкая. */
+:global(:root[data-a11y][data-a11y-font='xl']) .root,
+:global(:root[data-a11y][data-a11y-font='xxl']) .root {
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: 0;
+  row-gap: 32px;
+}
+
+:global(:root[data-a11y][data-a11y-font='xl']) .mapWrap,
+:global(:root[data-a11y][data-a11y-font='xxl']) .mapWrap {
+  aspect-ratio: 16 / 9;
+  min-height: 0;
+  height: auto;
+}

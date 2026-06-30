@@ -153,3 +153,29 @@
     min-height: 100%;
   }
 }
+
+/* Крупный a11y-шрифт: фото и текст — в колонку (фото после текста, как на мобиле).
+   Бок о бок (фото 40%) при 150–200% колонка текста слишком узкая. */
+:global(:root[data-a11y][data-a11y-font='xl']) .layout,
+:global(:root[data-a11y][data-a11y-font='xxl']) .layout {
+  flex-direction: column;
+  gap: 24px;
+}
+
+:global(:root[data-a11y][data-a11y-font='xl']) .content,
+:global(:root[data-a11y][data-a11y-font='xxl']) .content,
+:global(:root[data-a11y][data-a11y-font='xl']) .media,
+:global(:root[data-a11y][data-a11y-font='xxl']) .media {
+  flex: 0 0 auto;
+}
+
+:global(:root[data-a11y][data-a11y-font='xl']) .photo,
+:global(:root[data-a11y][data-a11y-font='xxl']) .photo {
+  flex: 0 0 auto;
+  min-height: 240px;
+}
+
+/* Карточки-проблемы при максимальном шрифте — в одну колонку (в две тесно). */
+:global(:root[data-a11y][data-a11y-font='xxl']) .problemsGrid {
+  grid-template-columns: 1fr;
+}

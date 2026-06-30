@@ -353,3 +353,24 @@
     padding-right: 8px;
   }
 }
+
+/* Крупный a11y-шрифт: 4 колонки футера «кучкуются» — переносим вниз. xl → 2
+   колонки (бренд на всю ширину, как на планшете), xxl → 1 колонка (как на
+   мобиле). row-gap возвращаем, иначе при переносе строк колонки слипаются. */
+:global(:root[data-a11y][data-a11y-font='xl']) .main {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  row-gap: 32px;
+}
+
+:global(:root[data-a11y][data-a11y-font='xl']) .brand {
+  grid-column: 1 / -1;
+}
+
+:global(:root[data-a11y][data-a11y-font='xxl']) .main {
+  grid-template-columns: 1fr;
+  row-gap: 32px;
+}
+
+:global(:root[data-a11y][data-a11y-font='xxl']) .brand {
+  grid-column: auto;
+}

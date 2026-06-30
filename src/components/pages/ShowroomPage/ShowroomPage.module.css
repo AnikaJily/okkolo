@@ -142,3 +142,10 @@
     gap: 20px;
   }
 }
+
+/* Крупный a11y-шрифт: ≤2 колонки товаров (по ширине бывает 3) — крупный текст
+   карточки иначе мнётся. lg оставляем как по ширине. */
+:global(:root[data-a11y][data-a11y-font='xl']) .products,
+:global(:root[data-a11y][data-a11y-font='xxl']) .products {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}

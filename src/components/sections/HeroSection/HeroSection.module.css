@@ -151,3 +151,29 @@
     flex: 0 0 597px;
   }
 }
+
+/* Крупный a11y-шрифт: фото и текст — в колонку (фото над текстом, как на мобиле).
+   Бок о бок при 150–200% они слишком жмутся. Сбрасываем флекс-ширины десктопа. */
+:global(:root[data-a11y][data-a11y-font='xl']) .root,
+:global(:root[data-a11y][data-a11y-font='xxl']) .root {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 25px;
+}
+
+:global(:root[data-a11y][data-a11y-font='xl']) .media,
+:global(:root[data-a11y][data-a11y-font='xxl']) .media,
+:global(:root[data-a11y][data-a11y-font='xl']) .content,
+:global(:root[data-a11y][data-a11y-font='xxl']) .content {
+  width: 100%;
+  max-width: none;
+  flex: 0 0 auto;
+}
+
+:global(:root[data-a11y][data-a11y-font='xl']) .image,
+:global(:root[data-a11y][data-a11y-font='xxl']) .image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 632 / 471;
+}

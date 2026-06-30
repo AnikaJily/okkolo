@@ -80,6 +80,14 @@
   }
 }
 
+/* Крупный a11y-шрифт: 3 колонки тесны для карточек — уменьшаем до 2 (шаг к
+   мобильной раскладке). lg (125%) оставляем 3 — там не жмётся. Специфичность
+   :root[data-a11y…] перебивает media-правила. */
+:global(:root[data-a11y][data-a11y-font='xl']) .list,
+:global(:root[data-a11y][data-a11y-font='xxl']) .list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 @media (min-width: 1280px) {
   .list {
     gap: 32px;
