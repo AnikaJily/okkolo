@@ -70,8 +70,12 @@
      текста темы (виджет токеном не пользуется — его палитра не страдает). */
   --color-yellow-stroke: var(--a11y-whiteBlack-fg);
 }
+/* Монохромные схемы (чёрным по белому / белым по чёрному): ссылки — цветом
+   текста схемы, БЕЗ отдельного акцентного цвета. Так «ч/б» остаётся реально
+   монохромным, а подчёркивание — достаточный и единственный сигнал «это ссылка»
+   (SC 1.4.1). В цветных схемах ниже ссылки сохраняют свой акцентный -link-цвет. */
 :root[data-a11y][data-a11y-theme='whiteBlack'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
-  color: var(--a11y-whiteBlack-link) !important;
+  color: var(--a11y-whiteBlack-fg) !important;
   text-decoration: underline !important;
 }
 
@@ -86,7 +90,7 @@
   --color-yellow-stroke: var(--a11y-blackWhite-fg);
 }
 :root[data-a11y][data-a11y-theme='blackWhite'] body a:not([data-a11y-widget] a):not([data-a11y-keep]) {
-  color: var(--a11y-blackWhite-link) !important;
+  color: var(--a11y-blackWhite-fg) !important;
   text-decoration: underline !important;
 }
 

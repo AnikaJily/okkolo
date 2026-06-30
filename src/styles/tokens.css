@@ -30,13 +30,14 @@
     Палитра «версии для слабовидящих» — единый источник для accessibility.css
     (реальное применение) и AccessibilityWidget свотчей (превью). Все пары
     fg/bg рассчитаны на AAA (≥7:1). border = fg во всех темах.
+    Ссылки: в монохромных схемах (whiteBlack/blackWhite) красятся в fg — без
+    отдельного акцента, чтобы схема оставалась реально ч/б (подчёркивание —
+    достаточный сигнал ссылки). -link задан только у цветных схем.
   */
   --a11y-whiteBlack-bg: #ffffff;
   --a11y-whiteBlack-fg: #000000;
-  --a11y-whiteBlack-link: #0000aa;
   --a11y-blackWhite-bg: #000000;
   --a11y-blackWhite-fg: #ffffff;
-  --a11y-blackWhite-link: #ffd54a;
   --a11y-blueCyan-bg: #9dd1ff;
   --a11y-blueCyan-fg: #003355;
   --a11y-blueCyan-link: #00205c;
