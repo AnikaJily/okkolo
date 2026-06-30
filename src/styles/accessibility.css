@@ -138,39 +138,43 @@
 
 /* === Псевдоэлементы (::before / ::after) в цветосхемах ===
    Правила выше красят только ЭЛЕМЕНТЫ — псевдоэлементы оставались цветными.
-   Из-за этого в теме НЕ перекрашивались: обводка залитых кнопок (.primary::after,
-   рисуется через border псевдоэлемента) и фоновые «пятна» главной
-   (.main::before / .main::after — фиолетовый и жёлтый круг). Красим их фон в цвет
-   темы (пятна сливаются с фоном и исчезают) и border в цвет текста (обводка кнопок
-   становится в тон остальным). background-image:none — на случай декоративных
-   градиентов; функциональных фон-картинок у псевдоэлементов в проекте нет. */
+   Перекрашиваем им border в цвет текста темы (обводки/буллеты — в тон) и УБИРАЕМ
+   фон: background-color: transparent + background-image: none.
+
+   ВАЖНО — фон именно transparent, а НЕ цвет темы (как было раньше). Обводка
+   залитых кнопок .primary::after — это абсолютный оверлей ПОВЕРХ текста с
+   прозрачным фоном (рамка рисуется только через border). Заливка его фоном темы
+   делала оверлей непрозрачным и перекрывала подпись кнопки — текст пропадал,
+   оставалась только рамка. Для декоративных «пятен» главной (.main::before /
+   .main::after — залиты через background-color) результат тот же: без фона они
+   так же исчезают. То есть transparent корректен и для оверлеев, и для «пятен». */
 :root[data-a11y][data-a11y-theme='whiteBlack'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::before,
 :root[data-a11y][data-a11y-theme='whiteBlack'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::after {
-  background-color: var(--a11y-whiteBlack-bg) !important;
+  background-color: transparent !important;
   background-image: none !important;
   border-color: var(--a11y-whiteBlack-fg) !important;
 }
 :root[data-a11y][data-a11y-theme='blackWhite'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::before,
 :root[data-a11y][data-a11y-theme='blackWhite'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::after {
-  background-color: var(--a11y-blackWhite-bg) !important;
+  background-color: transparent !important;
   background-image: none !important;
   border-color: var(--a11y-blackWhite-fg) !important;
 }
 :root[data-a11y][data-a11y-theme='blueCyan'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::before,
 :root[data-a11y][data-a11y-theme='blueCyan'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::after {
-  background-color: var(--a11y-blueCyan-bg) !important;
+  background-color: transparent !important;
   background-image: none !important;
   border-color: var(--a11y-blueCyan-fg) !important;
 }
 :root[data-a11y][data-a11y-theme='beigeBrown'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::before,
 :root[data-a11y][data-a11y-theme='beigeBrown'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::after {
-  background-color: var(--a11y-beigeBrown-bg) !important;
+  background-color: transparent !important;
   background-image: none !important;
   border-color: var(--a11y-beigeBrown-fg) !important;
 }
 :root[data-a11y][data-a11y-theme='brownGreen'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::before,
 :root[data-a11y][data-a11y-theme='brownGreen'] body :not([data-a11y-widget]):not([data-a11y-widget] *)::after {
-  background-color: var(--a11y-brownGreen-bg) !important;
+  background-color: transparent !important;
   background-image: none !important;
   border-color: var(--a11y-brownGreen-fg) !important;
 }
